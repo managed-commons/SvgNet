@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SvgGdiTest</name>
+    </assembly>
+    <members>
+        <member name="T:SvgGdiTest.Form1">
+            <summary>
+            Summary description for Form1.
+            </summary>
+        </member>
+        <member name="F:SvgGdiTest.Form1.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SvgGdiTest.Form1.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="M:SvgGdiTest.Form1.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:SvgGdiTest.Form1.Main">
+            <summary>
+            The main entry point for the application.
+            </summary>
+        </member>
+    </members>
+</doc>

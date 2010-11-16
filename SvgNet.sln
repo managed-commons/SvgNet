@@ -1,0 +1,33 @@
+Microsoft Visual Studio Solution File, Format Version 7.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SvgNet", "SvgNet\SvgNet.csproj", "{BB4C8021-B5E1-4DE2-82CB-14BDFB9837E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SvgDocTest", "SvgDocTest\SvgDocTest.csproj", "{6A203A21-673D-45E1-A7F5-D7112E114D6E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SvgGdiTest", "SvgGdiTest\SvgGdiTest.csproj", "{0C963EB6-C1B4-453D-B694-E81EC26D3AB9}"
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		ConfigName.0 = Debug
+		ConfigName.1 = Release
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{BB4C8021-B5E1-4DE2-82CB-14BDFB9837E4}.Debug.ActiveCfg = Debug|.NET
+		{BB4C8021-B5E1-4DE2-82CB-14BDFB9837E4}.Debug.Build.0 = Debug|.NET
+		{BB4C8021-B5E1-4DE2-82CB-14BDFB9837E4}.Release.ActiveCfg = Release|.NET
+		{BB4C8021-B5E1-4DE2-82CB-14BDFB9837E4}.Release.Build.0 = Release|.NET
+		{6A203A21-673D-45E1-A7F5-D7112E114D6E}.Debug.ActiveCfg = Debug|.NET
+		{6A203A21-673D-45E1-A7F5-D7112E114D6E}.Debug.Build.0 = Debug|.NET
+		{6A203A21-673D-45E1-A7F5-D7112E114D6E}.Release.ActiveCfg = Release|.NET
+		{6A203A21-673D-45E1-A7F5-D7112E114D6E}.Release.Build.0 = Release|.NET
+		{0C963EB6-C1B4-453D-B694-E81EC26D3AB9}.Debug.ActiveCfg = Debug|.NET
+		{0C963EB6-C1B4-453D-B694-E81EC26D3AB9}.Debug.Build.0 = Debug|.NET
+		{0C963EB6-C1B4-453D-B694-E81EC26D3AB9}.Release.ActiveCfg = Release|.NET
+		{0C963EB6-C1B4-453D-B694-E81EC26D3AB9}.Release.Build.0 = Release|.NET
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
