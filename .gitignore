@@ -1,0 +1,10 @@
+bin/
+obj/
+*.user
+*.suo
+*.xml
+*.userprefs
+*.pidb
+test-results/
+
+
