@@ -1,0 +1,73 @@
+/*
+	Copyright c 2003 by RiskCare Ltd.  All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions
+	are met:
+	1. Redistributions of source code must retain the above copyright
+	notice, this list of conditions and the following disclaimer.
+	2. Redistributions in binary form must reproduce the above copyright
+	notice, this list of conditions and the following disclaimer in the
+	documentation and/or other materials provided with the distribution.
+
+	THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+	ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+	IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+	ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+	FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+	DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+	OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+	HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+	LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+	OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+	SUCH DAMAGE.
+*/
+
+
+using System;
+using SvgNet.SvgTypes;
+
+namespace SvgNet.SvgElements
+{
+	/// <summary>
+	/// Represents an <c>ellipse</c> element.
+	/// </summary>
+	public class SvgEllipseElement : SvgStyledTransformedElement
+	{
+		public SvgEllipseElement()
+		{
+		}
+
+		public SvgEllipseElement(SvgLength cx, SvgLength cy, SvgLength rx, SvgLength ry)
+		{
+			CX=cx;
+			CY=cy;
+			RX=rx;
+			RY=ry;
+		}
+
+		public override string Name{get{return "ellipse";}}
+
+		public SvgLength CX
+		{
+			get{return (SvgLength)_atts["cx"];}
+			set{_atts["cx"] = value;}
+		}
+		public SvgLength CY
+		{
+			get{return (SvgLength)_atts["cy"];}
+			set{_atts["cy"] = value;}
+		}
+
+		public SvgLength RX
+		{
+			get{return (SvgLength)_atts["rx"];}
+			set{_atts["rx"] = value;}
+		}
+		public SvgLength RY
+		{
+			get{return (SvgLength)_atts["ry"];}
+			set{_atts["ry"] = value;}
+		}
+	}
+}
