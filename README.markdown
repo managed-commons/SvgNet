@@ -1,4 +1,4 @@
-# MSBuild.NUnit
+# SvgNet
 
 A fork of the SvgNet & SvgGdi bridge (http://www.codeproject.com/KB/cs/svgnet.aspx) to ressurrect it.
 
