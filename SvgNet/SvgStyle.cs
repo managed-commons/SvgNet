@@ -73,58 +73,53 @@ namespace SvgNet.SvgTypes
 			Set("stroke-width", pen.Width);
 			Set("fill", "none");
 
-			switch(pen.EndCap)
-			{
+			switch (pen.EndCap) {
 				case LineCap.Round:
-					Set("stroke-linecap", "round");break;
+					Set("stroke-linecap", "round"); break;
 				case LineCap.Square:
-					Set("stroke-linecap", "square");break;
+					Set("stroke-linecap", "square"); break;
 				case LineCap.Flat:
-					Set("stroke-linecap", "butt");break;
+					Set("stroke-linecap", "butt"); break;
 			}
 
-			switch(pen.LineJoin)
-			{
+			switch (pen.LineJoin) {
 				case LineJoin.Bevel:
-					Set("stroke-linejoin", "bevel");break;
+					Set("stroke-linejoin", "bevel"); break;
 				case LineJoin.Miter:
-					Set("stroke-linejoin", "miter");break;
+					Set("stroke-linejoin", "miter"); break;
 				case LineJoin.Round:
-					Set("stroke-linejoin", "round");break;
+					Set("stroke-linejoin", "round"); break;
 			}
 
 			//converting between adobe and ms miter limits is very hard because adobe have never explained what the value means.
-			Set("stroke-miterlimit", pen.MiterLimit/2 + 4f);
+			Set("stroke-miterlimit", pen.MiterLimit / 2 + 4f);
 
 			float[] dashes = null;
 
-			switch(pen.DashStyle)
-			{
+			switch (pen.DashStyle) {
 				case DashStyle.Dash:
-					dashes = new float[]{3,1}; break;
+					dashes = new float[] { 3, 1 }; break;
 				case DashStyle.DashDot:
-					dashes = new float[]{3,1,1,1}; break;
+					dashes = new float[] { 3, 1, 1, 1 }; break;
 				case DashStyle.DashDotDot:
-					dashes = new float[]{3,1,1,1,1}; break;
+					dashes = new float[] { 3, 1, 1, 1, 1 }; break;
 				case DashStyle.Dot:
-					dashes = new float[]{1,1}; break;
+					dashes = new float[] { 1, 1 }; break;
 				case DashStyle.Custom:
 					dashes = pen.DashPattern; break;
 			}
 
-			if (dashes != null)
-			{
+			if (dashes != null) {
 				//MS GDI changes dash pattern to match width of line; svg does not.
-				for(int i=0; i < dashes.Length; ++i)
-				{
+				for (int i = 0; i < dashes.Length; ++i) {
 					dashes[i] *= pen.Width;
 				}
 
 				Set("stroke-dasharray", new SvgNumList(dashes));
 			}
 
-			Set("opacity", pen.Color.A/255f);
-			
+			Set("opacity", pen.Color.A / 255f);
+
 		}
 
 		/// <summary>
@@ -136,7 +131,7 @@ namespace SvgNet.SvgTypes
 			SvgColor col = new SvgColor(((SolidBrush)brush).Color);
 			Set("fill", col);
 			Set("stroke", "none");
-			Set("opacity", ((SolidBrush)brush).Color.A/255f);
+			Set("opacity", ((SolidBrush)brush).Color.A / 255f);
 		}
 
 		/// <summary>
@@ -155,8 +150,8 @@ namespace SvgNet.SvgTypes
 
 			if (font.Underline)
 				Set("text-decoration", "underline");
-			
-			Set("font-size", font.SizeInPoints.ToString() + "pt");
+
+			Set("font-size", font.SizeInPoints.ToString("F", System.Globalization.CultureInfo.InvariantCulture) + "pt");
 
 		}
 
@@ -168,8 +163,7 @@ namespace SvgNet.SvgTypes
 		/// <param name="val"></param>
 		public void Set(string key, object val)
 		{
-			if (val == null || val.ToString() == "")
-			{
+			if (val == null || val.ToString() == "") {
 				_styles.Remove(key);
 				return;
 			}
@@ -191,19 +185,15 @@ namespace SvgNet.SvgTypes
 		/// <param name="s"></param>
 		public void FromString(string s)
 		{
-			try
-			{
+			try {
 				string[] pairs = s.Split(';');
 
-				foreach(string pair in pairs)
-				{
+				foreach (string pair in pairs) {
 					string[] kv = pair.Split(':');
 					if (kv.Length == 2)
 						Set(kv[0].Trim(), kv[1].Trim());
 				}
-			}
-			catch(Exception)
-			{
+			} catch (Exception) {
 				throw new SvgException("Invalid style string", s);
 			}
 		}
@@ -216,8 +206,7 @@ namespace SvgNet.SvgTypes
 			string val;
 			string result = "";
 
-			foreach(string s in _styles.Keys)
-			{
+			foreach (string s in _styles.Keys) {
 				val = _styles[s].ToString();
 				result += s;
 				result += ":";
@@ -264,12 +253,11 @@ namespace SvgNet.SvgTypes
 		/// Adds two SvgStyles together, resulting in a new object that contains all the attributes of both styles.
 		/// Attributes are copied deeply, i.e. cloned if they are <c>ICloneable</c>.
 		/// </summary>
-		public static SvgStyle operator + (SvgStyle lhs, SvgStyle rhs)
+		public static SvgStyle operator +(SvgStyle lhs, SvgStyle rhs)
 		{
 			SvgStyle res = new SvgStyle();
 
-			foreach(string key in lhs._styles.Keys)
-			{
+			foreach (string key in lhs._styles.Keys) {
 				object o = lhs[key];
 				if (typeof(ICloneable).IsInstanceOfType(o))
 					res[key] = ((ICloneable)o).Clone();
@@ -277,8 +265,7 @@ namespace SvgNet.SvgTypes
 					res[key] = o;
 			}
 
-			foreach(string key in rhs._styles.Keys)
-			{
+			foreach (string key in rhs._styles.Keys) {
 				object o = rhs[key];
 				if (typeof(ICloneable).IsInstanceOfType(o))
 					res[key] = ((ICloneable)o).Clone();

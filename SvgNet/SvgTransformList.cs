@@ -72,78 +72,55 @@ namespace SvgNet.SvgTypes
 
 			int idx = s.IndexOf("(");
 
-			if (idx != -1)
-			{
+			if (idx != -1) {
 				name = s.Substring(0, idx).Trim();
 
 				int idx2 = s.IndexOf(")");
 
-				if (idx2 != -1)
-				{
-					args = s.Substring(idx+1, (idx2 - idx) -1);
+				if (idx2 != -1) {
+					args = s.Substring(idx + 1, (idx2 - idx) - 1);
 					float[] points = SvgNumList.String2Floats(args);
 
-					if (name.IndexOf("matrix")!=-1)
-					{
-						if (points.Length == 6)
-						{
+					if (name.IndexOf("matrix") != -1) {
+						if (points.Length == 6) {
 							_m = new Matrix(points[0], points[1], points[2], points[3], points[4], points[5]);
 							return;
 						}
-					}
-					else if (name.IndexOf("translate")!=-1)
-					{
-						if (points.Length == 1)
-						{
+					} else if (name.IndexOf("translate") != -1) {
+						if (points.Length == 1) {
 							_m.Translate(points[0], 0);
 							return;
 						}
-						if (points.Length == 2)
-						{
+						if (points.Length == 2) {
 							_m.Translate(points[0], points[1]);
 							return;
 						}
-					}
-					else if (name.IndexOf("scale")!=-1)
-					{
-						if (points.Length == 1)
-						{
+					} else if (name.IndexOf("scale") != -1) {
+						if (points.Length == 1) {
 							_m.Scale(points[0], 0);
 							return;
 						}
-						if (points.Length == 2)
-						{
+						if (points.Length == 2) {
 							_m.Scale(points[0], points[1]);
 							return;
 						}
-					}
-					else if (name.IndexOf("rotate")!=-1)
-					{
-						if (points.Length == 1)
-						{
+					} else if (name.IndexOf("rotate") != -1) {
+						if (points.Length == 1) {
 							_m.Rotate(points[0]);
 							return;
-						}
-						else if (points.Length == 3)
-						{
+						} else if (points.Length == 3) {
 							_m.Translate(points[1], points[2]);
 							_m.Rotate(points[0]);
-							_m.Translate(points[1]*-1, points[2]*-1);
+							_m.Translate(points[1] * -1, points[2] * -1);
 							return;
 						}
-					}
-					else if (name.IndexOf("skewX")!=-1)
-					{
-						if (points.Length == 1)
-						{
+					} else if (name.IndexOf("skewX") != -1) {
+						if (points.Length == 1) {
 							_m.Shear(points[0], 0);
 							return;
 						}
-					}
-					else if (name.IndexOf("skewY")!=-1)
-					{
-						if (points.Length == 1)
-						{
+					} else if (name.IndexOf("skewY") != -1) {
+						if (points.Length == 1) {
 							_m.Shear(0, points[0]);
 							return;
 						}
@@ -162,9 +139,8 @@ namespace SvgNet.SvgTypes
 		{
 			string result = "matrix(";
 
-			foreach (float f in _m.Elements)
-			{
-				result += f.ToString();
+			foreach (float f in _m.Elements) {
+				result += f.ToString("F", System.Globalization.CultureInfo.InvariantCulture);
 				result += " ";
 			}
 
@@ -176,8 +152,8 @@ namespace SvgNet.SvgTypes
 
 		public Matrix Matrix
 		{
-			get{return _m;}
-			set{_m = value;}
+			get { return _m; }
+			set { _m = value; }
 		}
 	}
 
@@ -225,30 +201,28 @@ namespace SvgNet.SvgTypes
 		/// </summary>
 		public void FromString(string s)
 		{
-			int start=-1, end=0;
+			int start = -1, end = 0;
 
-			do
-			{
-				end = s.IndexOf(")", start+1);
+			do {
+				end = s.IndexOf(")", start + 1);
 
 				if (end == -1) return;
 
-				SvgTransform trans = new SvgTransform(s.Substring(start+1, end-start));
+				SvgTransform trans = new SvgTransform(s.Substring(start + 1, end - start));
 
 				_t.Add(trans);
 
 				start = end;
 
 			}
-			while(true);
+			while (true);
 		}
 
 		public override string ToString()
 		{
 			string result = "";
 
-			foreach(SvgTransform tr in _t)
-			{
+			foreach (SvgTransform tr in _t) {
 				result += tr.ToString();
 				result += " ";
 			}
@@ -258,13 +232,13 @@ namespace SvgNet.SvgTypes
 
 		public SvgTransform this[int idx]
 		{
-			get{return (SvgTransform)_t[idx];}
-			set{_t[idx] = value;}
+			get { return (SvgTransform)_t[idx]; }
+			set { _t[idx] = value; }
 		}
 
 		public int Count
 		{
-			get{return _t.Count;}
+			get { return _t.Count; }
 		}
 
 		public static implicit operator SvgTransformList(string s)
