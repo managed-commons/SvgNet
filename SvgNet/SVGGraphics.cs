@@ -1,4 +1,6 @@
 /*
+	Copyright c 2010 SvgNet & SvgGdi Bridge Project. All rights reserved.
+
 	Copyright c 2003 by RiskCare Ltd.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -33,9 +35,1053 @@ using System.Drawing.Text;
 using SvgNet.SvgElements;
 using SvgNet.SvgTypes;
 using System.Collections;
+using System.IO;
 
 namespace SvgNet.SvgGdi
 {
+	namespace MetafileTools
+	{
+		// Classes in this namespace were inspired by the code in http://wmf.codeplex.com/
+		namespace EmfTools
+		{
+			public interface IBinaryRecord
+			{
+				void Read(BinaryReader reader);
+			}
+
+			public class EmfException : Exception
+			{
+				public EmfException(string message)
+					: base(message)
+				{
+				}
+			}
+
+			/// <summary>
+			/// Implements a EMF META record
+			/// </summary>
+			public abstract class EmfBinaryRecord : IBinaryRecord
+			{
+				#region Constructor
+				public EmfBinaryRecord()
+				{
+				}
+				#endregion
+
+				#region Public properties
+				/// <summary>
+				/// Gets or sets record length
+				/// </summary>
+				public uint RecordSize
+				{
+					get;
+					set;
+				}
+
+				/// <summary>
+				/// Gets or sets record type (aka RecordFunction)
+				/// </summary>
+				public EmfPlusRecordType RecordType
+				{
+					get;
+					set;
+				}
+				#endregion
+
+				#region IBinaryRecord Members
+				/// <summary>
+				/// Reads a record from binary stream. If this method is not overridden it will skip this record and go to next record.
+				/// NOTE: When overriding this method remove the base.Read(reader) line from code.
+				/// </summary>
+				/// <param name="reader"></param>
+				public virtual void Read(BinaryReader reader)
+				{
+				}
+				#endregion
+			}
+
+			public class EmfUnknownRecord : EmfBinaryRecord
+			{
+				private static byte[] EmptyData = new byte[0];
+
+				public byte[] Data
+				{
+					get;
+					set;
+				}
+
+				public override void Read(BinaryReader reader)
+				{
+					var length = (int)base.RecordSize - sizeof(UInt32) - sizeof(UInt32);
+					if (length > 0)
+					{
+						this.Data = reader.ReadBytes(length);
+					}
+					else
+					{
+						this.Data = EmptyData;
+					}
+				}
+			}
+
+			public static class BinaryReaderExtensions
+			{
+				/// <summary>
+				/// Skips excess bytes. Work-around for some WMF files that contain undocumented fields.
+				/// </summary>
+				/// <param name="reader"></param>
+				/// <param name="excess"></param>
+				public static void Skip(this BinaryReader reader, int excess)
+				{
+					if (excess > 0)
+					{
+						//Skip unknown bytes
+						reader.BaseStream.Seek(excess, SeekOrigin.Current);
+						//var dummy = reader.ReadBytes(excess);
+					}
+				}
+			}
+
+			/// <summary>
+			/// Low-level EMF parser
+			/// </summary>
+			public class EmfReader : IDisposable
+			{
+				private Stream stream;
+				private BinaryReader reader;
+
+				public EmfReader(Stream stream)
+				{
+					this.stream = stream;
+					this.reader = new BinaryReader(stream);
+				}
+
+				public bool IsEndOfFile
+				{
+					get { return stream.Length == stream.Position; }
+				}
+
+				public IBinaryRecord Read()
+				{
+					long begin = reader.BaseStream.Position;
+
+					var rt = (EmfPlusRecordType)reader.ReadUInt32();
+					var recordSize = reader.ReadUInt32();
+
+					EmfBinaryRecord record = new EmfUnknownRecord();
+					record.RecordType = rt;
+
+					record.RecordSize = recordSize;
+					record.Read(reader);
+
+					long end = reader.BaseStream.Position;
+					long rlen = end - begin; //Read length
+					long excess = recordSize - rlen;
+					if (excess > 0)
+					{
+						//Oops, reader did not read whole record?!
+						reader.Skip((int)excess);
+					}
+
+					return record;
+				}
+
+				public void Dispose()
+				{
+					if (this.reader != null)
+					{
+						this.reader.Close();
+						this.reader = null;
+					}
+				}
+			}
+		}
+
+		public delegate void DrawLineDelegate(PointF[] points);
+		public delegate void FillPolygonDelegate(PointF[] points, Brush brush);
+
+		public class MetafileParser
+		{
+			private Matrix Transform;
+
+			public enum EmfTransformMode
+			{
+				MWT_IDENTITY = 1,
+				MWT_LEFTMULTIPLY = 2,
+				MWT_RIGHTMULTIPLY = 3
+			}
+
+			/// <summary>
+			/// https://msdn.microsoft.com/en-us/library/cc231191 without the 0x80000000 bit
+			/// </summary>
+			public enum EmfStockObject 
+			{
+				WHITE_BRUSH = 0x00000000,
+				LTGRAY_BRUSH = 0x00000001,
+				GRAY_BRUSH = 0x00000002,
+				DKGRAY_BRUSH = 0x00000003,
+				BLACK_BRUSH = 0x00000004,
+				NULL_BRUSH = 0x00000005,
+				WHITE_PEN = 0x00000006,
+				BLACK_PEN = 0x00000007,
+				NULL_PEN = 0x00000008,
+				OEM_FIXED_FONT = 0x0000000A,
+				ANSI_FIXED_FONT = 0x0000000B,
+				ANSI_VAR_FONT = 0x0000000C,
+				SYSTEM_FONT = 0x0000000D,
+				DEVICE_DEFAULT_FONT = 0x0000000E,
+				DEFAULT_PALETTE = 0x0000000F,
+				SYSTEM_FIXED_FONT = 0x00000010,
+				DEFAULT_GUI_FONT = 0x00000011,
+				DC_BRUSH = 0x00000012,
+				DC_PEN = 0x00000013,
+
+				MinValue = WHITE_BRUSH,
+				MaxValue = DC_PEN
+			}
+
+			public enum EmfBrushStyle
+			{
+				BS_SOLID = 0x0000,
+				BS_NULL = 0x0001,
+				BS_HATCHED = 0x0002,
+				BS_PATTERN = 0x0003,
+				BS_INDEXED = 0x0004,
+				BS_DIBPATTERN = 0x0005,
+				BS_DIBPATTERNPT = 0x0006,
+				BS_PATTERN8X8 = 0x0007,
+				BS_DIBPATTERN8X8 = 0x0008,
+				BS_MONOPATTERN = 0x0009
+			}
+
+			private static uint StockObjectMinCode = 0x80000000 + (uint)EmfStockObject.MinValue;
+			private static uint StockObjectMaxCode = 0x80000000 + (uint)EmfStockObject.MaxValue;
+
+			private void ProcessModifyWorldTransform(byte[] recordData)
+			{
+				MemoryStream _ms = null;
+				BinaryReader _br = null;
+				try
+				{
+					_ms = new MemoryStream(recordData);
+					_br = new BinaryReader(_ms);
+
+					var eM11 = _br.ReadSingle();
+					var eM12 = _br.ReadSingle();
+					var eM21 = _br.ReadSingle();
+					var eM22 = _br.ReadSingle();
+					var eDx = _br.ReadSingle();
+					var eDy = _br.ReadSingle();
+					var iMode = (EmfTransformMode)_br.ReadInt32();
+
+					var matrix = new Matrix(eM11, eM12, eM21, eM22, eDx, eDy);
+
+					switch (iMode)
+					{
+						case EmfTransformMode.MWT_IDENTITY:
+							Transform = new Matrix();
+							break;
+
+						case EmfTransformMode.MWT_LEFTMULTIPLY:
+							Transform.Multiply(matrix, MatrixOrder.Append /* TODO: is it the correct order? */);
+							break;
+
+						case EmfTransformMode.MWT_RIGHTMULTIPLY:
+							Transform.Multiply(matrix, MatrixOrder.Prepend /* TODO: is it the correct order? */);
+							break;
+
+						default:
+							throw new NotImplementedException();
+					}
+
+					System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
+				}
+				finally
+				{
+					if (_br != null)
+						_br.Close();
+					if (_ms != null)
+						_ms.Dispose();
+				}
+			}
+
+			private void InternalProcessPolyline16(uint numberOfPolygons, uint totalNumberOfPoints, int[] numberOfPoints, BinaryReader reader)
+			{
+				var points = new PointF[totalNumberOfPoints];
+
+				for (var j = 0; j < points.Length; j++)
+				{
+					points[j].X = reader.ReadInt16();
+					points[j].Y = reader.ReadInt16();
+				}
+
+				Transform.TransformPoints(points);
+
+				var offset = 0;
+				for (var i = 0; i < numberOfPolygons; i++)
+				{
+					DrawLine(points, offset, numberOfPoints[i]);
+					offset += numberOfPoints[i];
+				}
+			}
+
+			private void ProcessPolyPolygon16(byte[] recordData)
+			{
+				MemoryStream _ms = null;
+				BinaryReader _br = null;
+				try
+				{
+					_ms = new MemoryStream(recordData);
+					_br = new BinaryReader(_ms);
+
+					_br.ReadBytes(16 /* Bounds */);
+
+					var numberOfPolygons = _br.ReadUInt32();
+					var totalNumberOfPoints = _br.ReadUInt32();
+
+					var numberOfPoints = new int[numberOfPolygons];
+
+					for (var i = 0; i < numberOfPolygons; i++)
+						numberOfPoints[i] = (int)_br.ReadUInt32();
+
+					InternalProcessPolyline16(numberOfPolygons, totalNumberOfPoints, numberOfPoints, _br);
+
+					System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
+				}
+				finally
+				{
+					if (_br != null)
+						_br.Close();
+					if (_ms != null)
+						_ms.Dispose();
+				}
+			}
+
+			private void ProcessPolyline16(byte[] recordData)
+			{
+				MemoryStream _ms = null;
+				BinaryReader _br = null;
+				try
+				{
+					_ms = new MemoryStream(recordData);
+					_br = new BinaryReader(_ms);
+
+					_br.ReadBytes(16 /* Bounds */);
+
+					var numberOfPolygons = 1u;
+					var totalNumberOfPoints = _br.ReadUInt32();
+
+					var numberOfPoints = new int[numberOfPolygons];
+					numberOfPoints[0] = (int)totalNumberOfPoints;
+
+					InternalProcessPolyline16(numberOfPolygons, totalNumberOfPoints, numberOfPoints, _br);
+
+					System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
+				}
+				finally
+				{
+					if (_br != null)
+						_br.Close();
+					if (_ms != null)
+						_ms.Dispose();
+				}
+			}
+
+			private void ProcessPolylineTo16(byte[] recordData)
+			{
+				MemoryStream _ms = null;
+				BinaryReader _br = null;
+				try
+				{
+					_ms = new MemoryStream(recordData);
+					_br = new BinaryReader(_ms);
+
+					_br.ReadBytes(16 /* Bounds */);
+
+					var totalNumberOfPoints = _br.ReadUInt32();
+
+					var points = new PointF[1 + totalNumberOfPoints];
+
+					// Clone _moveTo cursor
+					points[0].X = _moveTo.X;
+					points[0].Y = _moveTo.Y;
+
+					for (var j = 1; j < points.Length; j++)
+					{
+						points[j].X = _br.ReadInt16();
+						points[j].Y = _br.ReadInt16();
+					}
+
+					// Clone last point to the current _moveTo cursor
+					_moveTo = new PointF(points[points.Length - 1].X, points[points.Length - 1].Y);
+
+					Transform.TransformPoints(points);
+
+					DrawLine(points, 0, points.Length);
+
+					System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
+				}
+				finally
+				{
+					if (_br != null)
+						_br.Close();
+					if (_ms != null)
+						_ms.Dispose();
+				}
+			}
+
+			private void ProcessPolyBezierTo16(byte[] recordData)
+			{
+				MemoryStream _ms = null;
+				BinaryReader _br = null;
+				try
+				{
+					_ms = new MemoryStream(recordData);
+					_br = new BinaryReader(_ms);
+
+					_br.ReadBytes(16 /* Bounds */);
+
+					var totalNumberOfPoints = _br.ReadUInt32();
+
+					var originalPoints = new PointF[totalNumberOfPoints];
+
+					for (var j = 0; j < originalPoints.Length; j++)
+					{
+						originalPoints[j].X = _br.ReadInt16();
+						originalPoints[j].Y = _br.ReadInt16();
+					}
+
+					const int PointsPerCurve = 3;
+
+					var numberOfCurves = totalNumberOfPoints / PointsPerCurve;
+
+					var points = new PointF[1 + numberOfCurves];
+
+					// Clone _moveTo cursor
+					points[0].X = _moveTo.X;
+					points[0].Y = _moveTo.Y;
+
+					for (var j = 1; j < points.Length; j++)
+					{
+						// Every curve is defined by 3 points. The first two are the Bezier curve's control points.
+						// The 3rd is the endpoint. This is the point we'll use (only)
+						points[j] = originalPoints[((j - 1) * PointsPerCurve) + (PointsPerCurve - 1)];
+					}
+
+					// Clone last point to the current _moveTo cursor
+					_moveTo = new PointF(points[points.Length - 1].X, points[points.Length - 1].Y);
+
+					Transform.TransformPoints(points);
+
+					DrawLine(points, 0, points.Length);
+
+					System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
+				}
+				finally
+				{
+					if (_br != null)
+						_br.Close();
+					if (_ms != null)
+						_ms.Dispose();
+				}
+			}
+
+			private void ProcessCloseFigure(byte[] recordData)
+			{
+				MemoryStream _ms = null;
+				BinaryReader _br = null;
+				try
+				{
+					_ms = new MemoryStream(recordData);
+					_br = new BinaryReader(_ms);
+
+					var points = new PointF[2];
+
+					points[0].X = _moveTo.X;
+					points[0].Y = _moveTo.Y;
+					points[1].X = _curveOrigin.X;
+					points[1].Y = _curveOrigin.Y;
+
+					Transform.TransformPoints(points);
+
+					DrawLine(points, 0, points.Length);
+
+					System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
+				}
+				finally
+				{
+					if (_br != null)
+						_br.Close();
+					if (_ms != null)
+						_ms.Dispose();
+				}
+			}
+
+			private void ProcessMoveToEx(byte[] recordData)
+			{
+				MemoryStream _ms = null;
+				BinaryReader _br = null;
+				try
+				{
+					_ms = new MemoryStream(recordData);
+					_br = new BinaryReader(_ms);
+
+					_moveTo = new PointF();
+					_moveTo.X = _br.ReadInt32();
+					_moveTo.Y = _br.ReadInt32();
+
+					_curveOrigin = _moveTo;
+
+					System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
+				}
+				finally
+				{
+					if (_br != null)
+						_br.Close();
+					if (_ms != null)
+						_ms.Dispose();
+				}
+			}
+
+			private void InternalSelectObject(EmfStockObject stockObject)
+			{
+				switch (stockObject)
+				{
+					case EmfStockObject.BLACK_BRUSH:
+						_brush = new SolidBrush(Color.Black);
+						break;
+
+					case EmfStockObject.DC_BRUSH:
+						throw new NotImplementedException();
+
+					case EmfStockObject.DKGRAY_BRUSH:
+						_brush = new SolidBrush(Color.DarkGray);
+						break;
+
+					case EmfStockObject.GRAY_BRUSH:
+						_brush = new SolidBrush(Color.Gray);
+						break;
+
+					case EmfStockObject.LTGRAY_BRUSH:
+						_brush = new SolidBrush(Color.LightGray);
+						break;
+
+					case EmfStockObject.NULL_BRUSH:
+						_brush = null;
+						break;
+
+					case EmfStockObject.WHITE_BRUSH:
+						_brush = new SolidBrush(Color.White);
+						break;
+				}
+			}
+
+			private void ProcessSelectObject(byte[] recordData)
+			{
+				MemoryStream _ms = null;
+				BinaryReader _br = null;
+				try
+				{
+					_ms = new MemoryStream(recordData);
+					_br = new BinaryReader(_ms);
+
+					var ihObject = _br.ReadUInt32();
+
+					if (ihObject >= StockObjectMinCode && ihObject <= StockObjectMaxCode)
+					{
+						var stockObject = (EmfStockObject)(ihObject - StockObjectMinCode + (int)EmfStockObject.MinValue);
+						InternalSelectObject(stockObject);
+					}
+					else
+					{
+						ObjectHandle objectHandle;
+						if (_objects.TryGetValue(ihObject, out objectHandle))
+						{
+							if (objectHandle.IsStockObject)
+							{
+								InternalSelectObject(objectHandle.GetStockObject());
+							}
+							else if (objectHandle.IsBrush)
+							{
+								_brush = objectHandle.GetBrush();
+							}
+						}
+					}
+
+					System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
+				}
+				finally
+				{
+					if (_br != null)
+						_br.Close();
+					if (_ms != null)
+						_ms.Dispose();
+				}
+			}
+
+			private void ProcessCreateBrushIndirect(byte[] recordData)
+			{
+				MemoryStream _ms = null;
+				BinaryReader _br = null;
+				try
+				{
+					_ms = new MemoryStream(recordData);
+					_br = new BinaryReader(_ms);
+
+					var ihBrush = _br.ReadUInt32();
+
+					// https://msdn.microsoft.com/en-us/library/cc230581.aspx
+					var brushStyle = (EmfBrushStyle)_br.ReadUInt32();
+					var r = _br.ReadByte();
+					var g = _br.ReadByte();
+					var b = _br.ReadByte();
+					var reserved = _br.ReadByte();
+					var brushColor = Color.FromArgb(r, g, b);
+					var brushHatch = _br.ReadUInt32();
+
+					_objects.Remove(ihBrush);
+
+					switch (brushStyle)
+					{
+						case EmfBrushStyle.BS_SOLID:
+							_objects.Add(ihBrush, new ObjectHandle(new SolidBrush(brushColor)));
+							break;
+
+						case EmfBrushStyle.BS_NULL:
+							_objects.Add(ihBrush, new ObjectHandle(EmfStockObject.NULL_BRUSH));
+							break;
+
+						case EmfBrushStyle.BS_HATCHED:
+							throw new NotImplementedException();
+
+						default:
+							throw new NotImplementedException();
+					}
+
+					System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
+				}
+				finally
+				{
+					if (_br != null)
+						_br.Close();
+					if (_ms != null)
+						_ms.Dispose();
+				}
+			}
+
+			private void ProcessStrokeAndFillPath(byte[] recordData)
+			{
+				MemoryStream _ms = null;
+				BinaryReader _br = null;
+				try
+				{
+					_ms = new MemoryStream(recordData);
+					_br = new BinaryReader(_ms);
+
+					_br.ReadBytes(16 /* Bounds */);
+
+					System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
+
+					FillPolygon(_lineBuffer.GetPoints(), _brush);
+				}
+				finally
+				{
+					if (_br != null)
+						_br.Close();
+					if (_ms != null)
+						_ms.Dispose();
+				}
+			}
+
+			private void ProcessBeginPath(byte[] recordData)
+			{
+				MemoryStream _ms = null;
+				BinaryReader _br = null;
+				try
+				{
+					_ms = new MemoryStream(recordData);
+					_br = new BinaryReader(_ms);
+
+					System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
+
+					// Clear the line buffer so that it can record the path
+					CommitLine();
+				}
+				finally
+				{
+					if (_br != null)
+						_br.Close();
+					if (_ms != null)
+						_ms.Dispose();
+				}
+			}
+
+			private class ObjectHandle
+			{
+				private EmfStockObject? _stockObject;
+				private Brush _brush;
+
+				public ObjectHandle(EmfStockObject stockObject)
+				{
+					_stockObject = stockObject;
+				}
+
+				public ObjectHandle(Brush brush)
+				{
+					_brush = brush;
+				}
+
+				public bool IsStockObject
+				{
+					get
+					{
+						return _stockObject != null;
+					}
+				}
+
+				public bool IsBrush
+				{
+					get
+					{
+						return _brush != null;
+					}
+				}
+
+				public EmfStockObject GetStockObject()
+				{
+					return _stockObject.Value;
+				}
+
+				public Brush GetBrush()
+				{
+					return _brush;
+				}
+			}
+
+			private class NormalizedPoint
+			{
+				public PointF Point;
+				public int VisualIndex;
+			}
+
+			private class VisualPoint
+			{
+				public PointF Point;
+				public int VisualIndex;
+				public bool IsLocked;
+				public int Weight;
+			}
+
+			private class LineBuffer
+			{
+				private System.Collections.Generic.List<NormalizedPoint> _normalizedPoints;
+				private System.Collections.Generic.List<VisualPoint> _visualPoints;
+				private System.Collections.Generic.List<NormalizedPoint> _points;
+				private float _epsilonSquare;
+
+				public LineBuffer(float unitSize)
+				{
+					_points = new System.Collections.Generic.List<NormalizedPoint>();
+					_normalizedPoints = new System.Collections.Generic.List<NormalizedPoint>();
+					_visualPoints = new System.Collections.Generic.List<VisualPoint>();
+					_epsilonSquare = (UnitSizeEpsilon * unitSize) * (UnitSizeEpsilon * unitSize);
+				}
+
+				public bool IsEmpty
+				{
+					get
+					{
+						return _points.Count == 0;
+					}
+				}
+
+				private NormalizedPoint GetLastPoint()
+				{
+					return _points[_points.Count - 1];
+				}
+
+				private static float UnitSizeEpsilon = 2.0f; // TODO: TUNE: what's the correct value? Shoud it be based on the matafile's DPI?
+
+				private bool IsVisuallyIdentical(NormalizedPoint a, NormalizedPoint b)
+				{
+					return a.VisualIndex == b.VisualIndex;
+				}
+
+				private bool IsVisuallyIdentical(NormalizedPoint a, PointF b)
+				{
+					for (var i = _normalizedPoints.Count - 1; i >= 0; i--)
+						if (_normalizedPoints[i].VisualIndex == a.VisualIndex)
+							if (IsVisuallyIdentical(_normalizedPoints[i].Point, b))
+								return true;
+					return false;
+				}
+
+				private bool IsVisuallyIdentical(PointF a, PointF b)
+				{
+					var dx = a.X - b.X;
+					var dy = a.Y - b.Y;
+					return (dx * dx + dy * dy) <= _epsilonSquare;
+				}
+
+				private NormalizedPoint Add(PointF point)
+				{
+					NormalizedPoint result;
+					VisualPoint visualPoint;
+
+					for (var i = _normalizedPoints.Count - 1; i >= 0; i--)
+					{
+						if (IsVisuallyIdentical(_normalizedPoints[i].Point, point))
+						{
+							visualPoint = _visualPoints[_normalizedPoints[i].VisualIndex];
+							visualPoint.Weight++;
+							result = new NormalizedPoint() { Point = point, VisualIndex = visualPoint.VisualIndex };
+							_normalizedPoints.Add(result);
+							return result;
+						}
+					}
+
+					visualPoint = new VisualPoint() { IsLocked = false, VisualIndex = _visualPoints.Count, Weight = 1 };
+					_visualPoints.Add(visualPoint);
+
+					result = new NormalizedPoint() { Point = point, VisualIndex = visualPoint.VisualIndex };
+					_normalizedPoints.Add(result);
+					return result;
+				}
+
+				public bool CanAdd(PointF[] points, int offset, int count)
+				{
+					if (IsEmpty)
+						return true;
+
+					if (IsVisuallyIdentical(GetLastPoint(), points[offset]))
+						return true;
+
+					return false;
+				}
+
+				private void MakeRoom(int count)
+				{
+					if (_points.Capacity < _points.Count + count)
+						_points.Capacity = _points.Count + count;
+				}
+
+				public void Add(PointF[] points, int offset, int count)
+				{
+					if (IsEmpty)
+					{
+						MakeRoom(count);
+						for (var i = 0; i < count; i++)
+							_points.Add(Add(points[offset + i]));
+					}
+					else
+					{
+						if (!IsVisuallyIdentical(GetLastPoint(), points[offset]))
+							throw new ArgumentOutOfRangeException();
+
+						MakeRoom(count - 1);
+
+						Add(points[offset]);
+
+						for (var i = 1; i < count; i++)
+							_points.Add(Add(points[offset + i]));
+					}
+				}
+
+				public void Clear()
+				{
+					_points.Clear();
+				}
+
+				public PointF[] GetPoints()
+				{
+					var points = new System.Collections.Generic.List<NormalizedPoint>();
+
+					points.Add(_points[0]);
+					for (var i = 1; i < _points.Count; i++)
+					{
+						if (!IsVisuallyIdentical(points[points.Count - 1], _points[i]))
+						{
+							points.Add(_points[i]);
+						}
+					}
+
+					if (points.Count <= 1)
+						return null;
+
+					var result = new System.Collections.Generic.List<PointF>();
+
+					for (var i = 0; i < points.Count; i++)
+					{
+						var visualPoint = _visualPoints[points[i].VisualIndex];
+						if (!visualPoint.IsLocked)
+						{
+							// Calculate the visual point's appearance as "the middle" of all points
+							double sumX = 0;
+							double sumY = 0;
+							for (int j = 0, siblingCount = visualPoint.Weight; siblingCount > 0; j++)
+							{
+								if (_normalizedPoints[j].VisualIndex == visualPoint.VisualIndex)
+								{
+									sumX += _normalizedPoints[j].Point.X;
+									sumY += _normalizedPoints[j].Point.Y;
+									siblingCount--;
+								}
+							}
+
+							visualPoint.Point = new PointF((float)(sumX / visualPoint.Weight), (float)(sumY / visualPoint.Weight));
+							visualPoint.IsLocked = true;
+						}
+						result.Add(visualPoint.Point);
+					}
+
+					return result.ToArray();
+				}
+			}
+
+			private System.Collections.Generic.Dictionary<uint, ObjectHandle> _objects;
+			private PointF _zero;
+			private DrawLineDelegate _drawLine;
+			private FillPolygonDelegate _fillPolygon;
+			private PointF _moveTo;
+			private PointF _curveOrigin;
+			private Brush _brush;
+			private LineBuffer _lineBuffer;
+
+			private void CommitLine()
+			{
+				if (_lineBuffer.IsEmpty)
+					return;
+
+				var linePoints = _lineBuffer.GetPoints();
+
+				_lineBuffer.Clear();
+
+				if (linePoints == null)
+					return;
+
+				for (var i = 0; i < linePoints.Length; i++)
+				{
+					linePoints[i].X += _zero.X;
+					linePoints[i].Y += _zero.Y;
+				}
+				_drawLine(linePoints);
+			}
+
+			private void FillPolygon(PointF[] linePoints, Brush fillBrush)
+			{
+				if (linePoints == null || fillBrush == null)
+					return;
+
+				for (var i = 0; i < linePoints.Length; i++)
+				{
+					linePoints[i].X += _zero.X;
+					linePoints[i].Y += _zero.Y;
+				}
+				_fillPolygon(linePoints, fillBrush);
+			}
+
+			private void DrawLine(PointF[] points, int offset, int count)
+			{
+				if (!_lineBuffer.CanAdd(points, offset, count))
+				{
+					CommitLine();
+				}
+
+				_lineBuffer.Add(points, offset, count);
+			}
+
+			public void EnumerateMetafile(Stream emf, float unitSize, PointF destination, DrawLineDelegate drawLine, FillPolygonDelegate fillPolygon)
+			{
+				Transform = new Matrix();
+				_drawLine = drawLine;
+				_fillPolygon = fillPolygon;
+				_zero = destination;
+				_lineBuffer = new LineBuffer(unitSize);
+				_objects = new System.Collections.Generic.Dictionary<uint, ObjectHandle>();
+				_brush = null;
+
+				using (var reader = new EmfTools.EmfReader(emf))
+				{
+					while (!reader.IsEndOfFile)
+					{
+						var record = reader.Read() as EmfTools.EmfUnknownRecord;
+						if (record == null)
+							continue;
+
+						switch (record.RecordType)
+						{
+							case EmfPlusRecordType.EmfHeader:
+							case EmfPlusRecordType.EmfEof:
+							case EmfPlusRecordType.EmfSaveDC:
+							case EmfPlusRecordType.EmfDeleteObject:
+							case EmfPlusRecordType.EmfExtCreatePen:
+							case EmfPlusRecordType.EmfCreatePen:
+							case EmfPlusRecordType.EmfRestoreDC:
+							case EmfPlusRecordType.EmfSetIcmMode:
+							case EmfPlusRecordType.EmfSetMiterLimit:
+							case EmfPlusRecordType.EmfSetPolyFillMode:
+								// Harmless records with no significant side-effects on the shape of the drawn outline
+								break;
+
+							case EmfPlusRecordType.EmfSelectObject:
+								ProcessSelectObject(record.Data);
+								break;
+
+							case EmfPlusRecordType.EmfCreateBrushIndirect:
+								ProcessCreateBrushIndirect(record.Data);
+								break;
+
+							case EmfPlusRecordType.EmfBeginPath:
+								ProcessBeginPath(record.Data);
+								break;
+
+							case EmfPlusRecordType.EmfEndPath:
+								// TODO:
+								break;
+
+							case EmfPlusRecordType.EmfStrokeAndFillPath:
+								ProcessStrokeAndFillPath(record.Data);
+								break;
+
+							case EmfPlusRecordType.EmfMoveToEx:
+								ProcessMoveToEx(record.Data);
+								break;
+
+							case EmfPlusRecordType.EmfModifyWorldTransform:
+								ProcessModifyWorldTransform(record.Data);
+								break;
+
+							case EmfPlusRecordType.EmfPolyPolygon16:
+								ProcessPolyPolygon16(record.Data);
+								break;
+
+							case EmfPlusRecordType.EmfPolyline16:
+								ProcessPolyline16(record.Data);
+								break;
+
+							case EmfPlusRecordType.EmfPolylineTo16:
+								ProcessPolylineTo16(record.Data);
+								break;
+
+							case EmfPlusRecordType.EmfCloseFigure:
+								ProcessCloseFigure(record.Data);
+								break;
+
+							case EmfPlusRecordType.EmfPolyBezierTo16:
+								ProcessPolyBezierTo16(record.Data);
+								break;
+
+							default:
+								throw new NotImplementedException();
+						}
+					}
+				}
+
+				CommitLine();
+			}
+		}
+	}
+
 	/// <summary>
 	/// This is an IGraphics implementor that builds up an SVG scene.  Use it like a regular <c>Graphics</c> object, and call
 	/// <c>WriteXMLString</c> to output SVG.  In this way, whatever you would normally draw becomes available as an SVG document.
@@ -290,13 +1336,21 @@ namespace SvgNet.SvgGdi
 		/// </summary>
 		public void DrawLine(Pen pen, Single x1, Single y1, Single x2, Single y2)
 		{
-			SvgLineElement lin = new SvgLineElement(x1, y1, x2, y2);
-			lin.Style = new SvgStyle(pen);
-			if (!_transforms.Result.IsIdentity)
-				lin.Transform = new SvgTransformList(_transforms.Result.Clone());
-			_cur.AddChild(lin);
+			if (IsEndAnchorSimple(pen.StartCap) && IsEndAnchorSimple(pen.EndCap))
+			{
+				// This code works, but not for CustomLineCup style
+				SvgLineElement lin = new SvgLineElement(x1, y1, x2, y2);
+				lin.Style = new SvgStyle(pen);
+				if (!_transforms.Result.IsIdentity)
+					lin.Transform = new SvgTransformList(_transforms.Result.Clone());
+				_cur.AddChild(lin);
 
-			DrawEndAnchors(pen, new PointF(x1, y1), new PointF(x2, y2));
+				DrawEndAnchors(pen, new PointF(x1, y1), new PointF(x2, y2));
+			}
+			else
+			{
+				DrawLines(pen, new PointF[] { new PointF(x1, y1), new PointF(x2, y2) });
+			}
 		}
 
 		/// <summary>
@@ -312,13 +1366,114 @@ namespace SvgNet.SvgGdi
 		/// </summary>
 		public void DrawLines(Pen pen, PointF[] points)
 		{
-			SvgPolylineElement pl = new SvgPolylineElement(points);
-			pl.Style = new SvgStyle(pen);
-			if (!_transforms.Result.IsIdentity)
-				pl.Transform = new SvgTransformList(_transforms.Top.Clone());
-			_cur.AddChild(pl);
+			if (points.Length <= 1)
+				return;
 
-			DrawEndAnchors(pen, points[0], points[points.Length - 1]);
+			if (IsEndAnchorSimple(pen.StartCap) && IsEndAnchorSimple(pen.EndCap))
+			{
+				// This code works, but not for CustomLineCap style
+				SvgPolylineElement pl = new SvgPolylineElement(points);
+				pl.Style = new SvgStyle(pen);
+				if (!_transforms.Result.IsIdentity)
+					pl.Transform = new SvgTransformList(_transforms.Top.Clone());
+				_cur.AddChild(pl);
+
+				DrawEndAnchors(pen, points[0], points[points.Length - 1]);
+
+				return;
+			}
+
+			// GraphicsPaths used in the constructor of CustomLineCap
+			// are private to the native GDI+ and for example the shape of AdjustableArrowCap
+			// is completely private to the native GDI+
+			//
+			// So in order to render the possibly any-shaped custom line caps we'll draw the line as GDI metafile and then reverse
+			// engineer the GDI metafile drawing and convert it to corresponding SVG commands
+
+			// Calculate the bounding rectangle
+			var minX = points[0].X;
+			var maxX = points[0].X;
+			var minY = points[0].Y;
+			var maxY = points[0].Y;
+			for (var i = 1; i < points.Length; i++)
+			{
+				var point = points[i];
+				minX = Math.Min(minX, point.X);
+				maxX = Math.Max(maxX, point.X);
+				minY = Math.Min(minY, point.Y);
+				maxY = Math.Max(maxY, point.Y);
+			}
+			var bounds = new RectangleF(minX, minY, maxX - minX + 1, maxY - minY + 1);
+
+			// Make the rectangle 0-based where "zero" represents the original shift
+			var zero = bounds.Location;
+			bounds.Offset(-zero.X, -zero.Y);
+
+			// Make the original point-path "zero"-based
+			for (var i = 0; i < points.Length; i++)
+			{
+				points[i].X -= zero.X;
+				points[i].Y -= zero.Y;
+			}
+			
+			using (var metafileBuffer = new System.IO.MemoryStream())
+			{
+				System.Drawing.Imaging.Metafile metafile = null;
+
+				try
+				{
+					/* For discussion of tricky metafile details see:
+					 * - http://nicholas.piasecki.name/blog/2009/06/drawing-o-an-in-memory-metafile-in-c-sharp/
+					 * - http://stackoverflow.com/a/1533053/2626313
+					 */
+
+					using (var temporaryBitmap = new Bitmap(1, 1))
+					{
+						using (var temporaryCanvas = Graphics.FromImage(temporaryBitmap))
+						{
+							var hdc = temporaryCanvas.GetHdc();
+							metafile = new Metafile(
+								metafileBuffer,
+								hdc,
+								bounds,
+								MetafileFrameUnit.GdiCompatible,
+								EmfType.EmfOnly);
+
+							temporaryCanvas.ReleaseHdc();
+						}
+					}
+
+					using (var metafileCanvas = Graphics.FromImage(metafile))
+					{
+						metafileCanvas.DrawLines(pen, points);
+					}
+				}
+				finally
+				{
+					if (metafile != null)
+						metafile.Dispose();
+				}
+
+				metafileBuffer.Position = 0;
+
+				var parser = new MetafileTools.MetafileParser();
+				parser.EnumerateMetafile(metafileBuffer, pen.Width, zero, (PointF[] linePoints) =>
+				{
+					SvgPolylineElement pl = new SvgPolylineElement(linePoints);
+					pl.Style = new SvgStyle(pen);
+
+					// Make it pretty
+					pl.Style.Set("stroke-linecap", "round");
+
+					if (!_transforms.Result.IsIdentity)
+						pl.Transform = new SvgTransformList(_transforms.Top.Clone());
+					_cur.AddChild(pl);
+				}, (PointF[] linePoints, Brush fillBrush) =>
+				{
+					// TODO: received shapes dont' have the vertex list "normalized" correctly
+					// FillPolygon(fillBrush, linePoints);
+				});
+			}
 		}
 
 		/// <summary>
@@ -980,7 +2135,7 @@ namespace SvgNet.SvgGdi
 		/// </summary>
 		public void DrawString(String s, Font font, Brush brush, PointF point, StringFormat format)
 		{
-			DrawText(s, font, brush, new RectangleF(point.X, point.Y, 0, 0), StringFormat.GenericDefault, true);
+			DrawText(s, font, brush, new RectangleF(point.X, point.Y, 0, 0), format, true);
 		}
 
 		/// <summary>
@@ -999,8 +2154,16 @@ namespace SvgNet.SvgGdi
 			DrawText(s, font, brush, layoutRectangle, format, false);
 		}
 
+		private float GetFontDescentPercentage(Font font)
+		{
+			return (float)font.FontFamily.GetCellDescent(font.Style) / font.FontFamily.GetEmHeight(font.Style);
+		}
+
 		private void DrawText(String s, Font font, Brush brush, RectangleF rect, StringFormat fmt, bool ignoreRect)
 		{
+			if (s != null && s.Contains("\n"))
+				throw new SvgGdiNotImpl("DrawText multiline text");
+
 			SvgTextElement txt = new SvgTextElement(s, rect.X, rect.Y);
 
 			//GDI takes x and y as the upper left corner; svg takes them as the lower left.
@@ -1012,19 +2175,37 @@ namespace SvgNet.SvgGdi
 			txt.Style = HandleBrush(brush);
 			txt.Style += new SvgStyle(font);
 
-			if (fmt.Alignment == StringAlignment.Center) {
-				txt.Style.Set("text-anchor", "middle");
-				txt.X = rect.X + rect.Width / 2;
+			switch (fmt.Alignment)
+			{
+				case StringAlignment.Near:
+					break;
+
+				case StringAlignment.Center:
+					{
+						if (ignoreRect)
+							throw new SvgGdiNotImpl("DrawText automatic rect");
+
+						txt.Style.Set("text-anchor", "middle");
+						txt.X = rect.X + rect.Width / 2;
+					}
+					break;
+
+				case StringAlignment.Far:
+					{
+						if (ignoreRect)
+							throw new SvgGdiNotImpl("DrawText automatic rect");
+
+						txt.Style.Set("text-anchor", "end");
+						txt.X = rect.Right;
+					}
+					break;
+
+				default:
+					throw new SvgGdiNotImpl("DrawText horizontal alignment");
 			}
 
-			if (fmt.Alignment == StringAlignment.Far) {
-				txt.Style.Set("text-anchor", "end");
-				txt.X = rect.Right;
-			}
-
-			txt.Style.Set("baseline-shift", "-86%");//a guess.
-
-			if (!ignoreRect && (fmt.FormatFlags != StringFormatFlags.NoClip)) {
+			if (!ignoreRect && ((fmt.FormatFlags & StringFormatFlags.NoClip) != StringFormatFlags.NoClip))
+			{
 				SvgClipPathElement clipper = new SvgClipPathElement();
 				clipper.Id += "_text_clipper";
 				SvgRectElement rc = new SvgRectElement(rect.X, rect.Y, rect.Width, rect.Height);
@@ -1034,6 +2215,53 @@ namespace SvgNet.SvgGdi
 				txt.Style.Set("clip-path", new SvgUriReference(clipper));
 			}
 
+			switch (fmt.LineAlignment)
+			{
+				case StringAlignment.Near:
+					{
+						// TODO: ?? 
+						// txt.Style.Set("baseline-shift", "-86%");//a guess.
+						var span = new SvgTspanElement(s);
+						span.DY = new SvgLength(txt.Style.Get("font-size").ToString());
+						txt.Text = null;
+						txt.AddChild(span);
+					}
+					break;
+
+				case StringAlignment.Center:
+					{
+						if (ignoreRect)
+							throw new SvgGdiNotImpl("DrawText automatic rect");
+
+						txt.Y.Value = txt.Y.Value + (rect.Height / 2);
+						var span = new SvgTspanElement(s);
+						span.DY = new SvgLength(txt.Style.Get("font-size").ToString());
+						span.DY.Value = span.DY.Value * ((1 - GetFontDescentPercentage(font)) - 0.5f);
+						txt.Text = null;
+						txt.AddChild(span);
+					}
+					break;
+
+				case StringAlignment.Far:
+					{
+						if (ignoreRect)
+							throw new SvgGdiNotImpl("DrawText automatic rect");
+
+						txt.Y.Value = txt.Y.Value + rect.Height;
+						// This would solve the alignment as well, but it's not supported by Internet Explorer
+						//
+						// txt.Attributes["dominant-baseline"] = "text-after-edge";
+						var span = new SvgTspanElement(s);
+						span.DY = new SvgLength(txt.Style.Get("font-size").ToString());
+						span.DY.Value = span.DY.Value * ((1 - GetFontDescentPercentage(font)) - 1);
+						txt.Text = null;
+						txt.AddChild(span);
+					}
+					break;
+
+				default:
+					throw new SvgGdiNotImpl("DrawText vertical alignment");
+			}
 
 			_cur.AddChild(txt);
 		}
@@ -1513,12 +2741,15 @@ namespace SvgNet.SvgGdi
 		public System.Int32 TextContrast
 		{ get { throw new SvgGdiNotImpl("get_TextContrast"); } set { } }
 
+		private System.Drawing.Drawing2D.SmoothingMode _smoothingMode = SmoothingMode.Invalid;
 		public System.Drawing.Drawing2D.SmoothingMode SmoothingMode
 		{
-			get { throw new SvgGdiNotImpl("get_SmoothingMode"); }
+			get { return _smoothingMode; }
 			set
 			{
 				switch (value) {
+					case SmoothingMode.Invalid:
+						break;
 					case SmoothingMode.None:
 						_cur.Style.Set("shape-rendering", "crispEdges"); break;
 					case SmoothingMode.Default:
@@ -1533,6 +2764,7 @@ namespace SvgNet.SvgGdi
 					default:
 						_cur.Style.Set("shape-rendering", "auto"); break;
 				}
+				_smoothingMode = value;
 			}
 		}
 
@@ -1976,7 +3208,6 @@ namespace SvgNet.SvgGdi
 			}
 		}
 
-
 		private void DrawEndAnchors(Pen pen, PointF start, PointF end)
 		{
 			float startAngle = (float)Math.Atan((start.X - end.X) / (start.Y - end.Y)) * -1;
@@ -1986,14 +3217,43 @@ namespace SvgNet.SvgGdi
 			CustomLineCap clcend = null;
 
 			//GDI+ native dll throws an exception if someone forgot to specify custom cap
-			try {
+			try
+			{
 				clcstart = pen.CustomStartCap;
+			}
+			catch (Exception)
+			{
+			}
+			try
+			{
 				clcend = pen.CustomEndCap;
-			} catch (Exception) {
+			}
+			catch (Exception)
+			{
 			}
 
 			DrawEndAnchor(pen.StartCap, clcstart, pen.Color, pen.Width, start, startAngle);
 			DrawEndAnchor(pen.EndCap, clcend, pen.Color, pen.Width, end, endAngle);
+		}
+
+		/// <summary>
+		/// Decides whether the pen's anchor type is simple enough to be drawn by a fast approximation using the DrawEndAnchor
+		/// </summary>
+		private bool IsEndAnchorSimple(LineCap lc)
+		{
+			switch (lc)
+			{
+				case LineCap.NoAnchor:
+				case LineCap.Flat:
+				case LineCap.ArrowAnchor:
+				case LineCap.DiamondAnchor:
+				case LineCap.RoundAnchor:
+				case LineCap.SquareAnchor:
+					return true;
+
+				default:
+					return false;
+			}
 		}
 
 		private void DrawEndAnchor(LineCap lc, CustomLineCap clc, Color col, float w, PointF pt, float angle)
@@ -2002,6 +3262,13 @@ namespace SvgNet.SvgGdi
 			PointF[] points = null;
 
 			switch (lc) {
+				case LineCap.NoAnchor:
+					break;
+
+				case LineCap.Flat:
+					// TODO: what is the correct look?
+					break;
+
 				case LineCap.ArrowAnchor:
 					points = new PointF[3];
 					points[0] = new PointF(0, -w / 2f);
@@ -2009,6 +3276,7 @@ namespace SvgNet.SvgGdi
 					points[2] = new PointF(w, w);
 					anchor = new SvgPolygonElement(points);
 					break;
+
 				case LineCap.DiamondAnchor:
 					points = new PointF[4];
 					points[0] = new PointF(0, -w);
@@ -2017,20 +3285,29 @@ namespace SvgNet.SvgGdi
 					points[3] = new PointF(-w, 0);
 					anchor = new SvgPolygonElement(points);
 					break;
+
 				case LineCap.RoundAnchor:
 					anchor = new SvgEllipseElement(0, 0, w, w);
 					break;
+
 				case LineCap.SquareAnchor:
 					float ww = (w / 3) * 2;
 					anchor = new SvgRectElement(0 - ww, 0 - ww, ww * 2, ww * 2);
 					break;
+
 				case LineCap.Custom:
-					//not implemented!
-					return;
+					if (clc != null)
+					{
+						throw new SvgGdiNotImpl("DrawEndAnchor custom");
+					}
+					break;
 
 				default:
-					return;
+					throw new SvgGdiNotImpl("DrawEndAnchor " + lc.ToString());
 			}
+
+			if (anchor == null)
+				return;
 
 			anchor.Id += "_line_anchor";
 			anchor.Style.Set("fill", new SvgColor(col));

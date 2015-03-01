@@ -4,10 +4,20 @@
         <name>SVG</name>
     </assembly>
     <members>
-        <member name="T:SvgNet.SvgStyledTransformedElement">
+        <!-- Badly formed XML comment ignored for member "T:SvgNet.SvgGdi.IGraphics" -->
+        <member name="T:SvgNet.IElementWithText">
             <summary>
-            This is an SvgElement that can have a CSS style and an SVG transformation list.  It contains special properties to make reading and setting the style
-            and the transformation easier.  All SVG elements that actually represent visual entities or groups of entities are <c>SvgStyledTransformedElements</c>.
+            Interface for SvgElements that have a text node.
+            </summary>
+        </member>
+        <member name="T:SvgNet.IElementWithXRef">
+            <summary>
+            Interface for SvgElements that xlink to another element, e.g. <c>use</c>
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgGdi.GdiGraphics">
+            <summary>
+            An IGraphics implementation that simply passes every call through to a GDI+ <c>Graphics</c> object.
             </summary>
         </member>
         <member name="T:SvgNet.SvgElement">
@@ -99,115 +109,6 @@
             The name of the XML element that this SVG element represents.
             </summary>
         </member>
-        <member name="M:SvgNet.SvgStyledTransformedElement.ReadXmlElement(System.Xml.XmlDocument,System.Xml.XmlElement)">
-            <summary>
-            Given a document and a current node, read this element from the node.
-            </summary>
-            <param name="doc"></param>
-            <param name="el"></param>
-        </member>
-        <member name="M:SvgNet.SvgStyledTransformedElement.WriteXmlElements(System.Xml.XmlDocument,System.Xml.XmlElement)">
-            <summary>
-            Overridden in this class to provide special handling for the style and transform attributes,
-            which are often long and complicated.  For instance, it may be desirable for styles to be written as entities or as separate
-            attributes.
-            </summary>
-            <param name="doc"></param>
-            <param name="parent"></param>
-        </member>
-        <member name="P:SvgNet.SvgStyledTransformedElement.Style">
-            <summary>
-            Provides an easy way to get the attribute called "style" as an <c>SvgStyle</c> object.  If no such attribute has been set, one is created when
-            this property is read.
-            </summary>
-        </member>
-        <member name="P:SvgNet.SvgStyledTransformedElement.Transform">
-            <summary>
-            Provides an easy way to get the attribute called "transform" as an <c>SvgTransformList</c> object.  If no such attribute has been set, one is created when
-            this property is read.
-            </summary>
-        </member>
-        <member name="T:SvgNet.SvgElements.SvgEllipseElement">
-            <summary>
-            Represents an <c>ellipse</c> element.
-            </summary>
-        </member>
-        <member name="T:SvgNet.SvgElements.SvgFilterElement">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="T:SvgNet.SvgTypes.SvgStyle">
-            <summary>
-            Represents a CSS2 style, as applied to an SVG element.
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgTypes.SvgStyle.Clone">
-            <summary>
-            Creates a new style, but does not do a deep copy on the members in the style.  Thus if any of these are
-            not strings, they meay be left referred to by more than one style or element.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:SvgNet.SvgTypes.SvgStyle.#ctor(System.Drawing.Pen)">
-            <summary>
-            Creates a style from a GDI+ pen object.  Most properties of the pen are implemented, but GDI+ allows fine control over line-capping which 
-            has no equivalent in SVG.
-            </summary>
-            <param name="pen"></param>
-        </member>
-        <member name="M:SvgNet.SvgTypes.SvgStyle.#ctor(System.Drawing.SolidBrush)">
-            <summary>
-            Creates a style based on a GDI brush object.  Only works for solid brushes; pattern brushes are not yet emulated.
-            </summary>
-            <param name="brush"></param>
-        </member>
-        <member name="M:SvgNet.SvgTypes.SvgStyle.#ctor(System.Drawing.Font)">
-            <summary>
-            Creates a style based on a GDI+ font object.  GDI+ allows many subtle specifications which have no SVG equivalent.
-            </summary>
-            <param name="font"></param>
-        </member>
-        <member name="M:SvgNet.SvgTypes.SvgStyle.Set(System.String,System.Object)">
-            <summary>
-            Sets a style.  The key must be a string but the value can be anything (e.g. SvgColor).  If and when the element that owns this style is written out
-            to XML, <c>ToString</c> will be called on the value.
-            </summary>
-            <param name="key"></param>
-            <param name="val"></param>
-        </member>
-        <member name="M:SvgNet.SvgTypes.SvgStyle.Get(System.String)">
-            <summary>
-            Gets the value for a given key.
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgTypes.SvgStyle.FromString(System.String)">
-            <summary>
-            Parses a CSS string representation as used in SVG.
-            </summary>
-            <param name="s"></param>
-        </member>
-        <member name="M:SvgNet.SvgTypes.SvgStyle.ToString">
-            <summary>
-            Outputs a CSS string representation as used in SVG.
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgTypes.SvgStyle.op_Addition(SvgNet.SvgTypes.SvgStyle,SvgNet.SvgTypes.SvgStyle)">
-            <summary>
-            Adds two SvgStyles together, resulting in a new object that contains all the attributes of both styles.
-            Attributes are copied deeply, i.e. cloned if they are <c>ICloneable</c>.
-            </summary>
-        </member>
-        <member name="P:SvgNet.SvgTypes.SvgStyle.Keys">
-            <summary>
-            A basic way to enumerate the styles.
-            </summary>
-        </member>
-        <member name="P:SvgNet.SvgTypes.SvgStyle.Item(System.String)">
-            <summary>
-            A quick way to get and set style elements.
-            </summary>
-        </member>
         <member name="T:SvgNet.SvgFactory">
             <summary>
             Static methods to produce/write/copy Svg documents reside in this class.
@@ -269,101 +170,108 @@
             <param name="el"></param>
             <returns></returns>
         </member>
-        <member name="T:SvgNet.SvgGdi.SvgGdiNotImpl">
+        <member name="T:SvgNet.SvgElements.SvgEllipseElement">
             <summary>
-            Exception thrown when a GDI+ operation is attempted on an IGraphics implementor that does not support the operation.
-            For instance, <c>SvgGraphics</c> does not support any of the <c>MeasureString</c> methods.
+            Represents an <c>ellipse</c> element.
             </summary>
         </member>
-        <member name="T:SvgNet.SvgElements.SvgRectElement">
+        <member name="T:SvgNet.SvgStyledTransformedElement">
             <summary>
-            Represents a <c>rect</c> element
+            This is an SvgElement that can have a CSS style and an SVG transformation list.  It contains special properties to make reading and setting the style
+            and the transformation easier.  All SVG elements that actually represent visual entities or groups of entities are <c>SvgStyledTransformedElements</c>.
             </summary>
         </member>
-        <member name="T:SvgNet.TextNode">
-            <summary>
-            Represents the text contained in a title, desc, text, or tspan element.  Maps to an XmlText object in an XML document.  It is inherited from
-            </summary>
-        </member>
-        <member name="M:SvgNet.TextNode.AddChild(SvgNet.SvgElement)">
-            <summary>
-            Adds a child, and sets the child's parent to this element.
-            </summary>
-            <param name="ch"></param>
-        </member>
-        <member name="M:SvgNet.TextNode.AddChildren(SvgNet.SvgElement[])">
-            <summary>
-            Adds a variable number of children
-            </summary>
-            <param name="ch"></param>
-        </member>
-        <member name="M:SvgNet.TextNode.ReadXmlElement(System.Xml.XmlDocument,System.Xml.XmlElement)">
+        <member name="M:SvgNet.SvgStyledTransformedElement.ReadXmlElement(System.Xml.XmlDocument,System.Xml.XmlElement)">
             <summary>
             Given a document and a current node, read this element from the node.
             </summary>
             <param name="doc"></param>
             <param name="el"></param>
         </member>
-        <member name="M:SvgNet.TextNode.WriteXmlElements(System.Xml.XmlDocument,System.Xml.XmlElement)">
+        <member name="M:SvgNet.SvgStyledTransformedElement.WriteXmlElements(System.Xml.XmlDocument,System.Xml.XmlElement)">
             <summary>
-            Overridden to simply create an XML text node below the parent.
+            Overridden in this class to provide special handling for the style and transform attributes,
+            which are often long and complicated.  For instance, it may be desirable for styles to be written as entities or as separate
+            attributes.
             </summary>
             <param name="doc"></param>
             <param name="parent"></param>
         </member>
-        <member name="T:SvgNet.SvgElements.SvgTextElement">
+        <member name="P:SvgNet.SvgStyledTransformedElement.Style">
             <summary>
-            Represents a <c>text</c> element.  The SVG text element is unusual in that it expects actual XML text nodes below
-            it, rather than consisting only of attributes and child elements  (other elements like this are title, desc, and tspan).
-            <c>SvgTextElement</c> therefore has to be serialized
-            to XML slightly differently.
+            Provides an easy way to get the attribute called "style" as an <c>SvgStyle</c> object.  If no such attribute has been set, one is created when
+            this property is read.
             </summary>
         </member>
-        <member name="T:SvgNet.IElementWithText">
+        <member name="P:SvgNet.SvgStyledTransformedElement.Transform">
             <summary>
-            Interface for SvgElements that have a text node.
+            Provides an easy way to get the attribute called "transform" as an <c>SvgTransformList</c> object.  If no such attribute has been set, one is created when
+            this property is read.
             </summary>
         </member>
-        <member name="T:SvgNet.SvgElements.SvgTspanElement">
+        <member name="T:SvgNet.SvgException">
             <summary>
-            Represents a <c>tspan</c> element.  The tspan element is unique in that it expects actual XML text nodes below
-            it, rather than consisting only of attributes and child elements.  <c>SvgTextElement</c> therefore has to be serialized
-            to XML slightly differently.
+            A general-purpose exception for problems that occur in SvgNet.
             </summary>
         </member>
-        <member name="T:SvgNet.SvgElements.SvgTrefElement">
+        <member name="P:SvgNet.SvgException.Msg">
             <summary>
-            Represents a <c>tref</c> element.
+            A message describing the problem.
             </summary>
         </member>
-        <member name="T:SvgNet.IElementWithXRef">
+        <member name="P:SvgNet.SvgException.Ctx">
             <summary>
-            Interface for SvgElements that xlink to another element, e.g. <c>use</c>
+            A string intended to supply context information.
             </summary>
         </member>
-        <member name="T:SvgNet.SvgElements.SvgLineElement">
+        <member name="T:SvgNet.SvgElements.SvgFilterElement">
             <summary>
-            Represents a <c>line</c> element
+            
             </summary>
         </member>
-        <member name="T:SvgNet.SvgElements.SvgLinearGradient">
+        <member name="T:SvgNet.SvgGdi.SvgGdiNotImpl">
             <summary>
-            Represents an SVG linearGradient element
+            Exception thrown when a GDI+ operation is attempted on an IGraphics implementor that does not support the operation.
+            For instance, <c>SvgGraphics</c> does not support any of the <c>MeasureString</c> methods.
             </summary>
         </member>
-        <member name="T:SvgNet.SvgElements.SvgRadialGradient">
+        <member name="T:SvgNet.SvgGdi.MetafileTools.EmfTools.EmfBinaryRecord">
             <summary>
-            Represents an svg radialGradient element
+            Implements a EMF META record
             </summary>
         </member>
-        <member name="T:SvgNet.SvgElements.SvgStopElement">
+        <member name="M:SvgNet.SvgGdi.MetafileTools.EmfTools.EmfBinaryRecord.Read(System.IO.BinaryReader)">
             <summary>
-            Represents an SVG stop element, which specifies one color in a gradient.
+            Reads a record from binary stream. If this method is not overridden it will skip this record and go to next record.
+            NOTE: When overriding this method remove the base.Read(reader) line from code.
+            </summary>
+            <param name="reader"></param>
+        </member>
+        <member name="P:SvgNet.SvgGdi.MetafileTools.EmfTools.EmfBinaryRecord.RecordSize">
+            <summary>
+            Gets or sets record length
             </summary>
         </member>
-        <member name="T:SvgNet.SvgElements.SvgPatternElement">
+        <member name="P:SvgNet.SvgGdi.MetafileTools.EmfTools.EmfBinaryRecord.RecordType">
             <summary>
-            Represents an SVG pattern element, which defines a fill pattern by defining a viewport onto a subscene.
+            Gets or sets record type (aka RecordFunction)
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.MetafileTools.EmfTools.BinaryReaderExtensions.Skip(System.IO.BinaryReader,System.Int32)">
+            <summary>
+            Skips excess bytes. Work-around for some WMF files that contain undocumented fields.
+            </summary>
+            <param name="reader"></param>
+            <param name="excess"></param>
+        </member>
+        <member name="T:SvgNet.SvgGdi.MetafileTools.EmfTools.EmfReader">
+            <summary>
+            Low-level EMF parser
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgGdi.MetafileTools.MetafileParser.EmfStockObject">
+            <summary>
+            https://msdn.microsoft.com/en-us/library/cc231191 without the 0x80000000 bit
             </summary>
         </member>
         <member name="T:SvgNet.SvgGdi.SvgGraphics">
@@ -388,7 +296,6 @@
             </para>
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "T:SvgNet.SvgGdi.IGraphics" -->
         <member name="M:SvgNet.SvgGdi.SvgGraphics.WriteSVGString">
             <summary>
             Get a string containing an SVG document.  The very heart of SvgGdi.  It calls <c>WriteSVGString</c> on the <see cref="T:SvgNet.SvgElement"/>
@@ -1220,6 +1127,11 @@
             <param name="br"></param>
             <returns></returns>
         </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.IsEndAnchorSimple(System.Drawing.Drawing2D.LineCap)">
+            <summary>
+            Decides whether the pen's anchor type is simple enough to be drawn by a fast approximation using the DrawEndAnchor
+            </summary>
+        </member>
         <member name="P:SvgNet.SvgGdi.SvgGraphics.CompositingMode">
             <summary>
             Get is not implemented (throws an exception).  Set does nothing.
@@ -1311,9 +1223,221 @@
             </para>
             </summary>
         </member>
-        <member name="T:SvgNet.SvgGdi.GdiGraphics">
+        <member name="T:SvgNet.SvgElements.SvgGroupElement">
             <summary>
-            An IGraphics implementation that simply passes every call through to a GDI+ <c>Graphics</c> object.
+            Represents a <c>g</c> element.  It has no particular properties of its own.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgSwitchElement">
+            <summary>
+            Represents a <c>switch</c> element.  It has no particular properties of its own.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgClipPathElement">
+            <summary>
+            Represents a <c>clippath</c> element.  It has no particular properties of its own.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgAElement">
+            <summary>
+            Represents an <c>a</c> element.  It has an xref and a target.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgDefsElement">
+            <summary>
+            Represents a <c>defs</c> element.  It has no particular properties of its own.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgGenericElement">
+            <summary>
+            Represents an element that is not yet represented by a class of its own.  
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgLinearGradient">
+            <summary>
+            Represents an SVG linearGradient element
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgRadialGradient">
+            <summary>
+            Represents an svg radialGradient element
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgStopElement">
+            <summary>
+            Represents an SVG stop element, which specifies one color in a gradient.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgPatternElement">
+            <summary>
+            Represents an SVG pattern element, which defines a fill pattern by defining a viewport onto a subscene.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgLineElement">
+            <summary>
+            Represents a <c>line</c> element
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgPathElement">
+            <summary>
+            Represents a <c>path</c> element
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgPolygonElement">
+            <summary>
+            Represents a <c>polygon</c> element
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgPolylineElement">
+            <summary>
+            Represents a <c>polyline</c> element
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgRectElement">
+            <summary>
+            Represents a <c>rect</c> element
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgTypes.SvgStyle">
+            <summary>
+            Represents a CSS2 style, as applied to an SVG element.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgTypes.SvgStyle.Clone">
+            <summary>
+            Creates a new style, but does not do a deep copy on the members in the style.  Thus if any of these are
+            not strings, they meay be left referred to by more than one style or element.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SvgNet.SvgTypes.SvgStyle.#ctor(System.Drawing.Pen)">
+            <summary>
+            Creates a style from a GDI+ pen object.  Most properties of the pen are implemented, but GDI+ allows fine control over line-capping which 
+            has no equivalent in SVG.
+            </summary>
+            <param name="pen"></param>
+        </member>
+        <member name="M:SvgNet.SvgTypes.SvgStyle.#ctor(System.Drawing.SolidBrush)">
+            <summary>
+            Creates a style based on a GDI brush object.  Only works for solid brushes; pattern brushes are not yet emulated.
+            </summary>
+            <param name="brush"></param>
+        </member>
+        <member name="M:SvgNet.SvgTypes.SvgStyle.#ctor(System.Drawing.Font)">
+            <summary>
+            Creates a style based on a GDI+ font object.  GDI+ allows many subtle specifications which have no SVG equivalent.
+            </summary>
+            <param name="font"></param>
+        </member>
+        <member name="M:SvgNet.SvgTypes.SvgStyle.Set(System.String,System.Object)">
+            <summary>
+            Sets a style.  The key must be a string but the value can be anything (e.g. SvgColor).  If and when the element that owns this style is written out
+            to XML, <c>ToString</c> will be called on the value.
+            </summary>
+            <param name="key"></param>
+            <param name="val"></param>
+        </member>
+        <member name="M:SvgNet.SvgTypes.SvgStyle.Get(System.String)">
+            <summary>
+            Gets the value for a given key.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgTypes.SvgStyle.FromString(System.String)">
+            <summary>
+            Parses a CSS string representation as used in SVG.
+            </summary>
+            <param name="s"></param>
+        </member>
+        <member name="M:SvgNet.SvgTypes.SvgStyle.ToString">
+            <summary>
+            Outputs a CSS string representation as used in SVG.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgTypes.SvgStyle.op_Addition(SvgNet.SvgTypes.SvgStyle,SvgNet.SvgTypes.SvgStyle)">
+            <summary>
+            Adds two SvgStyles together, resulting in a new object that contains all the attributes of both styles.
+            Attributes are copied deeply, i.e. cloned if they are <c>ICloneable</c>.
+            </summary>
+        </member>
+        <member name="P:SvgNet.SvgTypes.SvgStyle.Keys">
+            <summary>
+            A basic way to enumerate the styles.
+            </summary>
+        </member>
+        <member name="P:SvgNet.SvgTypes.SvgStyle.Item(System.String)">
+            <summary>
+            A quick way to get and set style elements.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgSvgElement">
+            <summary>
+            Represents a <c>svg</c> element
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgSymbolElement">
+            <summary>
+            Represents an SVG <c>symbol</c> element.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgUseElement">
+            <summary>
+            Represents an SVG <c>use</c> element.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgImageElement">
+            <summary>
+            Represents an SVG <c>image</c> element.
+            </summary>
+        </member>
+        <member name="T:SvgNet.TextNode">
+            <summary>
+            Represents the text contained in a title, desc, text, or tspan element.  Maps to an XmlText object in an XML document.  It is inherited from
+            </summary>
+        </member>
+        <member name="M:SvgNet.TextNode.AddChild(SvgNet.SvgElement)">
+            <summary>
+            Adds a child, and sets the child's parent to this element.
+            </summary>
+            <param name="ch"></param>
+        </member>
+        <member name="M:SvgNet.TextNode.AddChildren(SvgNet.SvgElement[])">
+            <summary>
+            Adds a variable number of children
+            </summary>
+            <param name="ch"></param>
+        </member>
+        <member name="M:SvgNet.TextNode.ReadXmlElement(System.Xml.XmlDocument,System.Xml.XmlElement)">
+            <summary>
+            Given a document and a current node, read this element from the node.
+            </summary>
+            <param name="doc"></param>
+            <param name="el"></param>
+        </member>
+        <member name="M:SvgNet.TextNode.WriteXmlElements(System.Xml.XmlDocument,System.Xml.XmlElement)">
+            <summary>
+            Overridden to simply create an XML text node below the parent.
+            </summary>
+            <param name="doc"></param>
+            <param name="parent"></param>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgTextElement">
+            <summary>
+            Represents a <c>text</c> element.  The SVG text element is unusual in that it expects actual XML text nodes below
+            it, rather than consisting only of attributes and child elements  (other elements like this are title, desc, and tspan).
+            <c>SvgTextElement</c> therefore has to be serialized
+            to XML slightly differently.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgTspanElement">
+            <summary>
+            Represents a <c>tspan</c> element.  The tspan element is unique in that it expects actual XML text nodes below
+            it, rather than consisting only of attributes and child elements.  <c>SvgTextElement</c> therefore has to be serialized
+            to XML slightly differently.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgTrefElement">
+            <summary>
+            Represents a <c>tref</c> element.
             </summary>
         </member>
         <member name="T:SvgNet.SvgElements.SvgTitleElement">
@@ -1328,34 +1452,33 @@
             subelements, so we need to specially add text when serializing.
             </summary>
         </member>
-        <member name="T:SvgNet.SvgException">
+        <member name="T:SvgNet.SvgTypes.SvgTransform">
             <summary>
-            A general-purpose exception for problems that occur in SvgNet.
+            Represents a single element in an SVG transformation list.  The transformation is represented internally as a
+            GDI+ Matrix object.
             </summary>
         </member>
-        <member name="P:SvgNet.SvgException.Msg">
+        <member name="M:SvgNet.SvgTypes.SvgTransform.FromString(System.String)">
             <summary>
-            A message describing the problem.
+            Parse a transformation according to the SVG standard.  This is complex enough that it makes
+            me wish it was worth using a real parser, but antlr is so unwieldy.
             </summary>
         </member>
-        <member name="P:SvgNet.SvgException.Ctx">
+        <member name="M:SvgNet.SvgTypes.SvgTransform.ToString">
             <summary>
-            A string intended to supply context information.
+            Currently, we always output as matrix() no matter how the transform was specified.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:SvgNet.SvgTypes.SvgTransformList">
+            <summary>
+            Represents an SVG transform-list, as specified in section 7.6 of the SVG 1.1 standard.
             </summary>
         </member>
-        <member name="T:SvgNet.SvgElements.SvgPolylineElement">
+        <member name="M:SvgNet.SvgTypes.SvgTransformList.FromString(System.String)">
             <summary>
-            Represents a <c>polyline</c> element
-            </summary>
-        </member>
-        <member name="T:SvgNet.SvgElements.SvgPathElement">
-            <summary>
-            Represents a <c>path</c> element
-            </summary>
-        </member>
-        <member name="T:SvgNet.SvgElements.SvgSvgElement">
-            <summary>
-            Represents a <c>svg</c> element
+            Parse a string containing a whitespace-separated list of transformations as per the SVG
+            standard
             </summary>
         </member>
         <member name="T:SvgNet.SvgTypes.SvgLengthType">
@@ -1472,85 +1595,6 @@
             <summary>
             Represents a URI reference.  Unlike most svg types, uri references are represented by more than one attribute
             of an element.  This means special measures are required to get and set uri references.
-            </summary>
-        </member>
-        <member name="T:SvgNet.SvgTypes.SvgTransform">
-            <summary>
-            Represents a single element in an SVG transformation list.  The transformation is represented internally as a
-            GDI+ Matrix object.
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgTypes.SvgTransform.FromString(System.String)">
-            <summary>
-            Parse a transformation according to the SVG standard.  This is complex enough that it makes
-            me wish it was worth using a real parser, but antlr is so unwieldy.
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgTypes.SvgTransform.ToString">
-            <summary>
-            Currently, we always output as matrix() no matter how the transform was specified.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="T:SvgNet.SvgTypes.SvgTransformList">
-            <summary>
-            Represents an SVG transform-list, as specified in section 7.6 of the SVG 1.1 standard.
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgTypes.SvgTransformList.FromString(System.String)">
-            <summary>
-            Parse a string containing a whitespace-separated list of transformations as per the SVG
-            standard
-            </summary>
-        </member>
-        <member name="T:SvgNet.SvgElements.SvgPolygonElement">
-            <summary>
-            Represents a <c>polygon</c> element
-            </summary>
-        </member>
-        <member name="T:SvgNet.SvgElements.SvgSymbolElement">
-            <summary>
-            Represents an SVG <c>symbol</c> element.
-            </summary>
-        </member>
-        <member name="T:SvgNet.SvgElements.SvgUseElement">
-            <summary>
-            Represents an SVG <c>use</c> element.
-            </summary>
-        </member>
-        <member name="T:SvgNet.SvgElements.SvgImageElement">
-            <summary>
-            Represents an SVG <c>image</c> element.
-            </summary>
-        </member>
-        <member name="T:SvgNet.SvgElements.SvgGroupElement">
-            <summary>
-            Represents a <c>g</c> element.  It has no particular properties of its own.
-            </summary>
-        </member>
-        <member name="T:SvgNet.SvgElements.SvgSwitchElement">
-            <summary>
-            Represents a <c>switch</c> element.  It has no particular properties of its own.
-            </summary>
-        </member>
-        <member name="T:SvgNet.SvgElements.SvgClipPathElement">
-            <summary>
-            Represents a <c>clippath</c> element.  It has no particular properties of its own.
-            </summary>
-        </member>
-        <member name="T:SvgNet.SvgElements.SvgAElement">
-            <summary>
-            Represents an <c>a</c> element.  It has an xref and a target.
-            </summary>
-        </member>
-        <member name="T:SvgNet.SvgElements.SvgDefsElement">
-            <summary>
-            Represents a <c>defs</c> element.  It has no particular properties of its own.
-            </summary>
-        </member>
-        <member name="T:SvgNet.SvgElements.SvgGenericElement">
-            <summary>
-            Represents an element that is not yet represented by a class of its own.  
             </summary>
         </member>
     </members>

@@ -1,4 +1,6 @@
 /*
+	Copyright c 2010 SvgNet & SvgGdi Bridge Project. All rights reserved.
+
 	Copyright c 2003 by RiskCare Ltd.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -148,7 +150,10 @@ namespace SvgNet
 				{
 					SvgElement e = (SvgElement)t.GetConstructor(new System.Type[0]).Invoke(new object[0]);
 
-					_elementNameDictionary[e.Name] = e.GetType();
+					if (e.Name != "?" /* default name of abstract SvgElements */)
+					{
+						_elementNameDictionary[e.Name] = e.GetType();
+					}
 				}
 			}
 		
