@@ -61,25 +61,6 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <COMReference Include="AxSVGACTIVEXLib">
-      <Guid>{8415B62C-3C1B-416E-B5D7-40D983A9FA50}</Guid>
-      <VersionMajor>3</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>aximp</WrapperTool>
-    </COMReference>
-    <COMReference Include="SVGACTIVEXLib">
-      <Guid>{8415B62C-3C1B-416E-B5D7-40D983A9FA50}</Guid>
-      <VersionMajor>3</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-    </COMReference>
-    <ProjectReference Include="..\SvgNet\SvgNet.csproj">
-      <Name>SVGRisk</Name>
-      <Project>{BB4C8021-B5E1-4DE2-82CB-14BDFB9837E4}</Project>
-      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
-    </ProjectReference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -108,6 +89,12 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="test.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SvgNet\SvgNet.csproj">
+      <Project>{bb4c8021-b5e1-4de2-82cb-14bdfb9837e4}</Project>
+      <Name>SvgNet</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

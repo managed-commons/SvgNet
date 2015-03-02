@@ -5,6 +5,7 @@ A fork of the SvgNet & SvgGdi bridge (http://www.codeproject.com/KB/cs/svgnet.as
 ## License: BSD
 
 Copyright &copy; 2010 SvgNet & SvgGdi Bridge Project. All rights reserved.
+
 Copyright &copy; 2003 RiskCare Ltd.  All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

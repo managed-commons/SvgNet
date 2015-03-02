@@ -1,4 +1,6 @@
 /*
+	Copyright c 2010 SvgNet & SvgGdi Bridge Project. All rights reserved.
+
 	Copyright c 2003 by RiskCare Ltd.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -47,11 +49,13 @@ namespace SvgDocTest
 		private System.Windows.Forms.TextBox tbOut;
 		private System.Windows.Forms.TextBox tbIn;
 		private System.Windows.Forms.Button button3;
-		private AxSVGACTIVEXLib.AxSVGCtl svgOut;
-		private AxSVGACTIVEXLib.AxSVGCtl svgIn;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Button button2;
+		private WebBrowser svgIn;
+		private WebBrowser svgOut;
+
+
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
@@ -91,18 +95,15 @@ namespace SvgDocTest
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(Form1));
 			this.button1 = new System.Windows.Forms.Button();
 			this.tbOut = new System.Windows.Forms.TextBox();
 			this.tbIn = new System.Windows.Forms.TextBox();
 			this.button3 = new System.Windows.Forms.Button();
-			this.svgOut = new AxSVGACTIVEXLib.AxSVGCtl();
-			this.svgIn = new AxSVGACTIVEXLib.AxSVGCtl();
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.button2 = new System.Windows.Forms.Button();
-			((System.ComponentModel.ISupportInitialize)(this.svgOut)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.svgIn)).BeginInit();
+			this.svgIn = new System.Windows.Forms.WebBrowser();
+			this.svgOut = new System.Windows.Forms.WebBrowser();
 			this.SuspendLayout();
 			// 
 			// button1
@@ -141,24 +142,6 @@ namespace SvgDocTest
 			this.button3.Text = "Run Type Tests";
 			this.button3.Click += new System.EventHandler(this.button3_Click);
 			// 
-			// svgOut
-			// 
-			this.svgOut.Enabled = true;
-			this.svgOut.Location = new System.Drawing.Point(576, 296);
-			this.svgOut.Name = "svgOut";
-			this.svgOut.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("svgOut.OcxState")));
-			this.svgOut.Size = new System.Drawing.Size(336, 248);
-			this.svgOut.TabIndex = 5;
-			// 
-			// svgIn
-			// 
-			this.svgIn.Enabled = true;
-			this.svgIn.Location = new System.Drawing.Point(576, 32);
-			this.svgIn.Name = "svgIn";
-			this.svgIn.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("svgIn.OcxState")));
-			this.svgIn.Size = new System.Drawing.Size(336, 232);
-			this.svgIn.TabIndex = 6;
-			// 
 			// label1
 			// 
 			this.label1.Location = new System.Drawing.Point(184, 0);
@@ -184,26 +167,40 @@ namespace SvgDocTest
 			this.button2.Text = "Run Composition Tests";
 			this.button2.Click += new System.EventHandler(this.button2_Click);
 			// 
+			// svgIn
+			// 
+			this.svgIn.Location = new System.Drawing.Point(576, 32);
+			this.svgIn.MinimumSize = new System.Drawing.Size(20, 20);
+			this.svgIn.Name = "svgIn";
+			this.svgIn.Size = new System.Drawing.Size(336, 232);
+			this.svgIn.TabIndex = 10;
+			// 
+			// svgOut
+			// 
+			this.svgOut.Location = new System.Drawing.Point(576, 296);
+			this.svgOut.MinimumSize = new System.Drawing.Size(20, 20);
+			this.svgOut.Name = "svgOut";
+			this.svgOut.Size = new System.Drawing.Size(336, 248);
+			this.svgOut.TabIndex = 11;
+			// 
 			// Form1
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
 			this.ClientSize = new System.Drawing.Size(944, 581);
-			this.Controls.AddRange(new System.Windows.Forms.Control[] {
-																		  this.button2,
-																		  this.label2,
-																		  this.label1,
-																		  this.svgIn,
-																		  this.svgOut,
-																		  this.button3,
-																		  this.tbIn,
-																		  this.tbOut,
-																		  this.button1});
+			this.Controls.Add(this.svgOut);
+			this.Controls.Add(this.svgIn);
+			this.Controls.Add(this.button2);
+			this.Controls.Add(this.label2);
+			this.Controls.Add(this.label1);
+			this.Controls.Add(this.button3);
+			this.Controls.Add(this.tbIn);
+			this.Controls.Add(this.tbOut);
+			this.Controls.Add(this.button1);
 			this.Name = "Form1";
 			this.Text = "SvgNet doc reading/writing test";
 			this.Load += new System.EventHandler(this.Form1_Load);
-			((System.ComponentModel.ISupportInitialize)(this.svgOut)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.svgIn)).EndInit();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 		#endregion
@@ -232,21 +229,25 @@ namespace SvgDocTest
 				
 				doc.Load(fname);
 
-				svgIn.SRC = fname;
+				svgIn.Navigate(new Uri(fname));
+				svgIn.Refresh(WebBrowserRefreshOption.Completely);
 
 				_e = SvgFactory.LoadFromXML(doc, null);
 
 				string output = _e.WriteSVGString(true);
 
 				tbOut.Text = output;
- 
-				StreamWriter tw = new StreamWriter("c:\\temp\\foo.svg", false);
+
+				string tempFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "foo.svg");
+
+				StreamWriter tw = new StreamWriter(tempFile, false);
 
 				tw.Write(output);
 
 				tw.Close();
 
-				svgOut.SRC = "c:\\temp\\foo.svg";
+				svgOut.Navigate(new Uri(tempFile));
+				svgOut.Refresh(WebBrowserRefreshOption.Completely);
 			}
 		}
 
@@ -337,13 +338,16 @@ namespace SvgDocTest
 
 			tbOut.Text = s;
 
-			StreamWriter tw = new StreamWriter("c:\\temp\\foo.svg", false);
+			string tempFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "foo.svg");
+
+			StreamWriter tw = new StreamWriter(tempFile, false);
 
 			tw.Write(s);
 
 			tw.Close();
 
-			svgOut.SRC = "c:\\temp\\foo.svg";
+			svgOut.Navigate(new Uri(tempFile));
+			svgOut.Refresh(WebBrowserRefreshOption.Completely);
 		}
 	}
 

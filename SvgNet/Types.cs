@@ -1,4 +1,6 @@
 /*
+	Copyright c 2010 SvgNet & SvgGdi Bridge Project. All rights reserved.
+
 	Copyright c 2003 by RiskCare Ltd.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -117,7 +119,7 @@ namespace SvgNet.SvgTypes
 		public void FromString(string s)
 		{
 			try {
-				_num = float.Parse(s);
+				_num = float.Parse(s, System.Globalization.CultureInfo.InvariantCulture);
 			} catch {
 				throw new SvgException("Invalid SvgNumber", s);
 			}
@@ -184,7 +186,7 @@ namespace SvgNet.SvgTypes
 			if (i == -1)
 				return;
 
-			_num = float.Parse(s.Substring(0, i + 1));
+			_num = float.Parse(s.Substring(0, i + 1), System.Globalization.CultureInfo.InvariantCulture);
 
 			switch (s.Substring(i + 1)) {
 				case "%":
@@ -311,7 +313,7 @@ namespace SvgNet.SvgTypes
 			if (i == -1)
 				return;
 
-			_num = int.Parse(s.Substring(0, i + 1));
+			_num = int.Parse(s.Substring(0, i + 1), System.Globalization.CultureInfo.InvariantCulture);
 
 			switch (s.Substring(i + 1)) {
 				case "grad":
@@ -470,17 +472,17 @@ namespace SvgNet.SvgTypes
 			s = s.Substring(1);
 
 			if (s.Length == 3) {
-				r = int.Parse(s.Substring(0, 1), NumberStyles.HexNumber);
-				g = int.Parse(s.Substring(1, 1), NumberStyles.HexNumber);
-				b = int.Parse(s.Substring(2, 1), NumberStyles.HexNumber);
+				r = int.Parse(s.Substring(0, 1), NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture);
+				g = int.Parse(s.Substring(1, 1), NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture);
+				b = int.Parse(s.Substring(2, 1), NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture);
 				r += r * 16;
 				g += g * 16;
 				b += b * 16;
 				_col = Color.FromArgb(r, g, b);
 			} else if (s.Length == 6) {
-				r = int.Parse(s.Substring(0, 2), NumberStyles.HexNumber);
-				g = int.Parse(s.Substring(2, 2), NumberStyles.HexNumber);
-				b = int.Parse(s.Substring(4, 2), NumberStyles.HexNumber);
+				r = int.Parse(s.Substring(0, 2), NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture);
+				g = int.Parse(s.Substring(2, 2), NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture);
+				b = int.Parse(s.Substring(4, 2), NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture);
 				_col = Color.FromArgb(r, g, b);
 			} else {
 				throw new SvgException("Invalid SvgColor", s);
@@ -493,9 +495,9 @@ namespace SvgNet.SvgTypes
 			Regex rg = new Regex(@"[rgbRGB ]+\( *(?<r>\d+)[, ]+(?<g>\d+)[, ]+(?<b>\d+) *\)");
 			Match m = rg.Match(s);
 			if (m.Success) {
-				r = int.Parse(m.Groups["r"].Captures[0].Value);
-				g = int.Parse(m.Groups["g"].Captures[0].Value);
-				b = int.Parse(m.Groups["b"].Captures[0].Value);
+				r = int.Parse(m.Groups["r"].Captures[0].Value, System.Globalization.CultureInfo.InvariantCulture);
+				g = int.Parse(m.Groups["g"].Captures[0].Value, System.Globalization.CultureInfo.InvariantCulture);
+				b = int.Parse(m.Groups["b"].Captures[0].Value, System.Globalization.CultureInfo.InvariantCulture);
 
 				_col = Color.FromArgb(r, g, b);
 				return;
@@ -504,9 +506,9 @@ namespace SvgNet.SvgTypes
 			rg = new Regex(@"[rgbRGB ]+\( *(?<r>\d+)%[, ]+(?<g>\d+)%[, ]+(?<b>\d+)% *\)");
 			m = rg.Match(s);
 			if (m.Success) {
-				r = int.Parse(m.Groups["r"].Captures[0].Value) * 255 / 100;
-				g = int.Parse(m.Groups["g"].Captures[0].Value) * 255 / 100;
-				b = int.Parse(m.Groups["b"].Captures[0].Value) * 255 / 100;
+				r = int.Parse(m.Groups["r"].Captures[0].Value, System.Globalization.CultureInfo.InvariantCulture) * 255 / 100;
+				g = int.Parse(m.Groups["g"].Captures[0].Value, System.Globalization.CultureInfo.InvariantCulture) * 255 / 100;
+				b = int.Parse(m.Groups["b"].Captures[0].Value, System.Globalization.CultureInfo.InvariantCulture) * 255 / 100;
 
 				_col = Color.FromArgb(r, g, b);
 				return;
@@ -541,10 +543,10 @@ namespace SvgNet.SvgTypes
 					throw new SvgException("Invalid SvgRect", s);
 				try
 				{
-					_rc.X = float.Parse(toks[0].Trim());
-					_rc.Y = float.Parse(toks[1].Trim());
-					_rc.Width = float.Parse(toks[2].Trim());
-					_rc.Height = float.Parse(toks[3].Trim());
+					_rc.X = float.Parse(toks[0].Trim(), System.Globalization.CultureInfo.InvariantCulture);
+					_rc.Y = float.Parse(toks[1].Trim(), System.Globalization.CultureInfo.InvariantCulture);
+					_rc.Width = float.Parse(toks[2].Trim(), System.Globalization.CultureInfo.InvariantCulture);
+					_rc.Height = float.Parse(toks[3].Trim(), System.Globalization.CultureInfo.InvariantCulture);
 				}
 				catch(Exception )
 				{
@@ -722,7 +724,7 @@ namespace SvgNet.SvgTypes
 				float[] arr = new float[datasize];
 
 				for (int j = 0; j < datasize; ++j) {
-					arr[j] = float.Parse(sa[i + j]);
+					arr[j] = float.Parse(sa[i + j], System.Globalization.CultureInfo.InvariantCulture);
 				}
 
 				ps = new PathSeg(pt, abs, arr);
@@ -936,7 +938,7 @@ namespace SvgNet.SvgTypes
 				foreach (string str in sa) {
 					if (str != "") {
 						str.Trim();
-						arr.Add(Single.Parse(str));
+						arr.Add(Single.Parse(str, System.Globalization.CultureInfo.InvariantCulture));
 					}
 				}
 

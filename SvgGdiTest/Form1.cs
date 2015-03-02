@@ -1,4 +1,6 @@
 /*
+	Copyright c 2010 SvgNet & SvgGdi Bridge Project. All rights reserved.
+
 	Copyright c 2003 by RiskCare Ltd.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -49,10 +51,11 @@ namespace SvgGdiTest
 	{
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.TextBox tbSVG;
-		private AxSVGACTIVEXLib.AxSVGCtl svgCtl;
 		private System.Windows.Forms.ComboBox cbWhat;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
+		private WebBrowser svgCtl;
+
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
@@ -89,14 +92,12 @@ namespace SvgGdiTest
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(Form1));
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.tbSVG = new System.Windows.Forms.TextBox();
-			this.svgCtl = new AxSVGACTIVEXLib.AxSVGCtl();
 			this.cbWhat = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
-			((System.ComponentModel.ISupportInitialize)(this.svgCtl)).BeginInit();
+			this.svgCtl = new System.Windows.Forms.WebBrowser();
 			this.SuspendLayout();
 			// 
 			// panel1
@@ -110,38 +111,30 @@ namespace SvgGdiTest
 			// tbSVG
 			// 
 			this.tbSVG.BackColor = System.Drawing.SystemColors.Info;
-			this.tbSVG.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
+			this.tbSVG.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tbSVG.Location = new System.Drawing.Point(440, 48);
 			this.tbSVG.Multiline = true;
 			this.tbSVG.Name = "tbSVG";
 			this.tbSVG.ScrollBars = System.Windows.Forms.ScrollBars.Both;
 			this.tbSVG.Size = new System.Drawing.Size(752, 640);
 			this.tbSVG.TabIndex = 3;
-			this.tbSVG.Text = "";
-			this.tbSVG.WordWrap = false;
-			// 
-			// svgCtl
-			// 
-			this.svgCtl.Enabled = true;
-			this.svgCtl.Location = new System.Drawing.Point(8, 392);
-			this.svgCtl.Name = "svgCtl";
-			this.svgCtl.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("svgCtl.OcxState")));
-			this.svgCtl.Size = new System.Drawing.Size(400, 304);
-			this.svgCtl.TabIndex = 4;
 			// 
 			// cbWhat
 			// 
+			this.cbWhat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbWhat.Items.AddRange(new object[] {
-														"Clipping",
-														"Transforms",
-														"Arcs/Pies",
-														"Lines",
-														"Curves",
-														"Transparency",
-														"Images",
-														"Text",
-														"Fills"});
+            "Clipping",
+            "Transforms",
+            "Arcs/Pies",
+            "Lines",
+            "Curves",
+            "Transparency",
+            "Images",
+            "Text",
+            "Rect-aligned Text",
+            "Fills"});
 			this.cbWhat.Location = new System.Drawing.Point(184, 8);
+			this.cbWhat.MaxDropDownItems = 30;
 			this.cbWhat.Name = "cbWhat";
 			this.cbWhat.Size = new System.Drawing.Size(312, 21);
 			this.cbWhat.TabIndex = 5;
@@ -149,7 +142,7 @@ namespace SvgGdiTest
 			// 
 			// label1
 			// 
-			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
+			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label1.Location = new System.Drawing.Point(8, 24);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(72, 24);
@@ -158,29 +151,38 @@ namespace SvgGdiTest
 			// 
 			// label2
 			// 
-			this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
+			this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label2.Location = new System.Drawing.Point(8, 368);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(72, 24);
 			this.label2.TabIndex = 7;
 			this.label2.Text = "SVG:";
 			// 
+			// svgCtl
+			// 
+			this.svgCtl.Location = new System.Drawing.Point(8, 395);
+			this.svgCtl.MinimumSize = new System.Drawing.Size(20, 20);
+			this.svgCtl.Name = "svgCtl";
+			this.svgCtl.Size = new System.Drawing.Size(400, 293);
+			this.svgCtl.TabIndex = 8;
+			// 
 			// Form1
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-			this.ClientSize = new System.Drawing.Size(1200, 717);
-			this.Controls.AddRange(new System.Windows.Forms.Control[] {
-																		  this.label2,
-																		  this.label1,
-																		  this.cbWhat,
-																		  this.tbSVG,
-																		  this.panel1,
-																		  this.svgCtl});
+			this.ClientSize = new System.Drawing.Size(1200, 697);
+			this.Controls.Add(this.svgCtl);
+			this.Controls.Add(this.label2);
+			this.Controls.Add(this.label1);
+			this.Controls.Add(this.cbWhat);
+			this.Controls.Add(this.tbSVG);
+			this.Controls.Add(this.panel1);
+			this.MaximizeBox = false;
 			this.Name = "Form1";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "SvgNet.SvgGdi demonstration/test app";
 			this.Load += new System.EventHandler(this.Form1_Load);
-			((System.ComponentModel.ISupportInitialize)(this.svgCtl)).EndInit();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 		#endregion
@@ -194,12 +196,77 @@ namespace SvgGdiTest
 			Application.Run(new Form1());
 		}
 
+		private static class RectAlignedTextTest
+		{
+			private static int RectSize = 150;
+			private static int RectGap = 20;
+			private static int RectFontSize = 20;
+
+			public static int CanvasSize
+			{
+				get
+				{
+					return 3 * RectSize + 4 * RectGap;
+				}
+			}
+
+			private static void DrawRect(IGraphics canvas, string id, Rectangle rect, StringAlignment horizontalAlignment, StringAlignment verticalAlignment)
+			{
+				var format = new StringFormat();
+				format.Alignment = horizontalAlignment;
+				format.LineAlignment = verticalAlignment;
+				format.FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.NoClip;
+
+				var pen = new Pen(new SolidBrush(Color.Black), 1);
+				canvas.DrawRectangle(pen, rect);
+
+				var aFont = System.Windows.Forms.Control.DefaultFont;
+				var font = new Font(aFont.Name, RectFontSize, aFont.Style, aFont.Unit);
+
+				{
+					// Draw label
+					var labelFormat = new StringFormat();
+					labelFormat.Alignment = StringAlignment.Near;
+					labelFormat.LineAlignment = StringAlignment.Center;
+					labelFormat.FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.NoClip;
+					var labelRect = new Rectangle(rect.X, rect.Y - RectGap, RectGap, RectGap);
+					var labelFont = new Font(aFont.Name, RectFontSize * 0.8f, aFont.Style, aFont.Unit);
+					canvas.DrawString(id, labelFont, new SolidBrush(Color.Black), labelRect, labelFormat);
+				}
+
+				canvas.DrawString("Helloy", font, new SolidBrush(Color.Blue), rect, format);
+			}
+
+			public static void DrawTest(IGraphics canvas)
+			{
+				canvas.FillRectangle(new SolidBrush(Color.White), new Rectangle(0, 0, CanvasSize, CanvasSize));
+
+				var alignments = new StringAlignment[] { StringAlignment.Near, StringAlignment.Center, StringAlignment.Far };
+
+				int id = 1;
+				foreach (var verticalAlignment in alignments)
+				{
+					foreach (var horizontalAlignment in alignments)
+					{
+						var x = RectGap + ((int)horizontalAlignment) * (RectSize + RectGap);
+						var y = RectGap + ((int)verticalAlignment) * (RectSize + RectGap);
+						var rect = new Rectangle(x, y, RectSize, RectSize);
+						DrawRect(canvas, id.ToString(), rect, horizontalAlignment, verticalAlignment);
+						id++;
+					}
+				}
+			}
+		}
+
 		private void Render(IGraphics ig)
 		{
 
 			string s = cbWhat.Text;
 
-			if (s == "Clipping")
+			if (String.IsNullOrEmpty(s))
+			{
+			}
+			else if (s == "Clipping")
 			{
 				Pen pn = new Pen(Color.LightGray, 5);
 				Pen pn2 = new Pen(Color.Yellow);
@@ -334,6 +401,27 @@ namespace SvgGdiTest
 
 				//arrows
 				Pen arr = new Pen(Color.DarkGoldenrod, 5);
+
+				{
+					arr.Width = 2;
+					arr.StartCap = System.Drawing.Drawing2D.LineCap.ArrowAnchor;
+					var arrowWidth = 11.0f; // TUNE:
+					var arrowHeight = 14f; // TUNE:
+					var arrowOutline = new System.Drawing.Drawing2D.GraphicsPath();
+					arrowOutline.AddLines(new PointF[] {
+							new PointF(-(arrowWidth / 2), -arrowHeight),
+							new PointF(0, 0),
+							new PointF((arrowWidth / 2), -arrowHeight),
+							new PointF(-(arrowWidth / 2), -arrowHeight)
+						});
+					var generalizationArrow = new System.Drawing.Drawing2D.CustomLineCap(null, arrowOutline);
+					generalizationArrow.SetStrokeCaps(System.Drawing.Drawing2D.LineCap.Round, System.Drawing.Drawing2D.LineCap.Round);
+					generalizationArrow.BaseInset = arrowHeight;
+					arr.CustomEndCap = generalizationArrow;
+					ig.DrawLine(arr, 0, 120, 100, 200);
+				}
+
+				arr.Width = 5;
 				AdjustableArrowCap aac = new AdjustableArrowCap(5,3, false);
 				arr.EndCap = LineCap.Custom;
 				arr.CustomEndCap = aac;
@@ -357,6 +445,7 @@ namespace SvgGdiTest
 					new Point(300, 150)
 				};
 
+				arr.Width = 9;
 				arr.EndCap = LineCap.DiamondAnchor;
 				arr.StartCap = LineCap.DiamondAnchor;
 				ig.DrawLines(arr, al);
@@ -584,6 +673,14 @@ namespace SvgGdiTest
 				ig.DrawRectangle(new Pen(Color.Yellow), 20, 200, siz.Width, siz.Height);
 
 			}
+			else if (s == "Rect-aligned Text")
+			{
+				ig.Clear(Color.White);
+				ig.ScaleTransform(
+					(float)this.panel1.ClientSize.Width / RectAlignedTextTest.CanvasSize,
+					(float)this.panel1.ClientSize.Height / RectAlignedTextTest.CanvasSize);
+				RectAlignedTextTest.DrawTest(ig);
+			}
 			else if (s == "Images")
 			{
 
@@ -602,7 +699,7 @@ namespace SvgGdiTest
 			}
 			else
 			{
-				
+				throw new NotImplementedException();
 			}
 			
 		}
@@ -633,14 +730,17 @@ namespace SvgGdiTest
 			string s = ig.WriteSVGString();
 
 			tbSVG.Text = s;
- 
-			StreamWriter tw = new StreamWriter("c:\\temp\\foo.svg", false);
+
+			string tempFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "foo.svg");
+
+			StreamWriter tw = new StreamWriter(tempFile, false);
 
 			tw.Write(s);
 
 			tw.Close();
 
-			svgCtl.SRC = "c:\\temp\\foo.svg";
+			svgCtl.Navigate(new Uri(tempFile));
+			svgCtl.Refresh(WebBrowserRefreshOption.Completely);
 
 			this.panel1.Invalidate();
 		

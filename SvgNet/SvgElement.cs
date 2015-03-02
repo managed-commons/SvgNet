@@ -1,4 +1,6 @@
 /*
+	Copyright c 2010 SvgNet & SvgGdi Bridge Project. All rights reserved.
+
 	Copyright c 2003 by RiskCare Ltd.  All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -96,6 +98,12 @@ namespace SvgNet
 		{
 			foreach (XmlAttribute att in el.Attributes)
 			{
+				// TODO: after namespaced attributes are supported in the writer code (WriteXmlElements) re-enable
+				// their reading.
+				// For now we'll skip namespaced attributes
+				if (att.Name == "xmlns" || att.Name.Contains(":"))
+					continue;
+
 				this[att.Name] = att.Value;
 			}
 		}
@@ -153,6 +161,8 @@ namespace SvgNet
 			//write out our SVG tree to the new XmlDocument
 			WriteXmlElements(doc, null);
 
+			doc.DocumentElement.SetAttribute("xmlns", "http://www.w3.org/2000/svg");
+
 			if (compressAttributes)
 				ents = SvgFactory.CompressXML(doc, doc.DocumentElement);
 
@@ -163,7 +173,7 @@ namespace SvgNet
 			MemoryStream ms = new MemoryStream();
 			XmlTextWriter wr = new XmlTextWriter(ms, new UTF8Encoding());
 
-			wr.Formatting = Formatting.Indented;
+			wr.Formatting = Formatting.None; // Indented formatting would be nice for debugging but causes unwanted trailing white spaces between <text> and <tspan> elements in Internet Explorer
 			wr.WriteStartDocument(true);
 			wr.WriteDocType("svg", "-//W3C//DTD SVG 1.1//EN", "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd", ents);
 			doc.Save(wr);
