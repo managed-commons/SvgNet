@@ -1456,9 +1456,12 @@ namespace SvgNet.SvgGdi
 
 				metafileBuffer.Position = 0;
 
+				var metafileIsEmpty = true;
 				var parser = new MetafileTools.MetafileParser();
 				parser.EnumerateMetafile(metafileBuffer, pen.Width, zero, (PointF[] linePoints) =>
 				{
+					metafileIsEmpty = false;
+
 					SvgPolylineElement pl = new SvgPolylineElement(linePoints);
 					pl.Style = new SvgStyle(pen);
 
@@ -1471,8 +1474,31 @@ namespace SvgNet.SvgGdi
 				}, (PointF[] linePoints, Brush fillBrush) =>
 				{
 					// TODO: received shapes dont' have the vertex list "normalized" correctly
+					// metafileIsEmpty = false;
 					// FillPolygon(fillBrush, linePoints);
 				});
+
+				if (metafileIsEmpty)
+				{
+					// TODO: metafile recording on OpenSUSE Linux with Mono 3.8.0 does not seem to work at all
+					// as the supposed implementation in https://github.com/mono/libgdiplus/blob/master/src/graphics-metafile.c is
+					// full of "TODO". In this case we should take a graceful fallback approach
+
+					// Restore points array to the original values they had when entered the function
+					for (var i = 0; i < points.Length; i++)
+					{
+						points[i].X += zero.X;
+						points[i].Y += zero.Y;
+					}
+
+					SvgPolylineElement pl = new SvgPolylineElement(points);
+					pl.Style = new SvgStyle(pen);
+					if (!_transforms.Result.IsIdentity)
+						pl.Transform = new SvgTransformList(_transforms.Top.Clone());
+					_cur.AddChild(pl);
+
+					DrawEndAnchors(pen, points[0], points[points.Length - 1], ignoreUnsupportedLineCaps: true);
+				}
 			}
 		}
 
@@ -3208,7 +3234,7 @@ namespace SvgNet.SvgGdi
 			}
 		}
 
-		private void DrawEndAnchors(Pen pen, PointF start, PointF end)
+		private void DrawEndAnchors(Pen pen, PointF start, PointF end, bool ignoreUnsupportedLineCaps = false)
 		{
 			float startAngle = (float)Math.Atan((start.X - end.X) / (start.Y - end.Y)) * -1;
 			float endAngle = (float)Math.Atan((end.X - start.X) / (end.Y - start.Y)) * -1;
@@ -3232,8 +3258,8 @@ namespace SvgNet.SvgGdi
 			{
 			}
 
-			DrawEndAnchor(pen.StartCap, clcstart, pen.Color, pen.Width, start, startAngle);
-			DrawEndAnchor(pen.EndCap, clcend, pen.Color, pen.Width, end, endAngle);
+			DrawEndAnchor(pen.StartCap, clcstart, pen.Color, pen.Width, start, startAngle, ignoreUnsupportedLineCaps);
+			DrawEndAnchor(pen.EndCap, clcend, pen.Color, pen.Width, end, endAngle, ignoreUnsupportedLineCaps);
 		}
 
 		/// <summary>
@@ -3256,7 +3282,7 @@ namespace SvgNet.SvgGdi
 			}
 		}
 
-		private void DrawEndAnchor(LineCap lc, CustomLineCap clc, Color col, float w, PointF pt, float angle)
+		private void DrawEndAnchor(LineCap lc, CustomLineCap clc, Color col, float w, PointF pt, float angle, bool ignoreUnsupportedLineCaps)
 		{
 			SvgStyledTransformedElement anchor = null;
 			PointF[] points = null;
@@ -3298,12 +3324,15 @@ namespace SvgNet.SvgGdi
 				case LineCap.Custom:
 					if (clc != null)
 					{
-						throw new SvgGdiNotImpl("DrawEndAnchor custom");
+						if (!ignoreUnsupportedLineCaps)
+							throw new SvgGdiNotImpl("DrawEndAnchor custom");
 					}
 					break;
 
 				default:
-					throw new SvgGdiNotImpl("DrawEndAnchor " + lc.ToString());
+					if (!ignoreUnsupportedLineCaps)
+						throw new SvgGdiNotImpl("DrawEndAnchor " + lc.ToString());
+					break;
 			}
 
 			if (anchor == null)

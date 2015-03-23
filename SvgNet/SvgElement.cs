@@ -145,6 +145,16 @@ namespace SvgNet
 			return "<" + Name + " id='" + Id + "'/>";
 		}
 
+		private class DummyXmlResolver : XmlResolver
+		{
+			public override System.Net.ICredentials Credentials { set { } }
+
+			public override object GetEntity(Uri absoluteUri, string role, Type ofObjectToReturn)
+			{
+				return new MemoryStream();
+			}
+		}
+
 		/// <summary>
 		/// Get a string that contains a complete SVG document.  XML version, DOCTYPE etc are included.
 		/// </summary>
@@ -158,6 +168,9 @@ namespace SvgNet
 
 			XmlDocument doc = new XmlDocument();
 
+			var declaration = doc.CreateXmlDeclaration("1.0", null, "yes");
+			doc.AppendChild(declaration);
+
 			//write out our SVG tree to the new XmlDocument
 			WriteXmlElements(doc, null);
 
@@ -165,6 +178,12 @@ namespace SvgNet
 
 			if (compressAttributes)
 				ents = SvgFactory.CompressXML(doc, doc.DocumentElement);
+
+			doc.XmlResolver = new DummyXmlResolver();
+			doc.InsertAfter(
+				doc.CreateDocumentType("svg", "-//W3C//DTD SVG 1.1//EN", "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd", ents),
+				declaration
+			);
 
 			//This complicated business of writing to a memory stream and then reading back out to a string
 			//is necessary in order to specify UTF8 -- for some reason the default is UTF16 (which makes most renderers
@@ -174,8 +193,6 @@ namespace SvgNet
 			XmlTextWriter wr = new XmlTextWriter(ms, new UTF8Encoding());
 
 			wr.Formatting = Formatting.None; // Indented formatting would be nice for debugging but causes unwanted trailing white spaces between <text> and <tspan> elements in Internet Explorer
-			wr.WriteStartDocument(true);
-			wr.WriteDocType("svg", "-//W3C//DTD SVG 1.1//EN", "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd", ents);
 			doc.Save(wr);
 
 			byte[] buf = ms.ToArray();
