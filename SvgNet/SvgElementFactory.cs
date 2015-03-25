@@ -170,27 +170,53 @@ namespace SvgNet
 		/// <returns>A string of entities which can be inserted into the DOCTYPE when the document is written.</returns>
 		public static string CompressXML(XmlDocument doc, XmlElement el)
 		{
-
 			Hashtable entities = new Hashtable();
-			Hashtable counts = new Hashtable();
+			Hashtable singletons = new Hashtable();
 
 			int idx = 0;
-			RecCompXML(counts, entities, doc, el, ref idx);
+			RecCompXML(entities, singletons, doc, el, ref idx);
 
-			string ents = "";
-			foreach(string key in entities.Keys)
+			// "Uncompress" attribute values with only one reference as it would actually
+			// make the resulting XML bigger
+			foreach(DictionaryEntry pair in singletons)
 			{
-				ents += "\r\n\t<!ENTITY ";
-				ents += entities[key];
-				ents += " '";
-				ents += key.Replace("%", "&#37;");//I guess we need to escape fully, but surely no other special char can appear?
-				ents += "'>";
+				var attributeValue = (string)pair.Key;
+				var singleton = (EntitySingleton)pair.Value;
+
+				// This is an inverse behavior of what RecCompXML did
+				singleton.Element.RemoveAttribute(singleton.AttributeName);
+				XmlAttribute attr = doc.CreateAttribute(singleton.AttributeName);
+				attr.Value = attributeValue;
+				singleton.Element.SetAttributeNode(attr);
+
+				entities.Remove(attributeValue);
 			}
 
-			if (ents != "")
-				ents += "\r\n";
+			var ents = new System.Text.StringBuilder();
 
-			return ents;
+			if (entities.Count > 0)
+			{
+				ents.Append("\n");
+
+				foreach (string key in entities.Keys)
+				{
+					ents.Append("<!ENTITY ");
+					ents.Append(entities[key]);
+					ents.Append(" '");
+					ents.Append(key.Replace("%", "&#37;"));//I guess we need to escape fully, but surely no other special char can appear?
+					ents.Append("'>");
+				}
+
+				ents.Append("\n");
+			}
+
+			return ents.ToString();
+		}
+
+		private struct EntitySingleton
+		{
+			public XmlElement Element;
+			public string AttributeName;
 		}
 
 		/// <summary>
@@ -201,7 +227,7 @@ namespace SvgNet
 		/// <param name="doc"></param>
 		/// <param name="el"></param>
 		/// <param name="idx">Number that is incremented to provide new entity names</param>
-		private static void RecCompXML(Hashtable counts, Hashtable entities, XmlDocument doc, XmlElement el, ref int idx)
+		private static void RecCompXML(Hashtable entities, Hashtable singletons, XmlDocument doc, XmlElement el, ref int idx)
 		{	
 			ArrayList keys = new ArrayList();
 
@@ -214,15 +240,6 @@ namespace SvgNet
 			{
 				string val = el.Attributes[s].Value;
 	
-				if (counts[val] == null)
-				{
-					counts[val] = 1;
-				}
-				else
-				{
-					counts[val] = (int)counts[val] + 1;
-				}
-
 				if (val.Length > 30)
 				{
 					string entname;
@@ -232,10 +249,14 @@ namespace SvgNet
 						idx += 1;
 						entname = "E"+idx.ToString();
 						entities[val] = entname;
+
+						singletons[val] = new EntitySingleton() { Element = el, AttributeName = s };
 					}
 					else
 					{
 						entname = (string)entities[val];
+
+						singletons.Remove(val);
 					}
 
 					XmlAttribute attr = doc.CreateAttribute(s);
@@ -248,7 +269,7 @@ namespace SvgNet
 			foreach(XmlNode ch in el.ChildNodes)
 			{
 				if (ch.GetType() == typeof(XmlElement))
-					RecCompXML(counts, entities, doc, (XmlElement)ch, ref idx);
+					RecCompXML(entities, singletons, doc, (XmlElement)ch, ref idx);
 			}
 		}
 	

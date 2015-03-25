@@ -325,6 +325,35 @@ namespace SvgNet.SvgGdi
 				}
 			}
 
+			private void ProcessPolygon16(byte[] recordData)
+			{
+				MemoryStream _ms = null;
+				BinaryReader _br = null;
+				try
+				{
+					_ms = new MemoryStream(recordData);
+					_br = new BinaryReader(_ms);
+
+					_br.ReadBytes(16 /* Bounds */);
+
+					var totalNumberOfPoints = _br.ReadUInt32();
+
+					var numberOfPoints = new int[1];
+					numberOfPoints[0] = (int)totalNumberOfPoints;
+
+					InternalProcessPolyline16(1, totalNumberOfPoints, numberOfPoints, _br);
+
+					System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
+				}
+				finally
+				{
+					if (_br != null)
+						_br.Close();
+					if (_ms != null)
+						_ms.Dispose();
+				}
+			}
+
 			private void ProcessPolyPolygon16(byte[] recordData)
 			{
 				MemoryStream _ms = null;
@@ -1049,6 +1078,10 @@ namespace SvgNet.SvgGdi
 
 							case EmfPlusRecordType.EmfModifyWorldTransform:
 								ProcessModifyWorldTransform(record.Data);
+								break;
+
+							case EmfPlusRecordType.EmfPolygon16:
+								ProcessPolygon16(record.Data);
 								break;
 
 							case EmfPlusRecordType.EmfPolyPolygon16:
