@@ -5,6 +5,7 @@ obj/
 *.xml
 *.userprefs
 *.pidb
+*.nupkg
 test-results/
 
 

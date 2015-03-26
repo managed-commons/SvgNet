@@ -38,7 +38,7 @@ namespace SvgNet.SvgGdi
 
 	/// <summary>
 	/// An interface that contains exactly the same methods as the GDI+ Graphics object.  If your drawing routines draw to an <c>IGraphics</c> interface, then you can supply either
-	/// a <c>GdiGraphics</c> object to render to the screen, or an <see cref="SvgGraphics"> object to render to an SVG file.
+	/// a <c>GdiGraphics</c> object to render to the screen, or an <see cref="SvgGraphics" /> object to render to an SVG file.
 	/// <para>
 	/// It's a pity that <c>Graphics</c> is a sealed class.  Otherwise there'd be no need to have this interface or the <see cref="GdiGraphics"/> class; we could simply
 	/// derive a class from <c>Graphics</c> to do SVG output.
