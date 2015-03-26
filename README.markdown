@@ -2,6 +2,10 @@
 
 A fork of the SvgNet & SvgGdi bridge (http://www.codeproject.com/KB/cs/svgnet.aspx) to ressurrect it.
 
+__SvgNet is now available as a Nuget:__ [SvgNet](https://www.nuget.org/packages/SvgNet/).
+
+----------
+
 ## License: BSD
 
 Copyright &copy; 2010 SvgNet & SvgGdi Bridge Project. All rights reserved.
