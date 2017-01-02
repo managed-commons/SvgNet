@@ -1561,7 +1561,7 @@ namespace SvgNet.SvgGdi
 		/// </summary>
 		public void DrawArc(Pen pen, RectangleF rect, Single startAngle, Single sweepAngle)
 		{
-			DrawArc(pen, rect.X, rect.X, rect.Width, rect.Height, startAngle, sweepAngle);
+			DrawArc(pen, rect.X, rect.Y, rect.Width, rect.Height, startAngle, sweepAngle);
 		}
 
 		/// <summary>
