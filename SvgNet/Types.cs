@@ -149,7 +149,7 @@ namespace SvgNet.SvgTypes
             if (i == -1)
                 return;
 
-            Value = int.Parse(s.Substring(0, i + 1), System.Globalization.CultureInfo.InvariantCulture);
+            Value = int.Parse(s.Substring(0, i + 1), CultureInfo.InvariantCulture);
 
             switch (s.Substring(i + 1))
             {
@@ -176,7 +176,7 @@ namespace SvgNet.SvgTypes
 
         public override string ToString()
         {
-            var s = Value.ToString("F", System.Globalization.CultureInfo.InvariantCulture);
+            var s = Value.ToString("F", CultureInfo.InvariantCulture);
             switch (Type)
             {
                 case SvgAngleType.SVG_ANGLETYPE_DEG:
@@ -294,9 +294,9 @@ namespace SvgNet.SvgTypes
 
             if (s.Length == 3)
             {
-                r = int.Parse(s.Substring(0, 1), NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture);
-                g = int.Parse(s.Substring(1, 1), NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture);
-                b = int.Parse(s.Substring(2, 1), NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture);
+                r = int.Parse(s.Substring(0, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+                g = int.Parse(s.Substring(1, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+                b = int.Parse(s.Substring(2, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
                 r += r * 16;
                 g += g * 16;
                 b += b * 16;
@@ -304,9 +304,9 @@ namespace SvgNet.SvgTypes
             }
             else if (s.Length == 6)
             {
-                r = int.Parse(s.Substring(0, 2), NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture);
-                g = int.Parse(s.Substring(2, 2), NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture);
-                b = int.Parse(s.Substring(4, 2), NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture);
+                r = int.Parse(s.Substring(0, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+                g = int.Parse(s.Substring(2, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+                b = int.Parse(s.Substring(4, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
                 Color = Color.FromArgb(r, g, b);
             }
             else
@@ -322,9 +322,9 @@ namespace SvgNet.SvgTypes
             var m = rg.Match(s);
             if (m.Success)
             {
-                r = int.Parse(m.Groups["r"].Captures[0].Value, System.Globalization.CultureInfo.InvariantCulture);
-                g = int.Parse(m.Groups["g"].Captures[0].Value, System.Globalization.CultureInfo.InvariantCulture);
-                b = int.Parse(m.Groups["b"].Captures[0].Value, System.Globalization.CultureInfo.InvariantCulture);
+                r = int.Parse(m.Groups["r"].Captures[0].Value, CultureInfo.InvariantCulture);
+                g = int.Parse(m.Groups["g"].Captures[0].Value, CultureInfo.InvariantCulture);
+                b = int.Parse(m.Groups["b"].Captures[0].Value, CultureInfo.InvariantCulture);
 
                 Color = Color.FromArgb(r, g, b);
                 return;
@@ -334,9 +334,9 @@ namespace SvgNet.SvgTypes
             m = rg.Match(s);
             if (m.Success)
             {
-                r = int.Parse(m.Groups["r"].Captures[0].Value, System.Globalization.CultureInfo.InvariantCulture) * 255 / 100;
-                g = int.Parse(m.Groups["g"].Captures[0].Value, System.Globalization.CultureInfo.InvariantCulture) * 255 / 100;
-                b = int.Parse(m.Groups["b"].Captures[0].Value, System.Globalization.CultureInfo.InvariantCulture) * 255 / 100;
+                r = int.Parse(m.Groups["r"].Captures[0].Value, CultureInfo.InvariantCulture) * 255 / 100;
+                g = int.Parse(m.Groups["g"].Captures[0].Value, CultureInfo.InvariantCulture) * 255 / 100;
+                b = int.Parse(m.Groups["b"].Captures[0].Value, CultureInfo.InvariantCulture) * 255 / 100;
 
                 Color = Color.FromArgb(r, g, b);
                 return;
@@ -393,7 +393,7 @@ namespace SvgNet.SvgTypes
             if (i == -1)
                 return;
 
-            Value = float.Parse(s.Substring(0, i + 1), System.Globalization.CultureInfo.InvariantCulture);
+            Value = float.Parse(s.Substring(0, i + 1), CultureInfo.InvariantCulture);
 
             switch (s.Substring(i + 1))
             {
@@ -444,7 +444,7 @@ namespace SvgNet.SvgTypes
 
         public override string ToString()
         {
-            var s = Value.ToString("F", System.Globalization.CultureInfo.InvariantCulture);
+            var s = Value.ToString("F", CultureInfo.InvariantCulture);
             switch (Type)
             {
                 case SvgLengthType.SVG_LENGTHTYPE_PERCENTAGE:
@@ -535,7 +535,7 @@ namespace SvgNet.SvgTypes
         {
             try
             {
-                _num = float.Parse(s, System.Globalization.CultureInfo.InvariantCulture);
+                _num = float.Parse(s, CultureInfo.InvariantCulture);
             }
             catch
             {
@@ -549,7 +549,7 @@ namespace SvgNet.SvgTypes
         /// <returns></returns>
         public override string ToString()
         {
-            return _num.ToString("F", System.Globalization.CultureInfo.InvariantCulture);
+            return _num.ToString("F", CultureInfo.InvariantCulture);
         }
 
         private float _num;
@@ -664,7 +664,7 @@ namespace SvgNet.SvgTypes
                     if (str != "")
                     {
                         str.Trim();
-                        arr.Add(Single.Parse(str, System.Globalization.CultureInfo.InvariantCulture));
+                        arr.Add(float.Parse(str, CultureInfo.InvariantCulture));
                     }
                 }
 
@@ -704,7 +704,7 @@ namespace SvgNet.SvgTypes
 
             foreach (float f in _pts)
             {
-                result += f.ToString("F", System.Globalization.CultureInfo.InvariantCulture);
+                result += f.ToString("F", CultureInfo.InvariantCulture);
                 result += " ";
             }
 
@@ -854,7 +854,7 @@ namespace SvgNet.SvgTypes
 
                 for (int j = 0; j < datasize; ++j)
                 {
-                    arr[j] = float.Parse(sa[i + j], System.Globalization.CultureInfo.InvariantCulture);
+                    arr[j] = float.Parse(sa[i + j], CultureInfo.InvariantCulture);
                 }
 
                 ps = new PathSeg(pt, abs, arr);
@@ -879,7 +879,7 @@ namespace SvgNet.SvgTypes
 
                 foreach (float d in seg.Data)
                 {
-                    s += d.ToString();
+                    s += d.ToString(CultureInfo.InvariantCulture);
                     s += " ";
                 }
 
@@ -971,7 +971,7 @@ namespace SvgNet.SvgTypes
 
             foreach (float f in _pts)
             {
-                result += f.ToString("F", System.Globalization.CultureInfo.InvariantCulture);
+                result += f.ToString("F", CultureInfo.InvariantCulture);
                 result += " ";
             }
 
