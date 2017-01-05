@@ -145,7 +145,7 @@ namespace SvgNet.SvgTypes
 
         public void FromString(string s)
         {
-            int i = s.LastIndexOfAny(new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' });
+            var i = s.LastIndexOfAny(new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' });
             if (i == -1)
                 return;
 
@@ -317,6 +317,7 @@ namespace SvgNet.SvgTypes
 
         private void FromRGBString(string s)
         {
+#pragma warning disable CC0021 // Use nameof
             int r, g, b;
             var rg = new Regex(@"[rgbRGB ]+\( *(?<r>\d+)[, ]+(?<g>\d+)[, ]+(?<b>\d+) *\)");
             var m = rg.Match(s);
@@ -341,6 +342,7 @@ namespace SvgNet.SvgTypes
                 Color = Color.FromArgb(r, g, b);
                 return;
             }
+#pragma warning restore CC0021 // Use nameof
 
             throw new SvgException("Invalid SvgColor", s);
         }
@@ -389,7 +391,7 @@ namespace SvgNet.SvgTypes
 
         public void FromString(string s)
         {
-            int i = s.LastIndexOfAny(new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' });
+            var i = s.LastIndexOfAny(new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' });
             if (i == -1)
                 return;
 
@@ -700,15 +702,13 @@ namespace SvgNet.SvgTypes
 
         public override string ToString()
         {
-            var result = "";
-
+            var builder = new System.Text.StringBuilder();
             foreach (float f in _pts)
             {
-                result += f.ToString("F", CultureInfo.InvariantCulture);
-                result += " ";
+                builder.Append(f.ToString("F", CultureInfo.InvariantCulture)).Append(" ");
             }
 
-            return result;
+            return builder.ToString();
         }
 
         private readonly ArrayList _pts = new ArrayList();
@@ -755,10 +755,10 @@ namespace SvgNet.SvgTypes
             var sa = s.Split(new char[] { ' ', ',', '\t', '\r', '\n' });
 
             PathSeg ps;
-            int datasize = 0;
+            var datasize = 0;
             var pt = SvgPathSegType.SVG_SEGTYPE_UNKNOWN;
-            bool abs = false;
-            int i = 0;
+            var abs = false;
+            var i = 0;
             char segTypeChar;
             _path = new ArrayList();
 
@@ -868,25 +868,20 @@ namespace SvgNet.SvgTypes
         public override string ToString()
         {
             PathSeg prev = null;
-            var s = "";
+            var builder = new System.Text.StringBuilder();
             foreach (PathSeg seg in _path)
             {
                 if (prev == null || (prev.Type != seg.Type || prev.Abs != seg.Abs))
                 {
-                    s += seg.Char;
-                    s += " ";
+                    builder.Append(seg.Char).Append(" ");
                 }
-
                 foreach (float d in seg.Data)
                 {
-                    s += d.ToString(CultureInfo.InvariantCulture);
-                    s += " ";
+                    builder.Append(d.ToString(CultureInfo.InvariantCulture)).Append(" ");
                 }
-
                 prev = seg;
             }
-
-            return s;
+            return builder.ToString();
         }
 
         private ArrayList _path;
@@ -967,15 +962,12 @@ namespace SvgNet.SvgTypes
 
         public override string ToString()
         {
-            var result = "";
-
+            var builder = new System.Text.StringBuilder();
             foreach (float f in _pts)
             {
-                result += f.ToString("F", CultureInfo.InvariantCulture);
-                result += " ";
+                builder.Append(f.ToString("F", CultureInfo.InvariantCulture)).Append(" ");
             }
-
-            return result;
+            return builder.ToString();
         }
 
         private readonly ArrayList _pts = new ArrayList();
@@ -1055,14 +1047,16 @@ namespace SvgNet.SvgTypes
 
         public object Clone()
         {
-            var r = new SvgXRef();
-            r.Href = Href;
-            r.Type = Type;
-            r.Role = Role;
-            r.Arcrole = Arcrole;
-            r.Title = Title;
-            r.Show = Show;
-            r.Actuate = Actuate;
+            var r = new SvgXRef
+            {
+                Href = Href,
+                Type = Type,
+                Role = Role,
+                Arcrole = Arcrole,
+                Title = Title,
+                Show = Show,
+                Actuate = Actuate
+            };
             return r;
         }
 

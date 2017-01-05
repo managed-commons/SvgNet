@@ -25,6 +25,13 @@
             For instance, <c>SvgGraphics</c> does not support any of the <c>MeasureString</c> methods.
             </summary>
         </member>
+        <member name="M:SvgNet.SvgGdi.MetafileTools.EmfTools.BinaryReaderExtensions.Skip(System.IO.BinaryReader,System.Int32)">
+            <summary>
+            Skips excess bytes. Work-around for some WMF files that contain undocumented fields.
+            </summary>
+            <param name="reader"></param>
+            <param name="excess"></param>
+        </member>
         <member name="T:SvgNet.SvgGdi.MetafileTools.EmfTools.EmfBinaryRecord">
             <summary>
             Implements a EMF META record
@@ -46,13 +53,6 @@
             NOTE: When overriding this method remove the base.Read(reader) line from code.
             </summary>
             <param name="reader"></param>
-        </member>
-        <member name="M:SvgNet.SvgGdi.MetafileTools.EmfTools.BinaryReaderExtensions.Skip(System.IO.BinaryReader,System.Int32)">
-            <summary>
-            Skips excess bytes. Work-around for some WMF files that contain undocumented fields.
-            </summary>
-            <param name="reader"></param>
-            <param name="excess"></param>
         </member>
         <member name="T:SvgNet.SvgGdi.MetafileTools.EmfTools.EmfReader">
             <summary>
@@ -79,127 +79,116 @@
             </para>
             <para>
             Many parameters used by GDI have no SVG equivalent -- for instance, GDI allows some fine control over how font hints are used.  This detailed information is
-            thrown away. 
+            thrown away.
             </para>
             <para>
             Some aspects of GDI that can be implemented in SVG are not.  The most important omission is that only solid brushes are supported.
             </para>
             </summary>
         </member>
-        <member name="T:SvgNet.SvgGdi.SvgGraphics.MatrixStack">
-            <summary>
-            This class is needed because GDI+ does not maintain a proper scene graph; rather it maintains a single transformation matrix
-            which is applied to each new object.  The matrix is saved and reloaded when 'begincontainer' and 'endcontainer' are called.  SvgGraphics has to
-            emulate this behaviour.  
-            <para>
-            This matrix stack caches it's 'result' (ie. the current transformation, the product of all matrices).  The result is
-            recalculated when necessary.
-            </para>
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.WriteSVGString">
-            <summary>
-            Get a string containing an SVG document.  The very heart of SvgGdi.  It calls <c>WriteSVGString</c> on the <see cref="T:SvgNet.SvgElement"/>
-            at the root of this <c>SvgGraphics</c> and returns the resulting string.
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.Flush">
-            <summary>
-            Does nothing
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.Flush(System.Drawing.Drawing2D.FlushIntention)">
-            <summary>
-            Does nothing
-            </summary>
-            <param name="intention"></param>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.ResetTransform">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.MultiplyTransform(System.Drawing.Drawing2D.Matrix)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.MultiplyTransform(System.Drawing.Drawing2D.Matrix,System.Drawing.Drawing2D.MatrixOrder)">
-            <summary>
-            Implemented, but ignores <c>order</c>
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.TranslateTransform(System.Single,System.Single)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.TranslateTransform(System.Single,System.Single,System.Drawing.Drawing2D.MatrixOrder)">
-            <summary>
-            Implemented, but ignores <c>order</c>
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.ScaleTransform(System.Single,System.Single)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.ScaleTransform(System.Single,System.Single,System.Drawing.Drawing2D.MatrixOrder)">
-            <summary>
-            Implemented, but ignores <c>order</c>
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.RotateTransform(System.Single)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.RotateTransform(System.Single,System.Drawing.Drawing2D.MatrixOrder)">
-            <summary>
-            Implemented, but ignores <c>order</c>
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.TransformPoints(System.Drawing.Drawing2D.CoordinateSpace,System.Drawing.Drawing2D.CoordinateSpace,System.Drawing.PointF[])">
+        <member name="P:SvgNet.SvgGdi.SvgGraphics.Clip">
             <summary>
             Not implemented.
             </summary>
         </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.TransformPoints(System.Drawing.Drawing2D.CoordinateSpace,System.Drawing.Drawing2D.CoordinateSpace,System.Drawing.Point[])">
+        <member name="P:SvgNet.SvgGdi.SvgGraphics.ClipBounds">
             <summary>
             Not implemented.
             </summary>
         </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.GetNearestColor(System.Drawing.Color)">
+        <member name="P:SvgNet.SvgGdi.SvgGraphics.CompositingMode">
             <summary>
-            Not meaningful when there is no actual display device.
+            Get is not implemented (throws an exception).  Set does nothing.
             </summary>
         </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawLine(System.Drawing.Pen,System.Single,System.Single,System.Single,System.Single)">
+        <member name="P:SvgNet.SvgGdi.SvgGraphics.CompositingQuality">
             <summary>
-            Implemented
+            Get is not implemented (throws an exception).  Set does nothing.
             </summary>
         </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawLine(System.Drawing.Pen,System.Drawing.PointF,System.Drawing.PointF)">
+        <member name="P:SvgNet.SvgGdi.SvgGraphics.DpiX">
             <summary>
-            Implemented
+            Not implemented.
             </summary>
         </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawLines(System.Drawing.Pen,System.Drawing.PointF[])">
+        <member name="P:SvgNet.SvgGdi.SvgGraphics.DpiY">
             <summary>
-            Implemented
+            Not implemented.
             </summary>
         </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawLine(System.Drawing.Pen,System.Int32,System.Int32,System.Int32,System.Int32)">
+        <member name="P:SvgNet.SvgGdi.SvgGraphics.InterpolationMode">
             <summary>
-            Implemented
+            Get is not implemented (throws an exception).  Set does nothing.
             </summary>
         </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawLine(System.Drawing.Pen,System.Drawing.Point,System.Drawing.Point)">
+        <member name="P:SvgNet.SvgGdi.SvgGraphics.IsClipEmpty">
             <summary>
-            Implemented
+            Not implemented.
             </summary>
         </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawLines(System.Drawing.Pen,System.Drawing.Point[])">
+        <member name="P:SvgNet.SvgGdi.SvgGraphics.IsVisibleClipEmpty">
+            <summary>
+            Not implemented.
+            </summary>
+        </member>
+        <member name="P:SvgNet.SvgGdi.SvgGraphics.PageScale">
+            <summary>
+            Get is not implemented (throws an exception).  Set does nothing.
+            </summary>
+        </member>
+        <member name="P:SvgNet.SvgGdi.SvgGraphics.PageUnit">
+            <summary>
+            Get is not implemented (throws an exception).  Set does nothing.
+            </summary>
+        </member>
+        <member name="P:SvgNet.SvgGdi.SvgGraphics.PixelOffsetMode">
+            <summary>
+            Get is not implemented (throws an exception).  Set does nothing.
+            </summary>
+        </member>
+        <member name="P:SvgNet.SvgGdi.SvgGraphics.RenderingOrigin">
+            <summary>
+            Get is not implemented (throws an exception).  Set does nothing.
+            </summary>
+        </member>
+        <member name="P:SvgNet.SvgGdi.SvgGraphics.TextContrast">
+            <summary>
+            Get is not implemented (throws an exception).
+            </summary>
+        </member>
+        <member name="P:SvgNet.SvgGdi.SvgGraphics.TextRenderingHint">
+            <summary>
+            Get is not implemented (throws an exception).
+            </summary>
+        </member>
+        <member name="P:SvgNet.SvgGdi.SvgGraphics.VisibleClipBounds">
+            <summary>
+            Not implemented.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.AddMetafileComment(System.Byte[])">
+            <summary>
+            Does nothing.  Should perhaps insert a comment into the SVG XML output, but is this really analogous
+            to a metafile comment.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.BeginContainer(System.Drawing.RectangleF,System.Drawing.RectangleF,System.Drawing.GraphicsUnit)">
+            <summary>
+            Not implemented.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.BeginContainer">
+            <summary>
+            Implemented, but returns null as SVG has a proper scenegraph, unlike GDI+.  The effect of calling <c>BeginContainer</c> is to create a new SVG group
+            and apply transformations etc to produce the effect that a GDI+ container would produce.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.BeginContainer(System.Drawing.Rectangle,System.Drawing.Rectangle,System.Drawing.GraphicsUnit)">
+            <summary>
+            Not implemented.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.Clear(System.Drawing.Color)">
             <summary>
             Implemented
             </summary>
@@ -234,12 +223,12 @@
             Implemented
             </summary>
         </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawBeziers(System.Drawing.Pen,System.Drawing.PointF[])">
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawBezier(System.Drawing.Pen,System.Drawing.Point,System.Drawing.Point,System.Drawing.Point,System.Drawing.Point)">
             <summary>
             Implemented
             </summary>
         </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawBezier(System.Drawing.Pen,System.Drawing.Point,System.Drawing.Point,System.Drawing.Point,System.Drawing.Point)">
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawBeziers(System.Drawing.Pen,System.Drawing.PointF[])">
             <summary>
             Implemented
             </summary>
@@ -249,84 +238,25 @@
             Implemented
             </summary>
         </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawRectangle(System.Drawing.Pen,System.Drawing.Rectangle)">
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawClosedCurve(System.Drawing.Pen,System.Drawing.PointF[])">
+            <summary>
+            Implemented.  The <c>DrawClosedCurve</c> functions emulate GDI behavior by drawing a coaligned cubic bezier.  This seems to produce
+            a very good approximation so probably GDI+ does the same thing -- a
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawClosedCurve(System.Drawing.Pen,System.Drawing.PointF[],System.Single,System.Drawing.Drawing2D.FillMode)">
             <summary>
             Implemented
             </summary>
         </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawRectangle(System.Drawing.Pen,System.Single,System.Single,System.Single,System.Single)">
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawClosedCurve(System.Drawing.Pen,System.Drawing.Point[])">
             <summary>
             Implemented
             </summary>
         </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawRectangles(System.Drawing.Pen,System.Drawing.RectangleF[])">
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawClosedCurve(System.Drawing.Pen,System.Drawing.Point[],System.Single,System.Drawing.Drawing2D.FillMode)">
             <summary>
             Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawRectangle(System.Drawing.Pen,System.Int32,System.Int32,System.Int32,System.Int32)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawRectangles(System.Drawing.Pen,System.Drawing.Rectangle[])">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawEllipse(System.Drawing.Pen,System.Drawing.RectangleF)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawEllipse(System.Drawing.Pen,System.Single,System.Single,System.Single,System.Single)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawEllipse(System.Drawing.Pen,System.Drawing.Rectangle)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawEllipse(System.Drawing.Pen,System.Int32,System.Int32,System.Int32,System.Int32)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawPie(System.Drawing.Pen,System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)">
-            <summary>
-            Implemented.  <c>DrawPie</c> functions work correctly and thus produce different output from GDI+ if the ellipse is not circular.
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawPie(System.Drawing.Pen,System.Drawing.RectangleF,System.Single,System.Single)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawPie(System.Drawing.Pen,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawPie(System.Drawing.Pen,System.Drawing.Rectangle,System.Single,System.Single)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawPolygon(System.Drawing.Pen,System.Drawing.PointF[])">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawPolygon(System.Drawing.Pen,System.Drawing.Point[])">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawPath(System.Drawing.Pen,System.Drawing.Drawing2D.GraphicsPath)">
-            <summary>
-            Not implemented because GDI+ regions/paths are not emulated.
             </summary>
         </member>
         <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawCurve(System.Drawing.Pen,System.Drawing.PointF[])">
@@ -365,232 +295,24 @@
             Implemented
             </summary>
         </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawClosedCurve(System.Drawing.Pen,System.Drawing.PointF[])">
-            <summary>
-            Implemented.  The <c>DrawClosedCurve</c> functions emulate GDI behavior by drawing a coaligned cubic bezier.  This seems to produce
-            a very good approximation so probably GDI+ does the same thing -- a
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawClosedCurve(System.Drawing.Pen,System.Drawing.PointF[],System.Single,System.Drawing.Drawing2D.FillMode)">
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawEllipse(System.Drawing.Pen,System.Drawing.RectangleF)">
             <summary>
             Implemented
             </summary>
         </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawClosedCurve(System.Drawing.Pen,System.Drawing.Point[])">
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawEllipse(System.Drawing.Pen,System.Single,System.Single,System.Single,System.Single)">
             <summary>
             Implemented
             </summary>
         </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawClosedCurve(System.Drawing.Pen,System.Drawing.Point[],System.Single,System.Drawing.Drawing2D.FillMode)">
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawEllipse(System.Drawing.Pen,System.Drawing.Rectangle)">
             <summary>
             Implemented
             </summary>
         </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.Clear(System.Drawing.Color)">
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawEllipse(System.Drawing.Pen,System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
             Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillRectangle(System.Drawing.Brush,System.Drawing.RectangleF)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillRectangle(System.Drawing.Brush,System.Single,System.Single,System.Single,System.Single)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillRectangles(System.Drawing.Brush,System.Drawing.RectangleF[])">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillRectangle(System.Drawing.Brush,System.Drawing.Rectangle)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillRectangle(System.Drawing.Brush,System.Int32,System.Int32,System.Int32,System.Int32)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillRectangles(System.Drawing.Brush,System.Drawing.Rectangle[])">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillPolygon(System.Drawing.Brush,System.Drawing.PointF[])">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillPolygon(System.Drawing.Brush,System.Drawing.Point[])">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillPolygon(System.Drawing.Brush,System.Drawing.PointF[],System.Drawing.Drawing2D.FillMode)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillPolygon(System.Drawing.Brush,System.Drawing.Point[],System.Drawing.Drawing2D.FillMode)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillEllipse(System.Drawing.Brush,System.Drawing.RectangleF)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillEllipse(System.Drawing.Brush,System.Single,System.Single,System.Single,System.Single)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillEllipse(System.Drawing.Brush,System.Drawing.Rectangle)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillEllipse(System.Drawing.Brush,System.Int32,System.Int32,System.Int32,System.Int32)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillPie(System.Drawing.Brush,System.Drawing.Rectangle,System.Single,System.Single)">
-            <summary>
-            Implemented <c>FillPie</c> functions work correctly and thus produce different output from GDI+ if the ellipse is not circular.
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillPie(System.Drawing.Brush,System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillPie(System.Drawing.Brush,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillPath(System.Drawing.Brush,System.Drawing.Drawing2D.GraphicsPath)">
-            <summary>
-            Not implemented, because GDI+ regions/paths are not emulated.
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillClosedCurve(System.Drawing.Brush,System.Drawing.PointF[])">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillClosedCurve(System.Drawing.Brush,System.Drawing.PointF[],System.Drawing.Drawing2D.FillMode)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillClosedCurve(System.Drawing.Brush,System.Drawing.PointF[],System.Drawing.Drawing2D.FillMode,System.Single)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillClosedCurve(System.Drawing.Brush,System.Drawing.Point[])">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillClosedCurve(System.Drawing.Brush,System.Drawing.Point[],System.Drawing.Drawing2D.FillMode)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillClosedCurve(System.Drawing.Brush,System.Drawing.Point[],System.Drawing.Drawing2D.FillMode,System.Single)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillRegion(System.Drawing.Brush,System.Drawing.Region)">
-            <summary>
-            Not implemented, because GDI+ regions/paths are not emulated.
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawString(System.String,System.Drawing.Font,System.Drawing.Brush,System.Single,System.Single)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawString(System.String,System.Drawing.Font,System.Drawing.Brush,System.Drawing.PointF)">
-            <summary>
-            Implemented.
-            <para>In general, DrawString functions work, but it is impossible to guarantee that an SVG renderer will have a certain font and draw it in the 
-            same way as GDI+.
-            </para>
-            <para>
-            SVG does not do word wrapping and SvgGdi does not emulate it yet (although clipping is working).  The plan is to wait till SVG 1.2 becomes available, since 1.2 contains text
-            wrapping/flowing attributes.
-            </para>
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawString(System.String,System.Drawing.Font,System.Drawing.Brush,System.Single,System.Single,System.Drawing.StringFormat)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawString(System.String,System.Drawing.Font,System.Drawing.Brush,System.Drawing.PointF,System.Drawing.StringFormat)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawString(System.String,System.Drawing.Font,System.Drawing.Brush,System.Drawing.RectangleF)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawString(System.String,System.Drawing.Font,System.Drawing.Brush,System.Drawing.RectangleF,System.Drawing.StringFormat)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.MeasureString(System.String,System.Drawing.Font,System.Drawing.SizeF,System.Drawing.StringFormat,System.Int32@,System.Int32@)">
-            <summary>
-            This method is implemented and produces a result which is often correct, but it is impossible to guarantee because 'MeasureString' is a fundamentally inapplicable to device independent output like SVG. 
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.MeasureString(System.String,System.Drawing.Font,System.Drawing.PointF,System.Drawing.StringFormat)">
-            <summary>
-            This method is implemented and produces a result which is often correct, but it is impossible to guarantee because 'MeasureString' is a fundamentally inapplicable to device independent output like SVG. 
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.MeasureString(System.String,System.Drawing.Font,System.Drawing.SizeF)">
-            <summary>
-            This method is implemented and produces a result which is often correct, but it is impossible to guarantee because 'MeasureString' is a fundamentally inapplicable to device independent output like SVG. 
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.MeasureString(System.String,System.Drawing.Font,System.Drawing.SizeF,System.Drawing.StringFormat)">
-            <summary>
-            This method is implemented and produces a result which is often correct, but it is impossible to guarantee because 'MeasureString' is a fundamentally inapplicable to device independent output like SVG. 
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.MeasureString(System.String,System.Drawing.Font)">
-            <summary>
-             This method is implemented and produces a result which is often correct, but it is impossible to guarantee because 'MeasureString' is a fundamentally inapplicable to device independent output like SVG. 
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.MeasureString(System.String,System.Drawing.Font,System.Int32)">
-            <summary>
-             This method is implemented and produces a result which is often correct, but it is impossible to guarantee because 'MeasureString' is a fundamentally inapplicable to device independent output like SVG. 
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.MeasureString(System.String,System.Drawing.Font,System.Int32,System.Drawing.StringFormat)">
-            <summary>
-            This method is implemented and produces a result which is often correct, but it is impossible to guarantee because 'MeasureString' is a fundamentally inapplicable to device independent output like SVG. 
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.MeasureCharacterRanges(System.String,System.Drawing.Font,System.Drawing.RectangleF,System.Drawing.StringFormat)">
-            <summary>
-             This method is implemented and produces a result which is often correct, but it is impossible to guarantee because 'MeasureString' is a fundamentally inapplicable to device independent output like SVG. 
             </summary>
         </member>
         <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawIcon(System.Drawing.Icon,System.Int32,System.Int32)">
@@ -649,26 +371,6 @@
             </summary>
         </member>
         <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawImage(System.Drawing.Image,System.Int32,System.Int32,System.Int32,System.Int32)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawImageUnscaled(System.Drawing.Image,System.Drawing.Point)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawImageUnscaled(System.Drawing.Image,System.Int32,System.Int32)">
-            <summary>
-            Implemented
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawImageUnscaled(System.Drawing.Image,System.Drawing.Rectangle)">
-            <summary>
-            Implemented.  There seems to be a GDI bug in that the image is *not* clipped to the rectangle.  We do clip it.
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawImageUnscaled(System.Drawing.Image,System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
             Implemented
             </summary>
@@ -748,6 +450,454 @@
             Not implemented.
             </summary>
         </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawImageUnscaled(System.Drawing.Image,System.Drawing.Point)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawImageUnscaled(System.Drawing.Image,System.Int32,System.Int32)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawImageUnscaled(System.Drawing.Image,System.Drawing.Rectangle)">
+            <summary>
+            Implemented.  There seems to be a GDI bug in that the image is *not* clipped to the rectangle.  We do clip it.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawImageUnscaled(System.Drawing.Image,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawLine(System.Drawing.Pen,System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawLine(System.Drawing.Pen,System.Drawing.PointF,System.Drawing.PointF)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawLine(System.Drawing.Pen,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawLine(System.Drawing.Pen,System.Drawing.Point,System.Drawing.Point)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawLines(System.Drawing.Pen,System.Drawing.PointF[])">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawLines(System.Drawing.Pen,System.Drawing.Point[])">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawPath(System.Drawing.Pen,System.Drawing.Drawing2D.GraphicsPath)">
+            <summary>
+            Not implemented because GDI+ regions/paths are not emulated.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawPie(System.Drawing.Pen,System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Implemented.  <c>DrawPie</c> functions work correctly and thus produce different output from GDI+ if the ellipse is not circular.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawPie(System.Drawing.Pen,System.Drawing.RectangleF,System.Single,System.Single)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawPie(System.Drawing.Pen,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawPie(System.Drawing.Pen,System.Drawing.Rectangle,System.Single,System.Single)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawPolygon(System.Drawing.Pen,System.Drawing.PointF[])">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawPolygon(System.Drawing.Pen,System.Drawing.Point[])">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawRectangle(System.Drawing.Pen,System.Drawing.Rectangle)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawRectangle(System.Drawing.Pen,System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawRectangle(System.Drawing.Pen,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawRectangles(System.Drawing.Pen,System.Drawing.RectangleF[])">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawRectangles(System.Drawing.Pen,System.Drawing.Rectangle[])">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawString(System.String,System.Drawing.Font,System.Drawing.Brush,System.Single,System.Single)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawString(System.String,System.Drawing.Font,System.Drawing.Brush,System.Drawing.PointF)">
+            <summary>
+            Implemented.
+            <para>In general, DrawString functions work, but it is impossible to guarantee that an SVG renderer will have a certain font and draw it in the
+            same way as GDI+.
+            </para>
+            <para>
+            SVG does not do word wrapping and SvgGdi does not emulate it yet (although clipping is working).  The plan is to wait till SVG 1.2 becomes available, since 1.2 contains text
+            wrapping/flowing attributes.
+            </para>
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawString(System.String,System.Drawing.Font,System.Drawing.Brush,System.Single,System.Single,System.Drawing.StringFormat)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawString(System.String,System.Drawing.Font,System.Drawing.Brush,System.Drawing.PointF,System.Drawing.StringFormat)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawString(System.String,System.Drawing.Font,System.Drawing.Brush,System.Drawing.RectangleF)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawString(System.String,System.Drawing.Font,System.Drawing.Brush,System.Drawing.RectangleF,System.Drawing.StringFormat)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.EndContainer(System.Drawing.Drawing2D.GraphicsContainer)">
+            <summary>
+            The effect of calling this method is to pop out of the closest SVG group.  This simulates restoring GDI+ state from a <c>GraphicsContainer</c>
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.ExcludeClip(System.Drawing.Rectangle)">
+            <summary>
+            Not implemented, because SvgGdi does not try and emulate GDI+ regions.  Only rectangular clip regions work.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.ExcludeClip(System.Drawing.Region)">
+            <summary>
+            Not implemented, because SvgGdi does not try and emulate GDI+ regions.  Only rectangular clip regions work.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillClosedCurve(System.Drawing.Brush,System.Drawing.PointF[])">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillClosedCurve(System.Drawing.Brush,System.Drawing.PointF[],System.Drawing.Drawing2D.FillMode)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillClosedCurve(System.Drawing.Brush,System.Drawing.PointF[],System.Drawing.Drawing2D.FillMode,System.Single)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillClosedCurve(System.Drawing.Brush,System.Drawing.Point[])">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillClosedCurve(System.Drawing.Brush,System.Drawing.Point[],System.Drawing.Drawing2D.FillMode)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillClosedCurve(System.Drawing.Brush,System.Drawing.Point[],System.Drawing.Drawing2D.FillMode,System.Single)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillEllipse(System.Drawing.Brush,System.Drawing.RectangleF)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillEllipse(System.Drawing.Brush,System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillEllipse(System.Drawing.Brush,System.Drawing.Rectangle)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillEllipse(System.Drawing.Brush,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillPath(System.Drawing.Brush,System.Drawing.Drawing2D.GraphicsPath)">
+            <summary>
+            Not implemented, because GDI+ regions/paths are not emulated.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillPie(System.Drawing.Brush,System.Drawing.Rectangle,System.Single,System.Single)">
+            <summary>
+            Implemented <c>FillPie</c> functions work correctly and thus produce different output from GDI+ if the ellipse is not circular.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillPie(System.Drawing.Brush,System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillPie(System.Drawing.Brush,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillPolygon(System.Drawing.Brush,System.Drawing.PointF[])">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillPolygon(System.Drawing.Brush,System.Drawing.Point[])">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillPolygon(System.Drawing.Brush,System.Drawing.PointF[],System.Drawing.Drawing2D.FillMode)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillPolygon(System.Drawing.Brush,System.Drawing.Point[],System.Drawing.Drawing2D.FillMode)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillRectangle(System.Drawing.Brush,System.Drawing.RectangleF)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillRectangle(System.Drawing.Brush,System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillRectangle(System.Drawing.Brush,System.Drawing.Rectangle)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillRectangle(System.Drawing.Brush,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillRectangles(System.Drawing.Brush,System.Drawing.RectangleF[])">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillRectangles(System.Drawing.Brush,System.Drawing.Rectangle[])">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.FillRegion(System.Drawing.Brush,System.Drawing.Region)">
+            <summary>
+            Not implemented, because GDI+ regions/paths are not emulated.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.Flush">
+            <summary>
+            Does nothing
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.Flush(System.Drawing.Drawing2D.FlushIntention)">
+            <summary>
+            Does nothing
+            </summary>
+            <param name="intention"></param>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.GetNearestColor(System.Drawing.Color)">
+            <summary>
+            Not meaningful when there is no actual display device.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.IntersectClip(System.Drawing.Rectangle)">
+            <summary>
+            Not implemented, because SvgGdi does not try and emulate GDI+ regions.  Only rectangular clip regions work.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.IntersectClip(System.Drawing.RectangleF)">
+            <summary>
+            Not implemented, because SvgGdi does not try and emulate GDI+ regions.  Only rectangular clip regions work.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.IntersectClip(System.Drawing.Region)">
+            <summary>
+            Not implemented, because SvgGdi does not try and emulate GDI+ regions.  Only rectangular clip regions work.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.IsVisible(System.Int32,System.Int32)">
+            <summary>
+            Not implemented, because SvgGdi does not try and emulate GDI+ regions.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.IsVisible(System.Drawing.Point)">
+            <summary>
+            Not implemented, because SvgGdi does not try and emulate GDI+ regions.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.IsVisible(System.Single,System.Single)">
+            <summary>
+            Not implemented, because SvgGdi does not try and emulate GDI+ regions.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.IsVisible(System.Drawing.PointF)">
+            <summary>
+            Not implemented, because SvgGdi does not try and emulate GDI+ regions.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.IsVisible(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Not implemented, because SvgGdi does not try and emulate GDI+ regions.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.IsVisible(System.Drawing.Rectangle)">
+            <summary>
+            Not implemented, because SvgGdi does not try and emulate GDI+ regions.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.IsVisible(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Not implemented, because SvgGdi does not try and emulate GDI+ regions.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.IsVisible(System.Drawing.RectangleF)">
+            <summary>
+            Not implemented, because SvgGdi does not try and emulate GDI+ regions.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.MeasureCharacterRanges(System.String,System.Drawing.Font,System.Drawing.RectangleF,System.Drawing.StringFormat)">
+            <summary>
+             This method is implemented and produces a result which is often correct, but it is impossible to guarantee because 'MeasureString' is a fundamentally inapplicable to device independent output like SVG.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.MeasureString(System.String,System.Drawing.Font,System.Drawing.SizeF,System.Drawing.StringFormat,System.Int32@,System.Int32@)">
+            <summary>
+            This method is implemented and produces a result which is often correct, but it is impossible to guarantee because 'MeasureString' is a fundamentally inapplicable to device independent output like SVG.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.MeasureString(System.String,System.Drawing.Font,System.Drawing.PointF,System.Drawing.StringFormat)">
+            <summary>
+            This method is implemented and produces a result which is often correct, but it is impossible to guarantee because 'MeasureString' is a fundamentally inapplicable to device independent output like SVG.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.MeasureString(System.String,System.Drawing.Font,System.Drawing.SizeF)">
+            <summary>
+            This method is implemented and produces a result which is often correct, but it is impossible to guarantee because 'MeasureString' is a fundamentally inapplicable to device independent output like SVG.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.MeasureString(System.String,System.Drawing.Font,System.Drawing.SizeF,System.Drawing.StringFormat)">
+            <summary>
+            This method is implemented and produces a result which is often correct, but it is impossible to guarantee because 'MeasureString' is a fundamentally inapplicable to device independent output like SVG.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.MeasureString(System.String,System.Drawing.Font)">
+            <summary>
+             This method is implemented and produces a result which is often correct, but it is impossible to guarantee because 'MeasureString' is a fundamentally inapplicable to device independent output like SVG.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.MeasureString(System.String,System.Drawing.Font,System.Int32)">
+            <summary>
+             This method is implemented and produces a result which is often correct, but it is impossible to guarantee because 'MeasureString' is a fundamentally inapplicable to device independent output like SVG.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.MeasureString(System.String,System.Drawing.Font,System.Int32,System.Drawing.StringFormat)">
+            <summary>
+            This method is implemented and produces a result which is often correct, but it is impossible to guarantee because 'MeasureString' is a fundamentally inapplicable to device independent output like SVG.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.MultiplyTransform(System.Drawing.Drawing2D.Matrix)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.MultiplyTransform(System.Drawing.Drawing2D.Matrix,System.Drawing.Drawing2D.MatrixOrder)">
+            <summary>
+            Implemented, but ignores <c>order</c>
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.ResetClip">
+            <summary>
+            Implemented.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.ResetTransform">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.Restore(System.Drawing.Drawing2D.GraphicsState)">
+            <summary>
+            Not implemented, because SvgGdi does not try and emulate GDI+ regions.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.RotateTransform(System.Single)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.RotateTransform(System.Single,System.Drawing.Drawing2D.MatrixOrder)">
+            <summary>
+            Implemented, but ignores <c>order</c>
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.Save">
+            <summary>
+            Not implemented, because SvgGdi does not try and emulate GDI+ regions.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.ScaleTransform(System.Single,System.Single)">
+            <summary>
+            Implemented
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.ScaleTransform(System.Single,System.Single,System.Drawing.Drawing2D.MatrixOrder)">
+            <summary>
+            Implemented, but ignores <c>order</c>
+            </summary>
+        </member>
         <member name="M:SvgNet.SvgGdi.SvgGraphics.SetClip(System.Drawing.Graphics)">
             <summary>
             Not implemented.
@@ -793,34 +943,14 @@
             Not implemented, because SvgGdi does not try and emulate GDI+ regions.  Only rectangular clip regions work.
             </summary>
         </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.IntersectClip(System.Drawing.Rectangle)">
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.TransformPoints(System.Drawing.Drawing2D.CoordinateSpace,System.Drawing.Drawing2D.CoordinateSpace,System.Drawing.PointF[])">
             <summary>
-            Not implemented, because SvgGdi does not try and emulate GDI+ regions.  Only rectangular clip regions work.
+            Not implemented.
             </summary>
         </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.IntersectClip(System.Drawing.RectangleF)">
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.TransformPoints(System.Drawing.Drawing2D.CoordinateSpace,System.Drawing.Drawing2D.CoordinateSpace,System.Drawing.Point[])">
             <summary>
-            Not implemented, because SvgGdi does not try and emulate GDI+ regions.  Only rectangular clip regions work.
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.IntersectClip(System.Drawing.Region)">
-            <summary>
-            Not implemented, because SvgGdi does not try and emulate GDI+ regions.  Only rectangular clip regions work.
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.ExcludeClip(System.Drawing.Rectangle)">
-            <summary>
-            Not implemented, because SvgGdi does not try and emulate GDI+ regions.  Only rectangular clip regions work.
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.ExcludeClip(System.Drawing.Region)">
-            <summary>
-            Not implemented, because SvgGdi does not try and emulate GDI+ regions.  Only rectangular clip regions work.
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.ResetClip">
-            <summary>
-            Implemented.
+            Not implemented.
             </summary>
         </member>
         <member name="M:SvgNet.SvgGdi.SvgGraphics.TranslateClip(System.Single,System.Single)">
@@ -833,173 +963,37 @@
             Not implemented, because SvgGdi does not try and emulate GDI+ regions.
             </summary>
         </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.IsVisible(System.Int32,System.Int32)">
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.TranslateTransform(System.Single,System.Single)">
             <summary>
-            Not implemented, because SvgGdi does not try and emulate GDI+ regions.
+            Implemented
             </summary>
         </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.IsVisible(System.Drawing.Point)">
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.TranslateTransform(System.Single,System.Single,System.Drawing.Drawing2D.MatrixOrder)">
             <summary>
-            Not implemented, because SvgGdi does not try and emulate GDI+ regions.
+            Implemented, but ignores <c>order</c>
             </summary>
         </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.IsVisible(System.Single,System.Single)">
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.WriteSVGString">
             <summary>
-            Not implemented, because SvgGdi does not try and emulate GDI+ regions.
+            Get a string containing an SVG document.  The very heart of SvgGdi.  It calls <c>WriteSVGString</c> on the <see cref="T:SvgNet.SvgElement"/>
+            at the root of this <c>SvgGraphics</c> and returns the resulting string.
             </summary>
         </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.IsVisible(System.Drawing.PointF)">
+        <member name="M:SvgNet.SvgGdi.SvgGraphics.IsEndAnchorSimple(System.Drawing.Drawing2D.LineCap)">
             <summary>
-            Not implemented, because SvgGdi does not try and emulate GDI+ regions.
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.IsVisible(System.Int32,System.Int32,System.Int32,System.Int32)">
-            <summary>
-            Not implemented, because SvgGdi does not try and emulate GDI+ regions.
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.IsVisible(System.Drawing.Rectangle)">
-            <summary>
-            Not implemented, because SvgGdi does not try and emulate GDI+ regions.
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.IsVisible(System.Single,System.Single,System.Single,System.Single)">
-            <summary>
-            Not implemented, because SvgGdi does not try and emulate GDI+ regions.
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.IsVisible(System.Drawing.RectangleF)">
-            <summary>
-            Not implemented, because SvgGdi does not try and emulate GDI+ regions.
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.Save">
-            <summary>
-            Not implemented, because SvgGdi does not try and emulate GDI+ regions.
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.Restore(System.Drawing.Drawing2D.GraphicsState)">
-            <summary>
-            Not implemented, because SvgGdi does not try and emulate GDI+ regions.
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.BeginContainer(System.Drawing.RectangleF,System.Drawing.RectangleF,System.Drawing.GraphicsUnit)">
-            <summary>
-            Not implemented.
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.BeginContainer">
-            <summary>
-            Implemented, but returns null as SVG has a proper scenegraph, unlike GDI+.  The effect of calling <c>BeginContainer</c> is to create a new SVG group
-            and apply transformations etc to produce the effect that a GDI+ container would produce.
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.EndContainer(System.Drawing.Drawing2D.GraphicsContainer)">
-            <summary>
-            The effect of calling this method is to pop out of the closest SVG group.  This simulates restoring GDI+ state from a <c>GraphicsContainer</c>
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.BeginContainer(System.Drawing.Rectangle,System.Drawing.Rectangle,System.Drawing.GraphicsUnit)">
-            <summary>
-            Not implemented.
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.AddMetafileComment(System.Byte[])">
-            <summary>
-            Does nothing.  Should perhaps insert a comment into the SVG XML output, but is this really analogous
-            to a metafile comment.
-            </summary>
-        </member>
-        <member name="P:SvgNet.SvgGdi.SvgGraphics.CompositingMode">
-            <summary>
-            Get is not implemented (throws an exception).  Set does nothing.
-            </summary>
-        </member>
-        <member name="P:SvgNet.SvgGdi.SvgGraphics.RenderingOrigin">
-            <summary>
-            Get is not implemented (throws an exception).  Set does nothing.
-            </summary>
-        </member>
-        <member name="P:SvgNet.SvgGdi.SvgGraphics.CompositingQuality">
-            <summary>
-            Get is not implemented (throws an exception).  Set does nothing.
-            </summary>
-        </member>
-        <member name="P:SvgNet.SvgGdi.SvgGraphics.TextRenderingHint">
-            <summary>
-            Get is not implemented (throws an exception).
-            </summary>
-        </member>
-        <member name="P:SvgNet.SvgGdi.SvgGraphics.TextContrast">
-            <summary>
-            Get is not implemented (throws an exception).
-            </summary>
-        </member>
-        <member name="P:SvgNet.SvgGdi.SvgGraphics.PixelOffsetMode">
-            <summary>
-            Get is not implemented (throws an exception).  Set does nothing.
-            </summary>
-        </member>
-        <member name="P:SvgNet.SvgGdi.SvgGraphics.InterpolationMode">
-            <summary>
-            Get is not implemented (throws an exception).  Set does nothing.
-            </summary>
-        </member>
-        <member name="P:SvgNet.SvgGdi.SvgGraphics.PageUnit">
-            <summary>
-            Get is not implemented (throws an exception).  Set does nothing.
-            </summary>
-        </member>
-        <member name="P:SvgNet.SvgGdi.SvgGraphics.PageScale">
-            <summary>
-            Get is not implemented (throws an exception).  Set does nothing.
-            </summary>
-        </member>
-        <member name="P:SvgNet.SvgGdi.SvgGraphics.DpiX">
-            <summary>
-            Not implemented.
-            </summary>
-        </member>
-        <member name="P:SvgNet.SvgGdi.SvgGraphics.DpiY">
-            <summary>
-            Not implemented.
-            </summary>
-        </member>
-        <member name="P:SvgNet.SvgGdi.SvgGraphics.Clip">
-            <summary>
-            Not implemented.
-            </summary>
-        </member>
-        <member name="P:SvgNet.SvgGdi.SvgGraphics.ClipBounds">
-            <summary>
-            Not implemented.
-            </summary>
-        </member>
-        <member name="P:SvgNet.SvgGdi.SvgGraphics.IsClipEmpty">
-            <summary>
-            Not implemented.
-            </summary>
-        </member>
-        <member name="P:SvgNet.SvgGdi.SvgGraphics.VisibleClipBounds">
-            <summary>
-            Not implemented.
-            </summary>
-        </member>
-        <member name="P:SvgNet.SvgGdi.SvgGraphics.IsVisibleClipEmpty">
-            <summary>
-            Not implemented.
+            Decides whether the pen's anchor type is simple enough to be drawn by a fast approximation using the DrawEndAnchor
             </summary>
         </member>
         <member name="M:SvgNet.SvgGdi.SvgGraphics.HandleBrush(System.Drawing.Brush)">
             <summary>
-            When a GDI instruction with a brush parameter is called, there can be a lot we have to do to emulate the brush.  The aim is to return a 
+            When a GDI instruction with a brush parameter is called, there can be a lot we have to do to emulate the brush.  The aim is to return a
             style that represents the brush.
             <para>
             Solid brush is very easy.
             </para>
             <para>
             Linear grad brush:  we ignore the blend curve and the transformation (and therefore the rotation parameter if any)
-            Hatch brush: 
+            Hatch brush:
             </para>
             <para>
             Other types of brushes are too hard to emulate and are rendered pink.
@@ -1008,9 +1002,15 @@
             <param name="br"></param>
             <returns></returns>
         </member>
-        <member name="M:SvgNet.SvgGdi.SvgGraphics.IsEndAnchorSimple(System.Drawing.Drawing2D.LineCap)">
+        <member name="T:SvgNet.SvgGdi.SvgGraphics.MatrixStack">
             <summary>
-            Decides whether the pen's anchor type is simple enough to be drawn by a fast approximation using the DrawEndAnchor
+            This class is needed because GDI+ does not maintain a proper scene graph; rather it maintains a single transformation matrix
+            which is applied to each new object.  The matrix is saved and reloaded when 'begincontainer' and 'endcontainer' are called.  SvgGraphics has to
+            emulate this behaviour.
+            <para>
+            This matrix stack caches it's 'result' (ie. the current transformation, the product of all matrices).  The result is
+            recalculated when necessary.
+            </para>
             </summary>
         </member>
         <member name="T:SvgNet.IElementWithText">
@@ -1315,14 +1315,14 @@
             A general-purpose exception for problems that occur in SvgNet.
             </summary>
         </member>
-        <member name="P:SvgNet.SvgException.Msg">
-            <summary>
-            A message describing the problem.
-            </summary>
-        </member>
         <member name="P:SvgNet.SvgException.Ctx">
             <summary>
             A string intended to supply context information.
+            </summary>
+        </member>
+        <member name="P:SvgNet.SvgException.Msg">
+            <summary>
+            A message describing the problem.
             </summary>
         </member>
         <member name="T:SvgNet.SvgTypes.SvgStyle">
@@ -1547,6 +1547,18 @@
             and the transformation easier.  All SVG elements that actually represent visual entities or groups of entities are <c>SvgStyledTransformedElements</c>.
             </summary>
         </member>
+        <member name="P:SvgNet.SvgStyledTransformedElement.Style">
+            <summary>
+            Provides an easy way to get the attribute called "style" as an <c>SvgStyle</c> object.  If no such attribute has been set, one is created when
+            this property is read.
+            </summary>
+        </member>
+        <member name="P:SvgNet.SvgStyledTransformedElement.Transform">
+            <summary>
+            Provides an easy way to get the attribute called "transform" as an <c>SvgTransformList</c> object.  If no such attribute has been set, one is created when
+            this property is read.
+            </summary>
+        </member>
         <member name="M:SvgNet.SvgStyledTransformedElement.ReadXmlElement(System.Xml.XmlDocument,System.Xml.XmlElement)">
             <summary>
             Given a document and a current node, read this element from the node.
@@ -1562,18 +1574,6 @@
             </summary>
             <param name="doc"></param>
             <param name="parent"></param>
-        </member>
-        <member name="P:SvgNet.SvgStyledTransformedElement.Style">
-            <summary>
-            Provides an easy way to get the attribute called "style" as an <c>SvgStyle</c> object.  If no such attribute has been set, one is created when
-            this property is read.
-            </summary>
-        </member>
-        <member name="P:SvgNet.SvgStyledTransformedElement.Transform">
-            <summary>
-            Provides an easy way to get the attribute called "transform" as an <c>SvgTransformList</c> object.  If no such attribute has been set, one is created when
-            this property is read.
-            </summary>
         </member>
         <member name="T:SvgNet.TextNode">
             <summary>

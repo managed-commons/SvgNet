@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
     <ProductVersion>8.0.30319</ProductVersion>
@@ -23,6 +23,7 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <OldToolsVersion>0.0</OldToolsVersion>
     <UpgradeBackupLocation />
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -41,6 +42,8 @@
     <WarningLevel>4</WarningLevel>
     <DebugType>full</DebugType>
     <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
+    <NoWarn>CS1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -59,6 +62,8 @@
     <WarningLevel>4</WarningLevel>
     <DebugType>none</DebugType>
     <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
+    <NoWarn>CS1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System">
@@ -81,12 +86,15 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Form1.cs">
+    <Compile Include="SvgGdiTestForm.Designer.cs">
+      <DependentUpon>SvgGdiTestForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SvgGdiTestForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <EmbeddedResource Include="App.ico" />
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="SvgGdiTestForm.resx">
+      <DependentUpon>SvgGdiTestForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="test.bmp" />
   </ItemGroup>
@@ -95,6 +103,9 @@
       <Project>{bb4c8021-b5e1-4de2-82cb-14bdfb9837e4}</Project>
       <Name>SvgNet</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -1,7 +1,7 @@
 /*
     Copyright © 2003 RiskCare Ltd. All rights reserved.
     Copyright © 2010 SvgNet & SvgGdi Bridge Project. All rights reserved.
-    Copyright © 2015 Rafael Teixeira, Mojmír Němeček, Benjamin Peterson and Other Contributors
+    Copyright © 2015, 2017 Rafael Teixeira, Mojmír Němeček, Benjamin Peterson and Other Contributors
 
     Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
@@ -172,10 +172,7 @@ namespace SvgNet
         /// long attributes like styles and transformations are represented with entities.</param>
         public string WriteSVGString(bool compressAttributes)
         {
-            string s;
-            string ents = "";
-
-            XmlDocument doc = new XmlDocument();
+            var doc = new XmlDocument();
 
             var declaration = doc.CreateXmlDeclaration("1.0", null, "yes");
             doc.AppendChild(declaration);
@@ -185,6 +182,7 @@ namespace SvgNet
 
             doc.DocumentElement.SetAttribute("xmlns", "http://www.w3.org/2000/svg");
 
+            var ents = string.Empty;
             if (compressAttributes)
                 ents = SvgFactory.CompressXML(doc, doc.DocumentElement);
 
@@ -194,21 +192,7 @@ namespace SvgNet
                 declaration
             );
 
-            //This complicated business of writing to a memory stream and then reading back out to a string
-            //is necessary in order to specify UTF8 -- for some reason the default is UTF16 (which makes most renderers
-            //give up)
-
-            MemoryStream ms = new MemoryStream();
-            XmlTextWriter wr = new XmlTextWriter(ms, new UTF8Encoding());
-
-            wr.Formatting = Formatting.None; // Indented formatting would be nice for debugging but causes unwanted trailing white spaces between <text> and <tspan> elements in Internet Explorer
-            doc.Save(wr);
-
-            s = ToUTF8(ms.ToArray());
-
-            wr.Close();
-
-            return s;
+            return ToXmlString(doc);
         }
 
         /// <summary>
@@ -218,7 +202,7 @@ namespace SvgNet
         /// <param name="parent">A node, or null if this element is to be the root element</param>
         public virtual void WriteXmlElements(XmlDocument doc, XmlElement parent)
         {
-            XmlElement me = doc.CreateElement("", Name, doc.NamespaceURI);
+            var me = doc.CreateElement("", Name, doc.NamespaceURI);
             foreach (string s in _atts.Keys)
             {
                 if (_atts[s] is float)
@@ -266,16 +250,32 @@ namespace SvgNet
             _idcounter++;
         }
 
-        private static string ToUTF8(byte[] buf) => Encoding.UTF8.GetString(buf, 0, buf.Length);
+        // Indented formatting would be nice for debugging but causes unwanted trailing white spaces between <text> and <tspan> elements in Internet Explorer
+        private static readonly XmlWriterSettings defaultXmlWriterSettings = new XmlWriterSettings
+        {
+            Encoding = Encoding.UTF8,
+            OmitXmlDeclaration = false,
+            Indent = false,
+            NewLineHandling = NewLineHandling.None,
+            ConformanceLevel = ConformanceLevel.Document,
+            NamespaceHandling = NamespaceHandling.Default
+        };
+
+        private static string ToXmlString(XmlDocument doc)
+        {
+            //    var sb = new StringBuilder();
+            //    var xwr = XmlWriter.Create(sb, defaultXmlWriterSettings);
+            //    doc.Save(xwr);
+            //    xwr.Close();
+            //    return sb.ToString();
+            return doc.OuterXml;
+        }
 
         private class DummyXmlResolver : XmlResolver
         {
             public override System.Net.ICredentials Credentials { set { } }
 
-            public override object GetEntity(Uri absoluteUri, string role, Type ofObjectToReturn)
-            {
-                return new MemoryStream();
-            }
+            public override object GetEntity(Uri absoluteUri, string role, Type ofObjectToReturn) => new MemoryStream();
         }
     }
 }
