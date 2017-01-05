@@ -12,7 +12,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>First packaging...</releaseNotes>
-    <copyright>Copyright 2003, 2010, 2015 RiskCare Ltd, SvgNet and SvgGdi Bridge Project, Rafael Teixeira, Mojmír Němeček</copyright>
+    <copyright>Copyright 2003, 2010, 2015, 2017 RiskCare Ltd, SvgNet and SvgGdi Bridge Project, Rafael Teixeira, Mojmír Němeček</copyright>
     <tags>SVG</tags>
   </metadata>
 </package>
