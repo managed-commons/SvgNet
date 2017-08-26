@@ -2317,9 +2317,81 @@ namespace SvgNet.SvgGdi
         }
 
         /// <summary>
-        /// Not implemented, because GDI+ regions/paths are not emulated.
+        /// Implemented
         /// </summary>
-        public void FillPath(Brush brush, GraphicsPath path) { throw new SvgGdiNotImpl("FillPath (Brush brush, GraphicsPath path)"); }
+        public void FillPath(Brush brush, GraphicsPath path)
+        {
+            GraphicsPathIterator subpaths = new GraphicsPathIterator(path);
+            GraphicsPath subpath = new GraphicsPath(path.FillMode);
+            subpaths.Rewind();
+            for (int s = 0; s < subpaths.SubpathCount; s++)
+            {
+                bool isClosed;
+                if (subpaths.NextSubpath(subpath, out isClosed) < 2 || !isClosed)
+                {
+                    if (subpath.PathPoints.Length < 2)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        PointF f = subpath.PathPoints[0];
+                        PointF l = subpath.PathPoints[subpath.PathPoints.Length - 1];
+                        if (f != l)
+                        {
+                            continue;
+                        }
+                    }
+                }
+                PointF start = new PointF(0, 0);
+                PointF origin = subpath.PathPoints[0];
+                PointF last = subpath.PathPoints[subpath.PathPoints.Length - 1];
+                int bezierCurvePointsIndex = 0;
+                PointF[] bezierCurvePoints = new PointF[4];
+                for (int i = 0; i < subpath.PathPoints.Length; i++)
+                {
+                    switch ((PathPointType)subpath.PathTypes[i] & PathPointType.PathTypeMask)
+                    {
+                        case PathPointType.Start:
+                            start = subpath.PathPoints[i];
+                            bezierCurvePoints[0] = subpath.PathPoints[i];
+                            bezierCurvePointsIndex = 1;
+                            continue;
+                        case PathPointType.Line:
+                            start = subpath.PathPoints[i];
+                            bezierCurvePoints[0] = subpath.PathPoints[i];
+                            bezierCurvePointsIndex = 1;
+                            continue;
+                        case PathPointType.Bezier3:
+                            bezierCurvePoints[bezierCurvePointsIndex++] = subpath.PathPoints[i];
+                            if (bezierCurvePointsIndex == 4)
+                            {
+                                FillBeziers(brush, bezierCurvePoints, path.FillMode);
+                                bezierCurvePoints = new PointF[4];
+                                bezierCurvePoints[0] = subpath.PathPoints[i];
+                                bezierCurvePointsIndex = 1;
+                                
+                            }
+                            continue;
+                        default:
+                            switch ((PathPointType)subpath.PathTypes[i])
+                            {
+                                case PathPointType.DashMode:
+                                    continue;
+                                default:
+                                    throw new SvgException("Unknown path type value: " + subpath.PathTypes[i]);
+                            }
+                    }
+                }
+                PathPointType lastType = (PathPointType)subpath.PathTypes[subpath.PathPoints.Length - 1];
+                if ((lastType & PathPointType.PathTypeMask) == PathPointType.Line)
+                {
+                    FillPolygon(brush, subpath.PathPoints, path.FillMode);
+                }
+            }
+            subpath.Dispose();
+            subpaths.Dispose();
+        }
 
         /// <summary>
         /// Implemented <c>FillPie</c> functions work correctly and thus produce different output from GDI+ if the ellipse is not circular.

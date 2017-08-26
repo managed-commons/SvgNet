@@ -499,6 +499,10 @@ namespace SvgGdiTest
                 myPath.SetMarkers();
                 myPath.AddEllipse(220, 220, 100, 100);
                 ig.DrawPath(new Pen(Color.Black), myPath);
+                LinearGradientBrush gbr2 = new LinearGradientBrush(new Point(0, 0), new Point(10, 20), Color.WhiteSmoke, Color.CornflowerBlue);
+                gbr2.WrapMode = WrapMode.TileFlipXY;
+                SolidBrush redBrush = new SolidBrush(Color.Red);
+                ig.FillPath(redBrush, myPath);
             }
             else
             {

@@ -664,7 +664,7 @@
         </member>
         <member name="M:SvgNet.SvgGdi.SvgGraphics.FillPath(System.Drawing.Brush,System.Drawing.Drawing2D.GraphicsPath)">
             <summary>
-            Not implemented, because GDI+ regions/paths are not emulated.
+            Implemented
             </summary>
         </member>
         <member name="M:SvgNet.SvgGdi.SvgGraphics.FillPie(System.Drawing.Brush,System.Drawing.Rectangle,System.Single,System.Single)">
