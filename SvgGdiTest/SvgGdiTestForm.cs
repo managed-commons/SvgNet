@@ -479,6 +479,27 @@ namespace SvgGdiTest
                 ig.EndContainer(cnt);
                 //ig.DrawImageUnscaled(bmp, 270, 450, 20, 20);
             }
+            else if (s == "Path")
+            {                
+                /* The following example GraphicsPath code comes from the MSDN docs on the GraphicsPathIterator class
+                 * https://msdn.microsoft.com/en-us/library/79k451ts.aspx
+                 * 
+                 */
+                // Create a graphics path.
+                GraphicsPath myPath = new GraphicsPath();
+
+                // Set up primitives to add to myPath.
+                Point[] myPoints = {new Point(20, 20), new Point(120, 120), new Point(20, 120),new Point(20, 20) };
+                Rectangle myRect = new Rectangle(120, 120, 100, 100);
+
+                // Add 3 lines, a rectangle, an ellipse, and 2 markers.
+                myPath.AddLines(myPoints);
+                myPath.SetMarkers();
+                myPath.AddRectangle(myRect);
+                myPath.SetMarkers();
+                myPath.AddEllipse(220, 220, 100, 100);
+                ig.DrawPath(new Pen(Color.Black), myPath);
+            }
             else
             {
                 throw new NotImplementedException();

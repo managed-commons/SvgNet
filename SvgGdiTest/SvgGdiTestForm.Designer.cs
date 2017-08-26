@@ -99,7 +99,8 @@ namespace SvgGdiTest
             "Images",
             "Text",
             "Rect-aligned Text",
-            "Fills"});
+            "Fills",
+            "Path"});
             this.cbWhat.Location = new System.Drawing.Point(816, 12);
             this.cbWhat.MaxDropDownItems = 30;
             this.cbWhat.Name = "cbWhat";

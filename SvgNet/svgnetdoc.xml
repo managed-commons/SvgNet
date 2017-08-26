@@ -502,7 +502,7 @@
         </member>
         <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawPath(System.Drawing.Pen,System.Drawing.Drawing2D.GraphicsPath)">
             <summary>
-            Not implemented because GDI+ regions/paths are not emulated.
+            Implemented.
             </summary>
         </member>
         <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawPie(System.Drawing.Pen,System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)">

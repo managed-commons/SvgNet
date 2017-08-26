@@ -1965,9 +1965,77 @@ namespace SvgNet.SvgGdi
         }
 
         /// <summary>
-        /// Not implemented because GDI+ regions/paths are not emulated.
+        /// Implemented.
         /// </summary>
-        public void DrawPath(Pen pen, GraphicsPath path) { throw new SvgGdiNotImpl("DrawPath (Pen pen, GraphicsPath path)"); }
+        public void DrawPath(Pen pen, GraphicsPath path)
+        {
+            DashStyle originalPenDashStyle = pen.DashStyle;
+            GraphicsPathIterator subpaths = new GraphicsPathIterator(path);
+            GraphicsPath subpath = new GraphicsPath(path.FillMode);
+            subpaths.Rewind();
+            for (int s = 0; s < subpaths.SubpathCount; s++)
+            {
+                bool isClosed;
+                if (subpaths.NextSubpath(subpath, out isClosed) == 0)
+                {
+                    continue;
+                }
+                PointF start = new PointF(0, 0);
+                PointF origin = subpath.PathPoints[0];
+                PointF last = subpath.PathPoints[subpath.PathPoints.Length - 1];
+                int bezierCurvePointsIndex = 0;
+                PointF[] bezierCurvePoints = new PointF[4];
+                for (int i = 0; i < subpath.PathPoints.Length; i++)
+                {
+                    switch ((PathPointType)subpath.PathTypes[i] & PathPointType.PathTypeMask)
+                    {
+                        case PathPointType.Start:
+                            start = subpath.PathPoints[i];
+                            bezierCurvePoints[0] = subpath.PathPoints[i];
+                            bezierCurvePointsIndex = 1;
+                            continue;
+                        case PathPointType.Line:
+                            DrawLine(pen, start, subpath.PathPoints[i]);
+                            start = subpath.PathPoints[i];
+                            bezierCurvePoints[0] = subpath.PathPoints[i];
+                            bezierCurvePointsIndex = 1;
+                            continue;
+                        case PathPointType.Bezier3:
+                            bezierCurvePoints[bezierCurvePointsIndex++] = subpath.PathPoints[i];
+                            if (bezierCurvePointsIndex == 4)
+                            {
+                                DrawBezier(pen, bezierCurvePoints[0], bezierCurvePoints[1], bezierCurvePoints[2], bezierCurvePoints[3]);
+                                bezierCurvePoints = new PointF[4];
+                                bezierCurvePoints[0] = subpath.PathPoints[i];
+                                bezierCurvePointsIndex = 1;
+                            }
+                            continue;
+                        default:
+                            switch ((PathPointType)subpath.PathTypes[i])
+                            {
+                                case PathPointType.DashMode:
+                                    pen.DashStyle = DashStyle.Dash;
+                                    continue;
+                                default:
+                                    throw new SvgException("Unknown path type value: " + subpath.PathTypes[i]);
+                            }
+                    }
+                }
+                if (isClosed)
+                {
+                    PathPointType lastType = (PathPointType) subpath.PathTypes[subpath.PathPoints.Length - 1];
+
+                    if ((lastType & PathPointType.PathTypeMask) == PathPointType.Line)
+                    {
+                        DrawLine(pen, last, origin);
+                    }
+                }
+                
+            }
+            subpath.Dispose();
+            subpaths.Dispose();
+            pen.DashStyle = originalPenDashStyle;
+        }
 
         /// <summary>
         /// Implemented.  <c>DrawPie</c> functions work correctly and thus produce different output from GDI+ if the ellipse is not circular.
