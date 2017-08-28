@@ -480,7 +480,7 @@ namespace SvgGdiTest
                 //ig.DrawImageUnscaled(bmp, 270, 450, 20, 20);
             }
             else if (s == "Path")
-            {                
+            {
                 /* The following example GraphicsPath code comes from the MSDN docs on the GraphicsPathIterator class
                  * https://msdn.microsoft.com/en-us/library/79k451ts.aspx
                  * 
@@ -489,7 +489,7 @@ namespace SvgGdiTest
                 GraphicsPath myPath = new GraphicsPath();
 
                 // Set up primitives to add to myPath.
-                Point[] myPoints = {new Point(20, 20), new Point(120, 120), new Point(20, 120),new Point(20, 20) };
+                Point[] myPoints = { new Point(20, 20), new Point(120, 120), new Point(20, 120), new Point(20, 20) };
                 Rectangle myRect = new Rectangle(120, 120, 100, 100);
 
                 // Add 3 lines, a rectangle, an ellipse, and 2 markers.
@@ -498,11 +498,12 @@ namespace SvgGdiTest
                 myPath.AddRectangle(myRect);
                 myPath.SetMarkers();
                 myPath.AddEllipse(220, 220, 100, 100);
+                myPath.AddLine(new PointF(40, 20), new PointF(80, 120));
                 ig.DrawPath(new Pen(Color.Black), myPath);
                 LinearGradientBrush gbr2 = new LinearGradientBrush(new Point(0, 0), new Point(10, 20), Color.WhiteSmoke, Color.CornflowerBlue);
                 gbr2.WrapMode = WrapMode.TileFlipXY;
                 SolidBrush redBrush = new SolidBrush(Color.Red);
-                ig.FillPath(redBrush, myPath);
+                ig.FillPath(gbr2, myPath);
             }
             else
             {

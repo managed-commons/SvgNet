@@ -16,6 +16,8 @@ using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.Globalization;
 using System.IO;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SvgNet.SvgGdi
 {
@@ -2327,67 +2329,24 @@ namespace SvgNet.SvgGdi
             for (int s = 0; s < subpaths.SubpathCount; s++)
             {
                 bool isClosed;
-                if (subpaths.NextSubpath(subpath, out isClosed) < 2 || !isClosed)
+                if (subpaths.NextSubpath(subpath, out isClosed) < 2)
                 {
-                    if (subpath.PathPoints.Length < 2)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        PointF f = subpath.PathPoints[0];
-                        PointF l = subpath.PathPoints[subpath.PathPoints.Length - 1];
-                        if (f != l)
-                        {
-                            continue;
-                        }
-                    }
+                    continue;
                 }
-                PointF start = new PointF(0, 0);
-                PointF origin = subpath.PathPoints[0];
-                PointF last = subpath.PathPoints[subpath.PathPoints.Length - 1];
-                int bezierCurvePointsIndex = 0;
-                PointF[] bezierCurvePoints = new PointF[4];
-                for (int i = 0; i < subpath.PathPoints.Length; i++)
+                if (!isClosed)
                 {
-                    switch ((PathPointType)subpath.PathTypes[i] & PathPointType.PathTypeMask)
-                    {
-                        case PathPointType.Start:
-                            start = subpath.PathPoints[i];
-                            bezierCurvePoints[0] = subpath.PathPoints[i];
-                            bezierCurvePointsIndex = 1;
-                            continue;
-                        case PathPointType.Line:
-                            start = subpath.PathPoints[i];
-                            bezierCurvePoints[0] = subpath.PathPoints[i];
-                            bezierCurvePointsIndex = 1;
-                            continue;
-                        case PathPointType.Bezier3:
-                            bezierCurvePoints[bezierCurvePointsIndex++] = subpath.PathPoints[i];
-                            if (bezierCurvePointsIndex == 4)
-                            {
-                                FillBeziers(brush, bezierCurvePoints, path.FillMode);
-                                bezierCurvePoints = new PointF[4];
-                                bezierCurvePoints[0] = subpath.PathPoints[i];
-                                bezierCurvePointsIndex = 1;
-                                
-                            }
-                            continue;
-                        default:
-                            switch ((PathPointType)subpath.PathTypes[i])
-                            {
-                                case PathPointType.DashMode:
-                                    continue;
-                                default:
-                                    throw new SvgException("Unknown path type value: " + subpath.PathTypes[i]);
-                            }
-                    }
+                    subpath.CloseAllFigures();
                 }
                 PathPointType lastType = (PathPointType)subpath.PathTypes[subpath.PathPoints.Length - 1];
-                if ((lastType & PathPointType.PathTypeMask) == PathPointType.Line)
+                if (subpath.PathTypes.Any(pt => ((PathPointType) pt & PathPointType.PathTypeMask) == PathPointType.Line))
                 {
                     FillPolygon(brush, subpath.PathPoints, path.FillMode);
                 }
+                else
+                {
+                    FillBeziers(brush, subpath.PathPoints, path.FillMode);
+                }                                
+
             }
             subpath.Dispose();
             subpaths.Dispose();
