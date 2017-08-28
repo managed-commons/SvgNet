@@ -1969,6 +1969,11 @@ namespace SvgNet.SvgGdi
         /// <summary>
         /// Implemented
         /// </summary>
+        /// <remarks>
+        /// Mainly based on the libgdi+ implementation: https://github.com/mono/libgdiplus/blob/master/src/graphics-cairo.c
+        /// and this SO question reply: https://stackoverflow.com/questions/1790862/how-to-determine-endpoints-of-arcs-in-graphicspath-pathpoints-and-pathtypes-arra
+        /// from SiiliconMind.
+        /// </remarks>
         public void DrawPath(Pen pen, GraphicsPath path)
         {
             //Save the original pen dash style in case we need to change it
@@ -1994,12 +1999,13 @@ namespace SvgNet.SvgGdi
                 PointF[] bezierCurvePoints = new PointF[4];
                 for (int i = 0; i < subpath.PathPoints.Length; i++)
                 {
-                    /* Each subpath point has a corresponding type which can be:
+                    /* Each subpath point has a corresponding path point type which can be:
                      *The point starts the subpath
                      *The point is a line point
                      *The point is Bezier curve point
+                     * Another point type like dash-mode
                      */
-                    switch ((PathPointType)subpath.PathTypes[i] & PathPointType.PathTypeMask)
+                    switch ((PathPointType)subpath.PathTypes[i] & PathPointType.PathTypeMask) //Mask off non path-type types
                     {
                         case PathPointType.Start:
                             start = subpath.PathPoints[i];
@@ -2023,6 +2029,7 @@ namespace SvgNet.SvgGdi
                             }
                             continue;
                         default:
+                            
                             switch ((PathPointType)subpath.PathTypes[i])
                             {
                                 case PathPointType.DashMode:

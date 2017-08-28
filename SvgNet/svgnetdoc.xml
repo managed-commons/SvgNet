@@ -504,6 +504,11 @@
             <summary>
             Implemented
             </summary>
+            <remarks>
+            Mainly based on the libgdi+ implementation: https://github.com/mono/libgdiplus/blob/master/src/graphics-cairo.c
+            and this SO question reply: https://stackoverflow.com/questions/1790862/how-to-determine-endpoints-of-arcs-in-graphicspath-pathpoints-and-pathtypes-arra
+            from SiiliconMind.
+            </remarks>
         </member>
         <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawPie(System.Drawing.Pen,System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)">
             <summary>
