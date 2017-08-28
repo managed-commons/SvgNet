@@ -505,21 +505,26 @@ namespace SvgGdiTest
             }
             else if (s == "Path 2 (Slow)")
             {
-                /* The following example GraphicsPath code comes from the MSDN docs on the GraphicsPathIterator class
-                 * https://msdn.microsoft.com/en-us/library/79k451ts.aspx
-                 * 
-                 */
-                // Create a graphics path.
-                GraphicsPath myPath = new GraphicsPath();
-                myPath.AddString("String path", FontFamily.GenericMonospace, (int)FontStyle.Regular, 24,
-                    new PointF(0, 0), StringFormat.GenericTypographic);
-                ig.DrawPath(new Pen(Color.Green), myPath);
-                GraphicsPath myPath2 = new GraphicsPath();
-                myPath2.AddString("String path filled", FontFamily.GenericMonospace, (int)FontStyle.Regular, 24,
-                    new PointF(100, 50), StringFormat.GenericTypographic);
-                SolidBrush redBrush = new SolidBrush(Color.Red);
-                ig.DrawPath(new Pen(Color.Black), myPath2);
-                ig.FillPath(redBrush, myPath2);
+                SolidBrush mySolidBrush = new SolidBrush(Color.Aqua);
+                GraphicsPath myGraphicsPath = new GraphicsPath();
+
+                Point[] myPointArray = {
+                    new Point(15, 20),
+                    new Point(20, 40),      
+                    new Point(50, 30)};
+
+                FontFamily myFontFamily = new FontFamily("Times New Roman");
+                PointF myPointF = new PointF(50, 20);
+                StringFormat myStringFormat = new StringFormat();
+
+                myGraphicsPath.AddArc(0, 0, 30, 20, -90, 180);
+                myGraphicsPath.AddCurve(myPointArray);
+                myGraphicsPath.AddString("a string in a path filled", myFontFamily,
+                   0, 24, myPointF, myStringFormat);
+                myGraphicsPath.AddPie(230, 10, 40, 40, 40, 110);
+
+                ig.FillPath(mySolidBrush, myGraphicsPath);
+                ig.DrawPath(new Pen(Color.Green), myGraphicsPath);
             }
             else
             {
