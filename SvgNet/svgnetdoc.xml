@@ -502,7 +502,7 @@
         </member>
         <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawPath(System.Drawing.Pen,System.Drawing.Drawing2D.GraphicsPath)">
             <summary>
-            Implemented.
+            Implemented
             </summary>
         </member>
         <member name="M:SvgNet.SvgGdi.SvgGraphics.DrawPie(System.Drawing.Pen,System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)">

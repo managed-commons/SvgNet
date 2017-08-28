@@ -1967,20 +1967,25 @@ namespace SvgNet.SvgGdi
         }
 
         /// <summary>
-        /// Implemented.
+        /// Implemented
         /// </summary>
         public void DrawPath(Pen pen, GraphicsPath path)
         {
+            //Save the original pen dash style in case we need to change it
             DashStyle originalPenDashStyle = pen.DashStyle;
+
             GraphicsPathIterator subpaths = new GraphicsPathIterator(path);
             GraphicsPath subpath = new GraphicsPath(path.FillMode);
             subpaths.Rewind();
+
+            //Iterate through all the subpaths in the path. Each subpath will contain either
+            //lines or Bezier curves
             for (int s = 0; s < subpaths.SubpathCount; s++)
             {
                 bool isClosed;
                 if (subpaths.NextSubpath(subpath, out isClosed) == 0)
                 {
-                    continue;
+                    continue; //go to next subpath if this one has zero points.
                 }
                 PointF start = new PointF(0, 0);
                 PointF origin = subpath.PathPoints[0];
@@ -1989,6 +1994,11 @@ namespace SvgNet.SvgGdi
                 PointF[] bezierCurvePoints = new PointF[4];
                 for (int i = 0; i < subpath.PathPoints.Length; i++)
                 {
+                    /* Each subpath point has a corresponding type which can be:
+                     *The point starts the subpath
+                     *The point is a line point
+                     *The point is Bezier curve point
+                     */
                     switch ((PathPointType)subpath.PathTypes[i] & PathPointType.PathTypeMask)
                     {
                         case PathPointType.Start:
@@ -1996,15 +2006,15 @@ namespace SvgNet.SvgGdi
                             bezierCurvePoints[0] = subpath.PathPoints[i];
                             bezierCurvePointsIndex = 1;
                             continue;
-                        case PathPointType.Line:
-                            DrawLine(pen, start, subpath.PathPoints[i]);
-                            start = subpath.PathPoints[i];
-                            bezierCurvePoints[0] = subpath.PathPoints[i];
+                        case PathPointType.Line:   
+                            DrawLine(pen, start, subpath.PathPoints[i]); //Draw a line segment ftom start point
+                            start = subpath.PathPoints[i]; //Move start point here
+                            bezierCurvePoints[0] = subpath.PathPoints[i]; //A line point can also be the start of a Bezier curve
                             bezierCurvePointsIndex = 1;
                             continue;
                         case PathPointType.Bezier3:
                             bezierCurvePoints[bezierCurvePointsIndex++] = subpath.PathPoints[i];
-                            if (bezierCurvePointsIndex == 4)
+                            if (bezierCurvePointsIndex == 4) //If 4 points including start have been found then draw the Bezier curve
                             {
                                 DrawBezier(pen, bezierCurvePoints[0], bezierCurvePoints[1], bezierCurvePoints[2], bezierCurvePoints[3]);
                                 bezierCurvePoints = new PointF[4];
@@ -2023,11 +2033,12 @@ namespace SvgNet.SvgGdi
                             }
                     }
                 }
-                if (isClosed)
+                if (isClosed) //If the subpath is closed and it is a linear figure then draw the last connecting line segment
                 {
+                    PathPointType originType = (PathPointType)subpath.PathTypes[0];
                     PathPointType lastType = (PathPointType) subpath.PathTypes[subpath.PathPoints.Length - 1];
 
-                    if ((lastType & PathPointType.PathTypeMask) == PathPointType.Line)
+                    if (((lastType & PathPointType.PathTypeMask) == PathPointType.Line) && ((originType & PathPointType.PathTypeMask) == PathPointType.Line))
                     {
                         DrawLine(pen, last, origin);
                     }

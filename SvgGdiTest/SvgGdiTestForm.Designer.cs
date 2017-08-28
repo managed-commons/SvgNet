@@ -100,7 +100,8 @@ namespace SvgGdiTest
             "Text",
             "Rect-aligned Text",
             "Fills",
-            "Path"});
+            "Path",
+            "Path 2 (Slow)"});
             this.cbWhat.Location = new System.Drawing.Point(816, 12);
             this.cbWhat.MaxDropDownItems = 30;
             this.cbWhat.Name = "cbWhat";

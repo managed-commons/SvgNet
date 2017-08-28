@@ -498,12 +498,28 @@ namespace SvgGdiTest
                 myPath.AddRectangle(myRect);
                 myPath.SetMarkers();
                 myPath.AddEllipse(220, 220, 100, 100);
-                myPath.AddLine(new PointF(40, 20), new PointF(80, 120));
                 ig.DrawPath(new Pen(Color.Black), myPath);
                 LinearGradientBrush gbr2 = new LinearGradientBrush(new Point(0, 0), new Point(10, 20), Color.WhiteSmoke, Color.CornflowerBlue);
                 gbr2.WrapMode = WrapMode.TileFlipXY;
-                SolidBrush redBrush = new SolidBrush(Color.Red);
                 ig.FillPath(gbr2, myPath);
+            }
+            else if (s == "Path 2 (Slow)")
+            {
+                /* The following example GraphicsPath code comes from the MSDN docs on the GraphicsPathIterator class
+                 * https://msdn.microsoft.com/en-us/library/79k451ts.aspx
+                 * 
+                 */
+                // Create a graphics path.
+                GraphicsPath myPath = new GraphicsPath();
+                myPath.AddString("String path", FontFamily.GenericMonospace, (int)FontStyle.Regular, 24,
+                    new PointF(0, 0), StringFormat.GenericTypographic);
+                ig.DrawPath(new Pen(Color.Green), myPath);
+                GraphicsPath myPath2 = new GraphicsPath();
+                myPath2.AddString("String path filled", FontFamily.GenericMonospace, (int)FontStyle.Regular, 24,
+                    new PointF(100, 50), StringFormat.GenericTypographic);
+                SolidBrush redBrush = new SolidBrush(Color.Red);
+                ig.DrawPath(new Pen(Color.Black), myPath2);
+                ig.FillPath(redBrush, myPath2);
             }
             else
             {
