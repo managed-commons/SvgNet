@@ -1,0 +1,12 @@
+[*]
+end_of_line = crlf
+
+[*.xml]
+indent_style = space
+
+[*.cs]
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace=true
+dotnet_sort_system_directives_first=true
+csharp_new_line_before_else=false
