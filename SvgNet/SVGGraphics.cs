@@ -1972,7 +1972,7 @@ namespace SvgNet.SvgGdi
         /// <remarks>
         /// Mainly based on the libgdi+ implementation: https://github.com/mono/libgdiplus/blob/master/src/graphics-cairo.c
         /// and this SO question reply: https://stackoverflow.com/questions/1790862/how-to-determine-endpoints-of-arcs-in-graphicspath-pathpoints-and-pathtypes-arra
-        /// from SiiliconMind.
+        /// from SiliconMind.
         /// </remarks>
         public void DrawPath(Pen pen, GraphicsPath path)
         {
@@ -2011,10 +2011,11 @@ namespace SvgNet.SvgGdi
                             start = subpath.PathPoints[i];
                             bezierCurvePoints[0] = subpath.PathPoints[i];
                             bezierCurvePointsIndex = 1;
+                            pen.DashStyle = originalPenDashStyle; //Reset pen dash mode to original when starting subpath
                             continue;
                         case PathPointType.Line:   
                             DrawLine(pen, start, subpath.PathPoints[i]); //Draw a line segment ftom start point
-                            start = subpath.PathPoints[i]; //Move start point here
+                            start = subpath.PathPoints[i]; //Move start point to line end
                             bezierCurvePoints[0] = subpath.PathPoints[i]; //A line point can also be the start of a Bezier curve
                             bezierCurvePointsIndex = 1;
                             continue;
@@ -2026,10 +2027,10 @@ namespace SvgNet.SvgGdi
                                 bezierCurvePoints = new PointF[4];
                                 bezierCurvePoints[0] = subpath.PathPoints[i];
                                 bezierCurvePointsIndex = 1;
+                                start = subpath.PathPoints[i]; //Move start point to curve end
                             }
                             continue;
                         default:
-                            
                             switch ((PathPointType)subpath.PathTypes[i])
                             {
                                 case PathPointType.DashMode:
@@ -2353,7 +2354,7 @@ namespace SvgNet.SvgGdi
                 }
                 if (!isClosed)
                 {
-                    subpath.CloseAllFigures();
+                    //subpath.CloseAllFigures();
                 }
                 PathPointType lastType = (PathPointType)subpath.PathTypes[subpath.PathPoints.Length - 1];
                 if (subpath.PathTypes.Any(pt => ((PathPointType) pt & PathPointType.PathTypeMask) == PathPointType.Line))

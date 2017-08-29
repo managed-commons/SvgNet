@@ -502,6 +502,12 @@ namespace SvgGdiTest
                 LinearGradientBrush gbr2 = new LinearGradientBrush(new Point(0, 0), new Point(10, 20), Color.WhiteSmoke, Color.CornflowerBlue);
                 gbr2.WrapMode = WrapMode.TileFlipXY;
                 ig.FillPath(gbr2, myPath);
+
+                GraphicsPath myPath2 = new GraphicsPath();
+                myPath2.AddLine(100, 100, 130, 120);
+                myPath2.AddEllipse(120, 120, 120, 140);
+                myPath2.AddBezier(130, 160, 170, 160, 150, 130, 200, 110);
+                ig.DrawPath(new Pen(Color.Blue), myPath2);
             }
             else if (s == "Path 2 (Slow)")
             {
@@ -522,7 +528,6 @@ namespace SvgGdiTest
                 myGraphicsPath.AddString("a string in a path filled", myFontFamily,
                    0, 24, myPointF, myStringFormat);
                 myGraphicsPath.AddPie(230, 10, 40, 40, 40, 110);
-
                 ig.FillPath(mySolidBrush, myGraphicsPath);
                 ig.DrawPath(new Pen(Color.Green), myGraphicsPath);
             }
