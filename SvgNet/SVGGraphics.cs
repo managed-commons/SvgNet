@@ -16,6 +16,8 @@ using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.Globalization;
 using System.IO;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SvgNet.SvgGdi
 {
@@ -1965,9 +1967,95 @@ namespace SvgNet.SvgGdi
         }
 
         /// <summary>
-        /// Not implemented because GDI+ regions/paths are not emulated.
+        /// Implemented
         /// </summary>
-        public void DrawPath(Pen pen, GraphicsPath path) { throw new SvgGdiNotImpl("DrawPath (Pen pen, GraphicsPath path)"); }
+        /// <remarks>
+        /// Mainly based on the libgdi+ implementation: https://github.com/mono/libgdiplus/blob/master/src/graphics-cairo.c
+        /// and this SO question reply: https://stackoverflow.com/questions/1790862/how-to-determine-endpoints-of-arcs-in-graphicspath-pathpoints-and-pathtypes-arra
+        /// from SiiliconMind.
+        /// </remarks>
+        public void DrawPath(Pen pen, GraphicsPath path)
+        {
+            //Save the original pen dash style in case we need to change it
+            DashStyle originalPenDashStyle = pen.DashStyle;
+
+            GraphicsPathIterator subpaths = new GraphicsPathIterator(path);
+            GraphicsPath subpath = new GraphicsPath(path.FillMode);
+            subpaths.Rewind();
+
+            //Iterate through all the subpaths in the path. Each subpath will contain either
+            //lines or Bezier curves
+            for (int s = 0; s < subpaths.SubpathCount; s++)
+            {
+                bool isClosed;
+                if (subpaths.NextSubpath(subpath, out isClosed) == 0)
+                {
+                    continue; //go to next subpath if this one has zero points.
+                }
+                PointF start = new PointF(0, 0);
+                PointF origin = subpath.PathPoints[0];
+                PointF last = subpath.PathPoints[subpath.PathPoints.Length - 1];
+                int bezierCurvePointsIndex = 0;
+                PointF[] bezierCurvePoints = new PointF[4];
+                for (int i = 0; i < subpath.PathPoints.Length; i++)
+                {
+                    /* Each subpath point has a corresponding path point type which can be:
+                     *The point starts the subpath
+                     *The point is a line point
+                     *The point is Bezier curve point
+                     * Another point type like dash-mode
+                     */
+                    switch ((PathPointType)subpath.PathTypes[i] & PathPointType.PathTypeMask) //Mask off non path-type types
+                    {
+                        case PathPointType.Start:
+                            start = subpath.PathPoints[i];
+                            bezierCurvePoints[0] = subpath.PathPoints[i];
+                            bezierCurvePointsIndex = 1;
+                            continue;
+                        case PathPointType.Line:   
+                            DrawLine(pen, start, subpath.PathPoints[i]); //Draw a line segment ftom start point
+                            start = subpath.PathPoints[i]; //Move start point here
+                            bezierCurvePoints[0] = subpath.PathPoints[i]; //A line point can also be the start of a Bezier curve
+                            bezierCurvePointsIndex = 1;
+                            continue;
+                        case PathPointType.Bezier3:
+                            bezierCurvePoints[bezierCurvePointsIndex++] = subpath.PathPoints[i];
+                            if (bezierCurvePointsIndex == 4) //If 4 points including start have been found then draw the Bezier curve
+                            {
+                                DrawBezier(pen, bezierCurvePoints[0], bezierCurvePoints[1], bezierCurvePoints[2], bezierCurvePoints[3]);
+                                bezierCurvePoints = new PointF[4];
+                                bezierCurvePoints[0] = subpath.PathPoints[i];
+                                bezierCurvePointsIndex = 1;
+                            }
+                            continue;
+                        default:
+                            
+                            switch ((PathPointType)subpath.PathTypes[i])
+                            {
+                                case PathPointType.DashMode:
+                                    pen.DashStyle = DashStyle.Dash;
+                                    continue;
+                                default:
+                                    throw new SvgException("Unknown path type value: " + subpath.PathTypes[i]);
+                            }
+                    }
+                }
+                if (isClosed) //If the subpath is closed and it is a linear figure then draw the last connecting line segment
+                {
+                    PathPointType originType = (PathPointType)subpath.PathTypes[0];
+                    PathPointType lastType = (PathPointType) subpath.PathTypes[subpath.PathPoints.Length - 1];
+
+                    if (((lastType & PathPointType.PathTypeMask) == PathPointType.Line) && ((originType & PathPointType.PathTypeMask) == PathPointType.Line))
+                    {
+                        DrawLine(pen, last, origin);
+                    }
+                }
+                
+            }
+            subpath.Dispose();
+            subpaths.Dispose();
+            pen.DashStyle = originalPenDashStyle;
+        }
 
         /// <summary>
         /// Implemented.  <c>DrawPie</c> functions work correctly and thus produce different output from GDI+ if the ellipse is not circular.
@@ -2249,9 +2337,38 @@ namespace SvgNet.SvgGdi
         }
 
         /// <summary>
-        /// Not implemented, because GDI+ regions/paths are not emulated.
+        /// Implemented
         /// </summary>
-        public void FillPath(Brush brush, GraphicsPath path) { throw new SvgGdiNotImpl("FillPath (Brush brush, GraphicsPath path)"); }
+        public void FillPath(Brush brush, GraphicsPath path)
+        {
+            GraphicsPathIterator subpaths = new GraphicsPathIterator(path);
+            GraphicsPath subpath = new GraphicsPath(path.FillMode);
+            subpaths.Rewind();
+            for (int s = 0; s < subpaths.SubpathCount; s++)
+            {
+                bool isClosed;
+                if (subpaths.NextSubpath(subpath, out isClosed) < 2)
+                {
+                    continue;
+                }
+                if (!isClosed)
+                {
+                    subpath.CloseAllFigures();
+                }
+                PathPointType lastType = (PathPointType)subpath.PathTypes[subpath.PathPoints.Length - 1];
+                if (subpath.PathTypes.Any(pt => ((PathPointType) pt & PathPointType.PathTypeMask) == PathPointType.Line))
+                {
+                    FillPolygon(brush, subpath.PathPoints, path.FillMode);
+                }
+                else
+                {
+                    FillBeziers(brush, subpath.PathPoints, path.FillMode);
+                }                                
+
+            }
+            subpath.Dispose();
+            subpaths.Dispose();
+        }
 
         /// <summary>
         /// Implemented <c>FillPie</c> functions work correctly and thus produce different output from GDI+ if the ellipse is not circular.

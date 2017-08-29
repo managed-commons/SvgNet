@@ -479,6 +479,53 @@ namespace SvgGdiTest
                 ig.EndContainer(cnt);
                 //ig.DrawImageUnscaled(bmp, 270, 450, 20, 20);
             }
+            else if (s == "Path")
+            {
+                /* The following example GraphicsPath code comes from the MSDN docs on the GraphicsPathIterator class
+                 * https://msdn.microsoft.com/en-us/library/79k451ts.aspx
+                 * 
+                 */
+                // Create a graphics path.
+                GraphicsPath myPath = new GraphicsPath();
+
+                // Set up primitives to add to myPath.
+                Point[] myPoints = { new Point(20, 20), new Point(120, 120), new Point(20, 120), new Point(20, 20) };
+                Rectangle myRect = new Rectangle(120, 120, 100, 100);
+
+                // Add 3 lines, a rectangle, an ellipse, and 2 markers.
+                myPath.AddLines(myPoints);
+                myPath.SetMarkers();
+                myPath.AddRectangle(myRect);
+                myPath.SetMarkers();
+                myPath.AddEllipse(220, 220, 100, 100);
+                ig.DrawPath(new Pen(Color.Black), myPath);
+                LinearGradientBrush gbr2 = new LinearGradientBrush(new Point(0, 0), new Point(10, 20), Color.WhiteSmoke, Color.CornflowerBlue);
+                gbr2.WrapMode = WrapMode.TileFlipXY;
+                ig.FillPath(gbr2, myPath);
+            }
+            else if (s == "Path 2 (Slow)")
+            {
+                SolidBrush mySolidBrush = new SolidBrush(Color.Aqua);
+                GraphicsPath myGraphicsPath = new GraphicsPath();
+
+                Point[] myPointArray = {
+                    new Point(15, 20),
+                    new Point(20, 40),      
+                    new Point(50, 30)};
+
+                FontFamily myFontFamily = new FontFamily("Times New Roman");
+                PointF myPointF = new PointF(50, 20);
+                StringFormat myStringFormat = new StringFormat();
+
+                myGraphicsPath.AddArc(0, 0, 30, 20, -90, 180);
+                myGraphicsPath.AddCurve(myPointArray);
+                myGraphicsPath.AddString("a string in a path filled", myFontFamily,
+                   0, 24, myPointF, myStringFormat);
+                myGraphicsPath.AddPie(230, 10, 40, 40, 40, 110);
+
+                ig.FillPath(mySolidBrush, myGraphicsPath);
+                ig.DrawPath(new Pen(Color.Green), myGraphicsPath);
+            }
             else
             {
                 throw new NotImplementedException();
