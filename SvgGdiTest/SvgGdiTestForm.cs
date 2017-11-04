@@ -10,7 +10,9 @@ using SvgNet.SvgGdi;
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Globalization;
 using System.IO;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace SvgGdiTest
@@ -26,6 +28,7 @@ namespace SvgGdiTest
         [STAThread]
         private static void Main()
         {
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("nb-NO"); // To catch culture formatting errors
             Application.Run(new SvgGdiTestForm());
         }
 
@@ -73,8 +76,8 @@ namespace SvgGdiTest
             }
             else if (s == "Clipping")
             {
-                Pen pn = new Pen(Color.LightGray, 5);
-                Pen pn2 = new Pen(Color.Yellow);
+                Pen pn = new Pen(Color.LightGray, 5.6f);
+                Pen pn2 = new Pen(Color.Yellow, 1.2f);
 
                 ig.Clear(Color.Black);
 
@@ -103,9 +106,9 @@ namespace SvgGdiTest
                 ig.Clear(Color.Black);
 
                 ig.RotateTransform(15);
-                ig.DrawRectangle(new Pen(Color.Red, 2), 260, 80, 50, 40);
+                ig.DrawRectangle(new Pen(Color.Red, 2.7f), 260, 80, 50, 40);
                 ig.ResetTransform();
-                ig.DrawRectangle(new Pen(Color.Red, 2), 260, 80, 50, 40);
+                ig.DrawRectangle(new Pen(Color.Red, 2.7f), 260, 80, 50, 40);
 
                 ig.TranslateTransform(15, -5);
 
@@ -125,7 +128,7 @@ namespace SvgGdiTest
                 ig.ScaleTransform(1.1f, 1.2f);
 
                 ig.FillEllipse(new SolidBrush(Color.YellowGreen), 130, 180, 80, 40);
-                ig.DrawRectangle(new Pen(Color.YellowGreen, 2), 62, 80, 40, 40);
+                ig.DrawRectangle(new Pen(Color.YellowGreen, 2.7f), 62, 80, 40, 40);
 
                 GraphicsContainer cnt3 = ig.BeginContainer();
 
@@ -158,7 +161,7 @@ namespace SvgGdiTest
             {
                 ig.SmoothingMode = SmoothingMode.AntiAlias;
 
-                Pen ow = new Pen(Color.Purple, 12);
+                Pen ow = new Pen(Color.Purple, 12.6f);
                 ow.EndCap = LineCap.Round;
                 ow.StartCap = LineCap.Round;
                 ow.MiterLimit = 6f;
@@ -166,7 +169,7 @@ namespace SvgGdiTest
 
                 ig.SmoothingMode = SmoothingMode.None;
 
-                Pen tp = new Pen(Color.Red, 2);
+                Pen tp = new Pen(Color.Red, 2.7f);
                 tp.DashStyle = DashStyle.DashDot;
 
                 ig.DrawLine(tp, 70, 20, 190, 20);
@@ -201,7 +204,7 @@ namespace SvgGdiTest
                 ig.DrawPolygon(tp, polly);
 
                 //arrows
-                Pen arr = new Pen(Color.DarkGoldenrod, 5);
+                Pen arr = new Pen(Color.DarkGoldenrod, 5.7f);
 
                 {
                     arr.Width = 2;
@@ -270,7 +273,7 @@ namespace SvgGdiTest
                 new PointF(190, 210)
             };
 
-                Pen bpn = new Pen(Color.MediumSeaGreen, 2);
+                Pen bpn = new Pen(Color.MediumSeaGreen, 2.3f);
                 bpn.DashStyle = DashStyle.Custom;
                 bpn.DashPattern = new float[] { 6, 1, 5, 2, 4, 3, 3, 4, 2, 5, 6, 1 };
                 ig.DrawBeziers(bpn, bezzie);
@@ -286,9 +289,9 @@ namespace SvgGdiTest
                 new PointF(80, 110)
             };
 
-                ig.DrawCurve(new Pen(Color.Blue, 5), curvy);
-                ig.DrawCurve(new Pen(Color.Red, 2), curvy, 2, 3);
-                ig.DrawCurve(new Pen(Color.Yellow, 1), curvy, 1f);
+                ig.DrawCurve(new Pen(Color.Blue, 5.7f), curvy);
+                ig.DrawCurve(new Pen(Color.Red, 2.7f), curvy, 2, 3);
+                ig.DrawCurve(new Pen(Color.Yellow, 1.7f), curvy, 1f);
 
                 Point[] ccurvy = new Point[]
             {
@@ -300,8 +303,8 @@ namespace SvgGdiTest
                 new Point(230, 150),
                 new Point(150, 50)
             };
-                ig.DrawClosedCurve(new Pen(Color.Green, 3), ccurvy, 1f, FillMode.Alternate);
-                ig.DrawClosedCurve(new Pen(Color.Purple, 1), ccurvy, 0f, FillMode.Alternate);
+                ig.DrawClosedCurve(new Pen(Color.Green, 3.7f), ccurvy, 1f, FillMode.Alternate);
+                ig.DrawClosedCurve(new Pen(Color.Purple, 1.7f), ccurvy, 0f, FillMode.Alternate);
 
                 Point[] fcc = new Point[]
             {
@@ -402,19 +405,19 @@ namespace SvgGdiTest
             {
                 //GDI does not seem to draw arcs correctly except when the ellipse is a circle.
                 //These arcs demonstrate the problem.  SVGGraphics calculates arcs correctly.
-                ig.DrawArc(new Pen(Color.Black, 2), 120 + 5 * 3, 120, 110 * 3, 110, 0, 240);
-                ig.DrawArc(new Pen(Color.Black, 2), 120 + 10 * 3, 125, 100 * 3, 100, 0, 210);
-                ig.DrawArc(new Pen(Color.Black, 2), 120 + 15 * 3, 130, 90 * 3, 90, 0, 180);
-                ig.DrawArc(new Pen(Color.Black, 2), 120 + 20 * 3, 135, 80 * 3, 80, 0, 150);
-                ig.DrawArc(new Pen(Color.Black, 2), 120 + 25 * 3, 140, 70 * 3, 70, 0, 120);
-                ig.DrawArc(new Pen(Color.Black, 2), 120 + 30 * 3, 145, 60 * 3, 60, 0, 90);
-                ig.DrawArc(new Pen(Color.Black, 2), 120 + 35 * 3, 150, 50 * 3, 50, 0, 60);
-                ig.DrawArc(new Pen(Color.Black, 2), 120 + 40 * 3, 155, 40 * 3, 40, 0, 270);
+                ig.DrawArc(new Pen(Color.Black, 2.7f), 120 + 5 * 3, 120, 110 * 3, 110, 0, 240);
+                ig.DrawArc(new Pen(Color.Black, 2.7f), 120 + 10 * 3, 125, 100 * 3, 100, 0, 210);
+                ig.DrawArc(new Pen(Color.Black, 2.7f), 120 + 15 * 3, 130, 90 * 3, 90, 0, 180);
+                ig.DrawArc(new Pen(Color.Black, 2.7f), 120 + 20 * 3, 135, 80 * 3, 80, 0, 150);
+                ig.DrawArc(new Pen(Color.Black, 2.7f), 120 + 25 * 3, 140, 70 * 3, 70, 0, 120);
+                ig.DrawArc(new Pen(Color.Black, 2.7f), 120 + 30 * 3, 145, 60 * 3, 60, 0, 90);
+                ig.DrawArc(new Pen(Color.Black, 2.7f), 120 + 35 * 3, 150, 50 * 3, 50, 0, 60);
+                ig.DrawArc(new Pen(Color.Black, 2.7f), 120 + 40 * 3, 155, 40 * 3, 40, 0, 270);
 
-                ig.DrawPie(new Pen(Color.Pink, 2), 110, 50, 100, 100, 315, 90);
-                ig.DrawPie(new Pen(Color.Purple, 2), 110, 50, 100, 100, 250, -90);
-                ig.DrawPie(new Pen(Color.DarkRed, 2), 115, 55, 90, 90, 180, 270);
-                ig.DrawPie(new Pen(Color.Red, 2), 120, 60, 80, 80, 45, -270);
+                ig.DrawPie(new Pen(Color.Pink, 2.7f), 110, 50, 100, 100, 315, 90);
+                ig.DrawPie(new Pen(Color.Purple, 2.7f), 110, 50, 100, 100, 250, -90);
+                ig.DrawPie(new Pen(Color.DarkRed, 2.7f), 115, 55, 90, 90, 180, 270);
+                ig.DrawPie(new Pen(Color.Red, 2.7f), 120, 60, 80, 80, 45, -270);
             }
             else if (s == "Text")
             {
@@ -498,7 +501,7 @@ namespace SvgGdiTest
                 myPath.AddRectangle(myRect);
                 myPath.SetMarkers();
                 myPath.AddEllipse(220, 220, 100, 100);
-                ig.DrawPath(new Pen(Color.Black), myPath);
+                ig.DrawPath(new Pen(Color.Black, 1.7f), myPath);
                 LinearGradientBrush gbr2 = new LinearGradientBrush(new Point(0, 0), new Point(10, 20), Color.WhiteSmoke, Color.CornflowerBlue);
                 gbr2.WrapMode = WrapMode.TileFlipXY;
                 ig.FillPath(gbr2, myPath);
@@ -507,7 +510,7 @@ namespace SvgGdiTest
                 myPath2.AddLine(100, 100, 130, 120);
                 myPath2.AddEllipse(120, 120, 120, 140);
                 myPath2.AddBezier(130, 160, 170, 160, 150, 130, 200, 110);
-                ig.DrawPath(new Pen(Color.Blue), myPath2);
+                ig.DrawPath(new Pen(Color.Blue, 1.7f), myPath2);
             }
             else if (s == "Path 2 (Slow)")
             {
@@ -529,7 +532,7 @@ namespace SvgGdiTest
                    0, 24, myPointF, myStringFormat);
                 myGraphicsPath.AddPie(230, 10, 40, 40, 40, 110);
                 ig.FillPath(mySolidBrush, myGraphicsPath);
-                ig.DrawPath(new Pen(Color.Green), myGraphicsPath);
+                ig.DrawPath(new Pen(Color.Green, 1.7f), myGraphicsPath);
             }
             else
             {

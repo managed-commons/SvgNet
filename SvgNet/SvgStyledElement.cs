@@ -10,6 +10,7 @@ using System.Text;
 using System;
 using SvgNet.SvgTypes;
 using System.Xml;
+using System.Globalization;
 
 namespace SvgNet
 {
