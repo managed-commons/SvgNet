@@ -517,14 +517,19 @@ namespace SvgGdiTest
                 GraphicsPath myPath = new GraphicsPath();
                 ig.SmoothingMode = SmoothingMode.AntiAlias;
 
-                // Set up primitives to add to myPath.
-                Point[] myPoints = { new Point(45, 133), new Point(117, 125), new Point(150, 60), new Point(183, 125), new Point(252, 133),
-                                     new Point(200, 186), new Point(211, 258), new Point(150, 223), new Point(83, 258), new Point(97, 186)};
-                Rectangle myRect = new Rectangle(120, 120, 100, 100);
-
                 // Add polygon closed path.
-                myPath.AddLines(myPoints);
+                Point[] starPoints = { new Point(45, 133), new Point(117, 125), new Point(150, 60), new Point(183, 125), new Point(252, 133),
+                                       new Point(200, 186), new Point(211, 258), new Point(150, 223), new Point(83, 258), new Point(97, 186)};
+                myPath.AddLines(starPoints);
                 myPath.CloseFigure();
+
+                // Add bezier-line combination path
+                Point[] pathPoints1 = { new Point(24, 60), new Point(60, -16), new Point(48, 96), new Point(84, 20) };
+                Point[] pathPoints2 = { new Point(84, 20), new Point(104, 60) };
+                myPath.AddBeziers(pathPoints1);
+                myPath.AddLines(pathPoints2);
+
+                ig.FillPath(new SolidBrush(Color.Aqua), myPath);
                 ig.DrawPath(new Pen(Color.Black, 5f), myPath);
             }
             else if (s == "Path 2 (Slow)")
