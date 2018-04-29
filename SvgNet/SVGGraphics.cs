@@ -1600,7 +1600,7 @@ namespace SvgNet.SvgGdi
         /// </summary>
         public void DrawImage(Image image, PointF point)
         {
-            DrawImage(image, point.X, point.Y);
+            DrawBitmapImageUnscaled(image, point.X, point.Y);
         }
 
         /// <summary>
@@ -1608,7 +1608,7 @@ namespace SvgNet.SvgGdi
         /// </summary>
         public void DrawImage(Image image, Single x, Single y)
         {
-            DrawImage(image, x, y, (Single)image.Width, (Single)image.Height);
+            DrawBitmapImageUnscaled(image, x, y);
         }
 
         /// <summary>
@@ -1616,7 +1616,7 @@ namespace SvgNet.SvgGdi
         /// </summary>
         public void DrawImage(Image image, RectangleF rect)
         {
-            DrawImage(image, rect.X, rect.Y, rect.Width, rect.Height);
+            DrawBitmapImage(image, rect.X, rect.Y, rect.Width, rect.Height);
         }
 
         /// <summary>
@@ -1624,9 +1624,7 @@ namespace SvgNet.SvgGdi
         /// </summary>
         public void DrawImage(Image image, Single x, Single y, Single width, Single height)
         {
-            if (image.GetType() != typeof(Bitmap))
-                return;
-            DrawBitmapData((Bitmap)image, x, y, width, height, true);
+            DrawBitmapImage(image, x, y, width, height);
         }
 
         /// <summary>
@@ -1634,7 +1632,7 @@ namespace SvgNet.SvgGdi
         /// </summary>
         public void DrawImage(Image image, Point point)
         {
-            DrawImage(image, (Single)point.X, (Single)point.Y);
+            DrawBitmapImageUnscaled(image, point.X, point.Y);
         }
 
         /// <summary>
@@ -1642,7 +1640,7 @@ namespace SvgNet.SvgGdi
         /// </summary>
         public void DrawImage(Image image, Int32 x, Int32 y)
         {
-            DrawImage(image, (Single)x, (Single)y);
+            DrawBitmapImageUnscaled(image, x, y);
         }
 
         /// <summary>
@@ -1650,7 +1648,7 @@ namespace SvgNet.SvgGdi
         /// </summary>
         public void DrawImage(Image image, Rectangle rect)
         {
-            DrawImage(image, (Single)rect.X, (Single)rect.Y, (Single)rect.Width, (Single)rect.Height);
+            DrawBitmapImage(image, rect.X, rect.Y, rect.Width, rect.Height);
         }
 
         /// <summary>
@@ -1658,7 +1656,22 @@ namespace SvgNet.SvgGdi
         /// </summary>
         public void DrawImage(Image image, Int32 x, Int32 y, Int32 width, Int32 height)
         {
-            DrawImage(image, x, y, width, height);
+            DrawBitmapImage(image, x, y, width, height);
+        }
+
+
+        private void DrawBitmapImage(Image image, float x, float y, float width, float height)
+        {
+            if (image.GetType() != typeof(Bitmap))
+                return;
+            DrawBitmapData((Bitmap)image, x, y, width, height, true);
+        }
+
+        private void DrawBitmapImageUnscaled(Image image, float x, float y)
+        {
+            if (image.GetType() != typeof(Bitmap))
+                return;
+            DrawBitmapData((Bitmap)image, x, y, image.Width, image.Height, false);
         }
 
         /// <summary>
