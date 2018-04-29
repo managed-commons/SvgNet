@@ -101,6 +101,7 @@ namespace SvgGdiTest
             "Rect-aligned Text",
             "Fills",
             "Path",
+            "Path Polygon",
             "Path 2 (Slow)"});
             this.cbWhat.Location = new System.Drawing.Point(816, 12);
             this.cbWhat.MaxDropDownItems = 30;
