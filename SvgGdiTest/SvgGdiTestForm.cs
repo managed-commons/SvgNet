@@ -125,7 +125,10 @@ namespace SvgGdiTest
                 ig.SmoothingMode = SmoothingMode.None;
 
                 ig.RotateTransform(5);
-                ig.ScaleTransform(1.1f, 1.2f);
+                ig.ScaleTransform(1.1f, 1.5f);
+                ig.TranslateTransform(5, 5);
+
+                ig.DrawLines(new Pen(Color.Cyan, 2), new PointF[] { new PointF(0,0), new PointF(50, 50), new PointF(0, 100) });
 
                 ig.FillEllipse(new SolidBrush(Color.YellowGreen), 130, 180, 80, 40);
                 ig.DrawRectangle(new Pen(Color.YellowGreen, 2.7f), 62, 80, 40, 40);
@@ -539,7 +542,7 @@ namespace SvgGdiTest
 
                 Point[] myPointArray = {
                     new Point(15, 20),
-                    new Point(20, 40),      
+                    new Point(20, 40),
                     new Point(50, 30)};
 
                 FontFamily myFontFamily = new FontFamily("Times New Roman");

@@ -1844,7 +1844,7 @@ namespace SvgNet.SvgGdi
                 SvgPolylineElement pl = new SvgPolylineElement(points);
                 pl.Style = new SvgStyle(pen);
                 if (!_transforms.Result.IsIdentity)
-                    pl.Transform = new SvgTransformList(_transforms.Top.Clone());
+                    pl.Transform = new SvgTransformList(_transforms.Result.Clone());
                 _cur.AddChild(pl);
 
                 DrawEndAnchors(pen, points[0], points[points.Length - 1]);
@@ -1938,7 +1938,7 @@ namespace SvgNet.SvgGdi
                     pl.Style.Set("stroke-linecap", "round");
 
                     if (!_transforms.Result.IsIdentity)
-                        pl.Transform = new SvgTransformList(_transforms.Top.Clone());
+                        pl.Transform = new SvgTransformList(_transforms.Result.Clone());
                     _cur.AddChild(pl);
                 }, (PointF[] linePoints, Brush fillBrush) =>
                 {
@@ -1963,7 +1963,7 @@ namespace SvgNet.SvgGdi
                     SvgPolylineElement pl = new SvgPolylineElement(points);
                     pl.Style = new SvgStyle(pen);
                     if (!_transforms.Result.IsIdentity)
-                        pl.Transform = new SvgTransformList(_transforms.Top.Clone());
+                        pl.Transform = new SvgTransformList(_transforms.Result.Clone());
                     _cur.AddChild(pl);
 
                     DrawEndAnchors(pen, points[0], points[points.Length - 1], ignoreUnsupportedLineCaps: true);
