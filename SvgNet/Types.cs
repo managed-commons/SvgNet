@@ -846,6 +846,11 @@ namespace SvgNet.SvgTypes
                     if (sa[i] == "")
                         i += 1;
                 }
+                else if (pt == SvgPathSegType.SVG_SEGTYPE_MOVETO)
+                {
+                    // ensure implicit "lineto" commands are parsed according to SVG 1.1 spec section 8.3.2.
+                    pt = SvgPathSegType.SVG_SEGTYPE_LINETO;
+                }
 
                 if (pt == SvgPathSegType.SVG_SEGTYPE_UNKNOWN)
                     throw new SvgException("Invalid SvgPath", s);
@@ -871,7 +876,11 @@ namespace SvgNet.SvgTypes
             var builder = new System.Text.StringBuilder();
             foreach (PathSeg seg in _path)
             {
-                if (prev == null || (prev.Type != seg.Type || prev.Abs != seg.Abs))
+                if (prev == null ||
+                    (prev.Type != seg.Type &&
+                    !(prev.Type == SvgPathSegType.SVG_SEGTYPE_MOVETO &&
+                    seg.Type == SvgPathSegType.SVG_SEGTYPE_LINETO) ||
+                    prev.Abs != seg.Abs))
                 {
                     builder.Append(seg.Char).Append(" ");
                 }
