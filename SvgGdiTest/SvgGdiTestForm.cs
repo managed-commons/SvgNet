@@ -512,6 +512,26 @@ namespace SvgGdiTest
                 myPath2.AddBezier(130, 160, 170, 160, 150, 130, 200, 110);
                 ig.DrawPath(new Pen(Color.Blue, 1.7f), myPath2);
             }
+            else if (s == "Path Polygon")
+            {
+                GraphicsPath myPath = new GraphicsPath();
+                ig.SmoothingMode = SmoothingMode.AntiAlias;
+
+                // Add polygon closed path.
+                Point[] starPoints = { new Point(45, 133), new Point(117, 125), new Point(150, 60), new Point(183, 125), new Point(252, 133),
+                                       new Point(200, 186), new Point(211, 258), new Point(150, 223), new Point(83, 258), new Point(97, 186)};
+                myPath.AddLines(starPoints);
+                myPath.CloseFigure();
+
+                // Add bezier-line combination path
+                Point[] pathPoints1 = { new Point(24, 60), new Point(60, -16), new Point(48, 96), new Point(84, 20) };
+                Point[] pathPoints2 = { new Point(84, 20), new Point(104, 60) };
+                myPath.AddBeziers(pathPoints1);
+                myPath.AddLines(pathPoints2);
+
+                ig.FillPath(new SolidBrush(Color.Aqua), myPath);
+                ig.DrawPath(new Pen(Color.Black, 5f), myPath);
+            }
             else if (s == "Path 2 (Slow)")
             {
                 SolidBrush mySolidBrush = new SolidBrush(Color.Aqua);
