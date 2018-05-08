@@ -69,7 +69,7 @@ namespace SvgGdiTest
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Location = new System.Drawing.Point(8, 48);
+            this.panel1.Location = new System.Drawing.Point(8, 43);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(426, 312);
             this.panel1.TabIndex = 2;
@@ -79,11 +79,11 @@ namespace SvgGdiTest
             // 
             this.tbSVG.BackColor = System.Drawing.SystemColors.Info;
             this.tbSVG.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbSVG.Location = new System.Drawing.Point(440, 48);
+            this.tbSVG.Location = new System.Drawing.Point(440, 43);
             this.tbSVG.Multiline = true;
             this.tbSVG.Name = "tbSVG";
             this.tbSVG.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbSVG.Size = new System.Drawing.Size(752, 640);
+            this.tbSVG.Size = new System.Drawing.Size(748, 643);
             this.tbSVG.TabIndex = 3;
             // 
             // cbWhat
@@ -115,25 +115,25 @@ namespace SvgGdiTest
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(8, 24);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(72, 24);
+            this.label1.Size = new System.Drawing.Size(72, 16);
             this.label1.TabIndex = 6;
             this.label1.Text = "GDI:";
             // 
             // label2
             // 
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(8, 368);
+            this.label2.Location = new System.Drawing.Point(8, 355);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(72, 24);
+            this.label2.Size = new System.Drawing.Size(72, 19);
             this.label2.TabIndex = 7;
             this.label2.Text = "SVG:";
             // 
             // svgCtl
             // 
-            this.svgCtl.Location = new System.Drawing.Point(8, 395);
+            this.svgCtl.Location = new System.Drawing.Point(8, 374);
             this.svgCtl.MinimumSize = new System.Drawing.Size(20, 20);
             this.svgCtl.Name = "svgCtl";
-            this.svgCtl.Size = new System.Drawing.Size(426, 293);
+            this.svgCtl.Size = new System.Drawing.Size(426, 312);
             this.svgCtl.TabIndex = 8;
             // 
             // SvgGdiTestForm
