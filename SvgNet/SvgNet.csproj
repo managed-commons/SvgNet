@@ -5,7 +5,7 @@
     <AssemblyName>SVG</AssemblyName>
     <PackageId>SvgNet</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>    
-    <Version>1.0.8</Version>    
+    <Version>2.0.0</Version>    
     <RootNamespace>SVG</RootNamespace>
     <DocumentationFile>svgnetdoc.xml</DocumentationFile>
     <NoWarn>CS1591</NoWarn>    
@@ -13,21 +13,27 @@
 
   <PropertyGroup>
     <Description>C# framework for creating SVG images</Description>
-    <Company>RiskCare Ltd</Company>
+    <Company>SvgNet and SvgGdi Bridge Project</Company>
     <Authors>Rafael Teixeira, Mojmír Němeček, Benjamin Peterson</Authors>
-    <Copyright>Copyright 2003, 2010, 2015, 2017, 2018 RiskCare Ltd</Copyright>
+    <Copyright>2003, 2010, 2015-2019 RiskCare Ltd, SvgNet and SvgGdi Bridge Project, Rafael Teixeira, Mojmír Němeček</Copyright>
     <PackageLicenseUrl>https://cdn.rawgit.com/managed-commons/SvgNet/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/managed-commons/SvgNet</PackageProjectUrl>
     <PackageIconUrl>https://cdn.rawgit.com/managed-commons/SvgNet/master/SvgGdiTest/App.ico</PackageIconUrl>
     <RepositoryUrl>https://github.com/managed-commons/SvgNet</RepositoryUrl>
     <PackageTags>SVG</PackageTags>    
-    <Product>SvgNet and SvgGdi Bridge Project</Product>
-    <ProductVersion>8.0.30319</ProductVersion>    
+    <Product>SvgNet</Product>
+    <ProductVersion>8.0.30319</ProductVersion>
+    <RepositoryType>git</RepositoryType>
+    <PackageReleaseNotes>## 2.0.0 - Support for .NET Standard 2.0</PackageReleaseNotes>    
   </PropertyGroup>
   
   <ItemGroup Condition="'$(TargetFramework)' != 'net40'">    
     <PackageReference Include="System.Drawing.Common" Version="4.5.1" />    
     <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
-  </ItemGroup>  
-
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Remove="svgnetdoc.xml" />
+  </ItemGroup>
+  
 </Project>

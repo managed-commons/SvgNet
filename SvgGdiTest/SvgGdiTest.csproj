@@ -83,6 +83,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RectAlignedTextTest.cs" />
+    <Compile Include="..\TestShared\TestShared.cs">
+      <Link>TestShared.cs</Link>
+    </Compile>
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -1,7 +1,7 @@
 ﻿/*
     Copyright © 2003 RiskCare Ltd. All rights reserved.
     Copyright © 2010 SvgNet & SvgGdi Bridge Project. All rights reserved.
-    Copyright © 2015, 2017 Rafael Teixeira, Mojmír Němeček, Benjamin Peterson and Other Contributors
+    Copyright © 2015-2019 Rafael Teixeira, Mojmír Němeček, Benjamin Peterson and Other Contributors
 
     Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
@@ -151,6 +151,7 @@ namespace SvgGdiTest
             this.Name = "SvgGdiTestForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "SvgNet.SvgGdi demonstration/test app";
+            this.Load += new System.EventHandler(this.SvgGdiTestForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
