@@ -1,188 +1,39 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
-  <Import Project="..\packages\Microsoft.Net.Compilers.1.3.2\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.3.2\build\Microsoft.Net.Compilers.props')" />
-  <PropertyGroup>
-    <ProjectType>Local</ProjectType>
-    <ProductVersion>8.0.30319</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{BB4C8021-B5E1-4DE2-82CB-14BDFB9837E4}</ProjectGuid>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ApplicationIcon />
-    <AssemblyKeyContainerName />
-    <AssemblyName>SVG</AssemblyName>
-    <AssemblyOriginatorKeyFile />
-    <DefaultClientScript>JScript</DefaultClientScript>
-    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
-    <DefaultTargetSchema>IE50</DefaultTargetSchema>
-    <DelaySign>false</DelaySign>
-    <OutputType>Library</OutputType>
-    <RootNamespace>SVG</RootNamespace>
-    <StartupObject />
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <OldToolsVersion>0.0</OldToolsVersion>
-    <UpgradeBackupLocation />
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>bin\Debug\</OutputPath>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <BaseAddress>285212672</BaseAddress>
-    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
-    <ConfigurationOverrideFile />
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DocumentationFile>svgnetdoc.xml</DocumentationFile>
-    <DebugSymbols>true</DebugSymbols>
-    <FileAlignment>4096</FileAlignment>
-    <Optimize>false</Optimize>
-    <RegisterForComInterop>false</RegisterForComInterop>
-    <RemoveIntegerChecks>false</RemoveIntegerChecks>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningLevel>4</WarningLevel>
-    <DebugType>full</DebugType>
-    <ErrorReport>prompt</ErrorReport>
-    <NoWarn>CS1591</NoWarn>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>bin\Release\</OutputPath>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <BaseAddress>285212672</BaseAddress>
-    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
-    <ConfigurationOverrideFile />
-    <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile />
-    <DebugSymbols>false</DebugSymbols>
-    <FileAlignment>4096</FileAlignment>
-    <Optimize>true</Optimize>
-    <RegisterForComInterop>false</RegisterForComInterop>
-    <RemoveIntegerChecks>false</RemoveIntegerChecks>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningLevel>4</WarningLevel>
-    <DebugType>none</DebugType>
-    <ErrorReport>prompt</ErrorReport>
-    <NoWarn>CS1591</NoWarn>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System">
-      <Name>System</Name>
-    </Reference>
-    <Reference Include="System.Data">
-      <Name>System.Data</Name>
-    </Reference>
-    <Reference Include="System.Drawing">
-      <Name>System.Drawing</Name>
-    </Reference>
-    <Reference Include="System.Xml">
-      <Name>System.XML</Name>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AbstractGraphics.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ElementInterfaces.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GDIGraphics.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SvgElement.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SvgElementFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SvgEllipseElement.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SvgException.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SvgFilterElement.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SVGGDINotImpl.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SVGGraphics.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SvgGroupElement.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SvgLinearGradient.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SvgLineElement.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SvgPathElement.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SvgPolygonElement.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SvgPolylineElement.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SvgRectElement.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SvgStyle.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SvgStyledElement.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SvgSvgElement.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SvgSymbolElement.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SvgTextElement.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SvgTitleElement.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SvgTransformList.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Types.cs">
-      <SubType>Code</SubType>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include=".editorconfig" />
-    <None Include="packages.config" />
-    <None Include="SvgNet.nuspec" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent />
-    <PostBuildEvent>cd $(ProjectDir)
-nuget pack SvgNet.csproj
-IF NOT %25ERRORLEVEL%25==0 (
-  echo Did not build NuGet package.
-  exit /b 0
-)
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-</PostBuildEvent>
+  <PropertyGroup>
+    <TargetFrameworks>net40;netstandard2.0</TargetFrameworks>
+    <AssemblyName>SVG</AssemblyName>
+    <PackageId>SvgNet</PackageId>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>    
+    <Version>2.0.0</Version>    
+    <RootNamespace>SVG</RootNamespace>
+    <DocumentationFile>svgnetdoc.xml</DocumentationFile>
+    <NoWarn>CS1591</NoWarn>    
   </PropertyGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.3.2\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.3.2\build\Microsoft.Net.Compilers.props'))" />
-  </Target>
+
+  <PropertyGroup>
+    <Description>C# framework for creating SVG images</Description>
+    <Company>SvgNet and SvgGdi Bridge Project</Company>
+    <Authors>Rafael Teixeira, Mojmír Němeček, Benjamin Peterson</Authors>
+    <Copyright>2003, 2010, 2015-2019 RiskCare Ltd, SvgNet and SvgGdi Bridge Project, Rafael Teixeira, Mojmír Němeček</Copyright>
+    <PackageLicenseUrl>https://cdn.rawgit.com/managed-commons/SvgNet/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/managed-commons/SvgNet</PackageProjectUrl>
+    <PackageIconUrl>https://cdn.rawgit.com/managed-commons/SvgNet/master/SvgGdiTest/App.ico</PackageIconUrl>
+    <RepositoryUrl>https://github.com/managed-commons/SvgNet</RepositoryUrl>
+    <PackageTags>SVG</PackageTags>    
+    <Product>SvgNet</Product>
+    <ProductVersion>8.0.30319</ProductVersion>
+    <RepositoryType>git</RepositoryType>
+    <PackageReleaseNotes>## 2.0.0 - Support for .NET Standard 2.0</PackageReleaseNotes>    
+  </PropertyGroup>
+  
+  <ItemGroup Condition="'$(TargetFramework)' != 'net40'">    
+    <PackageReference Include="System.Drawing.Common" Version="4.5.1" />    
+    <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Remove="svgnetdoc.xml" />
+  </ItemGroup>
+  
 </Project>
