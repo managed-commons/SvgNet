@@ -6,7 +6,7 @@ A fork of the SvgNet & SvgGdi bridge (http://www.codeproject.com/KB/cs/svgnet.as
 
 __SvgNet is now available as a Nuget:__ [SvgNet](https://www.nuget.org/packages/SvgNet/).
 
-Work in progress: __version 2.0.0 to be .NET Standard 2.0 compatible__
+Work in progress: __version 2.0.0 is .NET Standard 2.0 compatible and works with .NET Core 2.0__
 
 ----------
 
