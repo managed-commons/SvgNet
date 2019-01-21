@@ -15,6 +15,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution 
 		README.markdown = README.markdown
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SvgDotNetCoreTest", "SvgDotNetCoreTest\SvgDotNetCoreTest.csproj", "{0AE45FD9-68B8-4232-A8C0-7D9E446F73C9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SvgNetUnitTests", "SvgNetUnitTests\SvgNetUnitTests.csproj", "{5510CC3E-821A-45F8-AE32-77B9E49BA0DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{0C963EB6-C1B4-453D-B694-E81EC26D3AB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C963EB6-C1B4-453D-B694-E81EC26D3AB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C963EB6-C1B4-453D-B694-E81EC26D3AB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0AE45FD9-68B8-4232-A8C0-7D9E446F73C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AE45FD9-68B8-4232-A8C0-7D9E446F73C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AE45FD9-68B8-4232-A8C0-7D9E446F73C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AE45FD9-68B8-4232-A8C0-7D9E446F73C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5510CC3E-821A-45F8-AE32-77B9E49BA0DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5510CC3E-821A-45F8-AE32-77B9E49BA0DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5510CC3E-821A-45F8-AE32-77B9E49BA0DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5510CC3E-821A-45F8-AE32-77B9E49BA0DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
