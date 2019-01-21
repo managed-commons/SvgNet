@@ -1,4 +1,5 @@
-﻿using SvgNet.SvgGdi;
+﻿using SvgNet;
+using SvgNet.SvgGdi;
 using System;
 using System.Drawing;
 

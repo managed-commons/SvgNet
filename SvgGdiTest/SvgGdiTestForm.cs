@@ -6,6 +6,7 @@
     Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
 
+using SvgNet;
 using SvgNet.SvgGdi;
 using System;
 using System.Drawing;
