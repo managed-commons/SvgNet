@@ -84,7 +84,7 @@ namespace SvgNet.SvgElements
         public SvgGenericElement(string name) => _name = name;
 
         public override string Name => _name;
-        private string _name;
+        private readonly string _name;
     }
 
     /// <summary>

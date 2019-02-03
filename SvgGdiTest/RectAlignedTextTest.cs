@@ -14,14 +14,14 @@ public static class RectAlignedTextTest
     public static void RenderRectAlignedText(IGraphics ig, float width, float height, Font baseFont)
     {
         ig.Clear(Color.White);
-        ig.ScaleTransform(width / CanvasSize, height / CanvasSize);
+        ig.ScaleTransform(width / _canvasSize, height / _canvasSize);
         DrawTest(ig, baseFont);
     }
 
-    private static int RectFontSize = 20;
-    private static int RectGap = 20;
-    private static int RectSize = 150;
-    private static int CanvasSize => 3 * RectSize + 4 * RectGap;
+    private const int _rectFontSize = 20;
+    private const int _rectGap = 20;
+    private const int _rectSize = 150;
+    private const int _canvasSize = (3 * _rectSize) + (4 * _rectGap);
 
     private static void DrawRect(IGraphics canvas, string id, Rectangle rect, StringAlignment horizontalAlignment, StringAlignment verticalAlignment, Font baseFont)
     {
@@ -34,7 +34,7 @@ public static class RectAlignedTextTest
         var pen = new Pen(new SolidBrush(Color.Black), 1);
         canvas.DrawRectangle(pen, rect);
 
-        var font = new Font(baseFont.Name, RectFontSize, baseFont.Style, baseFont.Unit);
+        var font = new Font(baseFont.Name, _rectFontSize, baseFont.Style, baseFont.Unit);
 
         {
             // Draw label
@@ -43,8 +43,8 @@ public static class RectAlignedTextTest
                 LineAlignment = StringAlignment.Center,
                 FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.NoClip
             };
-            var labelRect = new Rectangle(rect.X, rect.Y - RectGap, RectGap, RectGap);
-            var labelFont = new Font(baseFont.Name, RectFontSize * 0.8f, baseFont.Style, baseFont.Unit);
+            var labelRect = new Rectangle(rect.X, rect.Y - _rectGap, _rectGap, _rectGap);
+            var labelFont = new Font(baseFont.Name, _rectFontSize * 0.8f, baseFont.Style, baseFont.Unit);
             canvas.DrawString(id, labelFont, new SolidBrush(Color.Black), labelRect, labelFormat);
         }
 
@@ -53,16 +53,16 @@ public static class RectAlignedTextTest
 
     private static void DrawTest(IGraphics canvas, Font baseFont)
     {
-        canvas.FillRectangle(new SolidBrush(Color.White), new Rectangle(0, 0, CanvasSize, CanvasSize));
+        canvas.FillRectangle(new SolidBrush(Color.White), new Rectangle(0, 0, _canvasSize, _canvasSize));
 
         var alignments = new StringAlignment[] { StringAlignment.Near, StringAlignment.Center, StringAlignment.Far };
 
         int id = 1;
         foreach (var verticalAlignment in alignments) {
             foreach (var horizontalAlignment in alignments) {
-                var x = RectGap + ((int)horizontalAlignment) * (RectSize + RectGap);
-                var y = RectGap + ((int)verticalAlignment) * (RectSize + RectGap);
-                var rect = new Rectangle(x, y, RectSize, RectSize);
+                var x = _rectGap + ((int)horizontalAlignment) * (_rectSize + _rectGap);
+                var y = _rectGap + ((int)verticalAlignment) * (_rectSize + _rectGap);
+                var rect = new Rectangle(x, y, _rectSize, _rectSize);
                 DrawRect(canvas, id.ToString(), rect, horizontalAlignment, verticalAlignment, baseFont);
                 id++;
             }

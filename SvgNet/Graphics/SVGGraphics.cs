@@ -40,7 +40,8 @@ namespace SvgNet.SvgGdi
                 /// <param name="excess"></param>
                 public static void Skip(this BinaryReader reader, int excess)
                 {
-                    if (excess > 0) {
+                    if (excess > 0)
+                    {
                         //Skip unknown bytes
                         reader.BaseStream.Seek(excess, SeekOrigin.Current);
                         //var dummy = reader.ReadBytes(excess);
@@ -101,46 +102,49 @@ namespace SvgNet.SvgGdi
             {
                 public EmfReader(Stream stream)
                 {
-                    this.stream = stream;
-                    reader = new BinaryReader(stream);
+                    this._stream = stream;
+                    _reader = new BinaryReader(stream);
                 }
 
-                public bool IsEndOfFile => stream.Length == stream.Position;
+                public bool IsEndOfFile => _stream.Length == _stream.Position;
 
                 public void Dispose()
                 {
-                    if (reader != null) {
-                        reader.Close();
-                        reader = null;
+                    if (_reader != null)
+                    {
+                        _reader.Close();
+                        _reader = null;
                     }
                 }
 
                 public IBinaryRecord Read()
                 {
-                    long begin = reader.BaseStream.Position;
+                    long begin = _reader.BaseStream.Position;
 
-                    var rt = (EmfPlusRecordType)reader.ReadUInt32();
-                    var recordSize = reader.ReadUInt32();
+                    var rt = (EmfPlusRecordType)_reader.ReadUInt32();
+                    var recordSize = _reader.ReadUInt32();
 
-                    EmfBinaryRecord record = new EmfUnknownRecord {
+                    EmfBinaryRecord record = new EmfUnknownRecord
+                    {
                         RecordType = rt,
                         RecordSize = recordSize
                     };
-                    record.Read(reader);
+                    record.Read(_reader);
 
-                    long end = reader.BaseStream.Position;
+                    long end = _reader.BaseStream.Position;
                     long rlen = end - begin; //Read length
                     long excess = recordSize - rlen;
-                    if (excess > 0) {
+                    if (excess > 0)
+                    {
                         //Oops, reader did not read whole record?!
-                        reader.Skip((int)excess);
+                        _reader.Skip((int)excess);
                     }
 
                     return record;
                 }
 
-                private readonly Stream stream;
-                private BinaryReader reader;
+                private readonly Stream _stream;
+                private BinaryReader _reader;
             }
 
             public class EmfUnknownRecord : EmfBinaryRecord
@@ -154,14 +158,16 @@ namespace SvgNet.SvgGdi
                 public override void Read(BinaryReader reader)
                 {
                     var length = (int)base.RecordSize - sizeof(uint) - sizeof(uint);
-                    if (length > 0) {
+                    if (length > 0)
+                    {
                         Data = reader.ReadBytes(length);
-                    } else {
-                        Data = EmptyData;
+                    } else
+                    {
+                        Data = _emptyData;
                     }
                 }
 
-                private static readonly byte[] EmptyData = new byte[0];
+                private static readonly byte[] _emptyData = new byte[0];
             }
         }
 
@@ -173,7 +179,7 @@ namespace SvgNet.SvgGdi
         {
             public void EnumerateMetafile(Stream emf, float unitSize, PointF destination, DrawLineDelegate drawLine, FillPolygonDelegate fillPolygon)
             {
-                Transform = new Matrix();
+                _transform = new Matrix();
                 _drawLine = drawLine;
                 _fillPolygon = fillPolygon;
                 _zero = destination;
@@ -181,83 +187,79 @@ namespace SvgNet.SvgGdi
                 _objects = new Dictionary<uint, ObjectHandle>();
                 _brush = null;
 
-                using (var reader = new EmfTools.EmfReader(emf)) {
-                    while (!reader.IsEndOfFile) {
-                        var record = reader.Read() as EmfTools.EmfUnknownRecord;
-                        if (record == null)
-                            continue;
+                using (var reader = new EmfTools.EmfReader(emf))
+                    while (!reader.IsEndOfFile)
+                        if (reader.Read() is EmfTools.EmfUnknownRecord record)
+                            switch (record.RecordType)
+                            {
+                                case EmfPlusRecordType.EmfHeader:
+                                case EmfPlusRecordType.EmfEof:
+                                case EmfPlusRecordType.EmfSaveDC:
+                                case EmfPlusRecordType.EmfDeleteObject:
+                                case EmfPlusRecordType.EmfExtCreatePen:
+                                case EmfPlusRecordType.EmfCreatePen:
+                                case EmfPlusRecordType.EmfRestoreDC:
+                                case EmfPlusRecordType.EmfSetIcmMode:
+                                case EmfPlusRecordType.EmfSetMiterLimit:
+                                case EmfPlusRecordType.EmfSetPolyFillMode:
+                                    // Harmless records with no significant side-effects on the shape of the drawn outline
+                                    break;
 
-                        switch (record.RecordType) {
-                            case EmfPlusRecordType.EmfHeader:
-                            case EmfPlusRecordType.EmfEof:
-                            case EmfPlusRecordType.EmfSaveDC:
-                            case EmfPlusRecordType.EmfDeleteObject:
-                            case EmfPlusRecordType.EmfExtCreatePen:
-                            case EmfPlusRecordType.EmfCreatePen:
-                            case EmfPlusRecordType.EmfRestoreDC:
-                            case EmfPlusRecordType.EmfSetIcmMode:
-                            case EmfPlusRecordType.EmfSetMiterLimit:
-                            case EmfPlusRecordType.EmfSetPolyFillMode:
-                                // Harmless records with no significant side-effects on the shape of the drawn outline
-                                break;
+                                case EmfPlusRecordType.EmfSelectObject:
+                                    ProcessSelectObject(record.Data);
+                                    break;
 
-                            case EmfPlusRecordType.EmfSelectObject:
-                                ProcessSelectObject(record.Data);
-                                break;
+                                case EmfPlusRecordType.EmfCreateBrushIndirect:
+                                    ProcessCreateBrushIndirect(record.Data);
+                                    break;
 
-                            case EmfPlusRecordType.EmfCreateBrushIndirect:
-                                ProcessCreateBrushIndirect(record.Data);
-                                break;
+                                case EmfPlusRecordType.EmfBeginPath:
+                                    ProcessBeginPath(record.Data);
+                                    break;
 
-                            case EmfPlusRecordType.EmfBeginPath:
-                                ProcessBeginPath(record.Data);
-                                break;
+                                case EmfPlusRecordType.EmfEndPath:
+                                    // TODO:
+                                    break;
 
-                            case EmfPlusRecordType.EmfEndPath:
-                                // TODO:
-                                break;
+                                case EmfPlusRecordType.EmfStrokeAndFillPath:
+                                    ProcessStrokeAndFillPath(record.Data);
+                                    break;
 
-                            case EmfPlusRecordType.EmfStrokeAndFillPath:
-                                ProcessStrokeAndFillPath(record.Data);
-                                break;
+                                case EmfPlusRecordType.EmfMoveToEx:
+                                    ProcessMoveToEx(record.Data);
+                                    break;
 
-                            case EmfPlusRecordType.EmfMoveToEx:
-                                ProcessMoveToEx(record.Data);
-                                break;
+                                case EmfPlusRecordType.EmfModifyWorldTransform:
+                                    ProcessModifyWorldTransform(record.Data);
+                                    break;
 
-                            case EmfPlusRecordType.EmfModifyWorldTransform:
-                                ProcessModifyWorldTransform(record.Data);
-                                break;
+                                case EmfPlusRecordType.EmfPolygon16:
+                                    ProcessPolygon16(record.Data);
+                                    break;
 
-                            case EmfPlusRecordType.EmfPolygon16:
-                                ProcessPolygon16(record.Data);
-                                break;
+                                case EmfPlusRecordType.EmfPolyPolygon16:
+                                    ProcessPolyPolygon16(record.Data);
+                                    break;
 
-                            case EmfPlusRecordType.EmfPolyPolygon16:
-                                ProcessPolyPolygon16(record.Data);
-                                break;
+                                case EmfPlusRecordType.EmfPolyline16:
+                                    ProcessPolyline16(record.Data);
+                                    break;
 
-                            case EmfPlusRecordType.EmfPolyline16:
-                                ProcessPolyline16(record.Data);
-                                break;
+                                case EmfPlusRecordType.EmfPolylineTo16:
+                                    ProcessPolylineTo16(record.Data);
+                                    break;
 
-                            case EmfPlusRecordType.EmfPolylineTo16:
-                                ProcessPolylineTo16(record.Data);
-                                break;
+                                case EmfPlusRecordType.EmfCloseFigure:
+                                    ProcessCloseFigure(record.Data);
+                                    break;
 
-                            case EmfPlusRecordType.EmfCloseFigure:
-                                ProcessCloseFigure(record.Data);
-                                break;
+                                case EmfPlusRecordType.EmfPolyBezierTo16:
+                                    ProcessPolyBezierTo16(record.Data);
+                                    break;
 
-                            case EmfPlusRecordType.EmfPolyBezierTo16:
-                                ProcessPolyBezierTo16(record.Data);
-                                break;
-
-                            default:
-                                throw new NotImplementedException();
-                        }
-                    }
-                }
+                                default:
+                                    throw new NotImplementedException();
+                            }
 
                 CommitLine();
             }
@@ -312,8 +314,8 @@ namespace SvgNet.SvgGdi
                 MWT_RIGHTMULTIPLY = 3
             }
 
-            private static readonly uint StockObjectMaxCode = 0x80000000 + (uint)EmfStockObject.MaxValue;
-            private static readonly uint StockObjectMinCode = 0x80000000 + (uint)EmfStockObject.MinValue;
+            private static readonly uint _stockObjectMaxCode = 0x80000000 + (uint)EmfStockObject.MaxValue;
+            private static readonly uint _stockObjectMinCode = 0x80000000 + (uint)EmfStockObject.MinValue;
             private Brush _brush;
             private PointF _curveOrigin;
             private DrawLineDelegate _drawLine;
@@ -322,7 +324,7 @@ namespace SvgNet.SvgGdi
             private PointF _moveTo;
             private Dictionary<uint, ObjectHandle> _objects;
             private PointF _zero;
-            private Matrix Transform;
+            private Matrix _transform;
 
             private void CommitLine()
             {
@@ -336,7 +338,8 @@ namespace SvgNet.SvgGdi
                 if (linePoints == null)
                     return;
 
-                for (var i = 0; i < linePoints.Length; i++) {
+                for (var i = 0; i < linePoints.Length; i++)
+                {
                     linePoints[i].X += _zero.X;
                     linePoints[i].Y += _zero.Y;
                 }
@@ -345,7 +348,8 @@ namespace SvgNet.SvgGdi
 
             private void DrawLine(PointF[] points, int offset, int count)
             {
-                if (!_lineBuffer.CanAdd(points, offset, count)) {
+                if (!_lineBuffer.CanAdd(points, offset, count))
+                {
                     CommitLine();
                 }
 
@@ -357,7 +361,8 @@ namespace SvgNet.SvgGdi
                 if (linePoints == null || fillBrush == null)
                     return;
 
-                for (var i = 0; i < linePoints.Length; i++) {
+                for (var i = 0; i < linePoints.Length; i++)
+                {
                     linePoints[i].X += _zero.X;
                     linePoints[i].Y += _zero.Y;
                 }
@@ -368,15 +373,17 @@ namespace SvgNet.SvgGdi
             {
                 var points = new PointF[totalNumberOfPoints];
 
-                for (var j = 0; j < points.Length; j++) {
+                for (var j = 0; j < points.Length; j++)
+                {
                     points[j].X = reader.ReadInt16();
                     points[j].Y = reader.ReadInt16();
                 }
 
-                Transform.TransformPoints(points);
+                _transform.TransformPoints(points);
 
                 var offset = 0;
-                for (var i = 0; i < numberOfPolygons; i++) {
+                for (var i = 0; i < numberOfPolygons; i++)
+                {
                     DrawLine(points, offset, numberOfPoints[i]);
                     offset += numberOfPoints[i];
                 }
@@ -384,7 +391,8 @@ namespace SvgNet.SvgGdi
 
             private void InternalSelectObject(EmfStockObject stockObject)
             {
-                switch (stockObject) {
+                switch (stockObject)
+                {
                     case EmfStockObject.BLACK_BRUSH:
                         _brush = new SolidBrush(Color.Black);
                         break;
@@ -418,7 +426,8 @@ namespace SvgNet.SvgGdi
             {
                 MemoryStream _ms = null;
                 BinaryReader _br = null;
-                try {
+                try
+                {
                     _ms = new MemoryStream(recordData);
                     _br = new BinaryReader(_ms);
 
@@ -426,7 +435,9 @@ namespace SvgNet.SvgGdi
 
                     // Clear the line buffer so that it can record the path
                     CommitLine();
-                } finally {
+                }
+                finally
+                {
                     if (_br != null)
                         _br.Close();
                     if (_ms != null)
@@ -438,7 +449,8 @@ namespace SvgNet.SvgGdi
             {
                 MemoryStream _ms = null;
                 BinaryReader _br = null;
-                try {
+                try
+                {
                     _ms = new MemoryStream(recordData);
                     _br = new BinaryReader(_ms);
 
@@ -449,12 +461,14 @@ namespace SvgNet.SvgGdi
                     points[1].X = _curveOrigin.X;
                     points[1].Y = _curveOrigin.Y;
 
-                    Transform.TransformPoints(points);
+                    _transform.TransformPoints(points);
 
                     DrawLine(points, 0, points.Length);
 
                     System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
-                } finally {
+                }
+                finally
+                {
                     if (_br != null)
                         _br.Close();
                     if (_ms != null)
@@ -466,7 +480,8 @@ namespace SvgNet.SvgGdi
             {
                 MemoryStream _ms = null;
                 BinaryReader _br = null;
-                try {
+                try
+                {
                     _ms = new MemoryStream(recordData);
                     _br = new BinaryReader(_ms);
 
@@ -483,7 +498,8 @@ namespace SvgNet.SvgGdi
 
                     _objects.Remove(ihBrush);
 
-                    switch (brushStyle) {
+                    switch (brushStyle)
+                    {
                         case EmfBrushStyle.BS_SOLID:
                             _objects.Add(ihBrush, new ObjectHandle(new SolidBrush(brushColor)));
                             break;
@@ -500,7 +516,9 @@ namespace SvgNet.SvgGdi
                     }
 
                     System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
-                } finally {
+                }
+                finally
+                {
                     if (_br != null)
                         _br.Close();
                     if (_ms != null)
@@ -512,7 +530,8 @@ namespace SvgNet.SvgGdi
             {
                 MemoryStream _ms = null;
                 BinaryReader _br = null;
-                try {
+                try
+                {
                     _ms = new MemoryStream(recordData);
                     _br = new BinaryReader(_ms);
 
@@ -526,17 +545,18 @@ namespace SvgNet.SvgGdi
 
                     var matrix = new Matrix(eM11, eM12, eM21, eM22, eDx, eDy);
 
-                    switch (iMode) {
+                    switch (iMode)
+                    {
                         case EmfTransformMode.MWT_IDENTITY:
-                            Transform = new Matrix();
+                            _transform = new Matrix();
                             break;
 
                         case EmfTransformMode.MWT_LEFTMULTIPLY:
-                            Transform.Multiply(matrix, MatrixOrder.Append /* TODO: is it the correct order? */);
+                            _transform.Multiply(matrix, MatrixOrder.Append /* TODO: is it the correct order? */);
                             break;
 
                         case EmfTransformMode.MWT_RIGHTMULTIPLY:
-                            Transform.Multiply(matrix, MatrixOrder.Prepend /* TODO: is it the correct order? */);
+                            _transform.Multiply(matrix, MatrixOrder.Prepend /* TODO: is it the correct order? */);
                             break;
 
                         default:
@@ -544,7 +564,9 @@ namespace SvgNet.SvgGdi
                     }
 
                     System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
-                } finally {
+                }
+                finally
+                {
                     if (_br != null)
                         _br.Close();
                     if (_ms != null)
@@ -556,11 +578,13 @@ namespace SvgNet.SvgGdi
             {
                 MemoryStream _ms = null;
                 BinaryReader _br = null;
-                try {
+                try
+                {
                     _ms = new MemoryStream(recordData);
                     _br = new BinaryReader(_ms);
 
-                    _moveTo = new PointF {
+                    _moveTo = new PointF
+                    {
                         X = _br.ReadInt32(),
                         Y = _br.ReadInt32()
                     };
@@ -568,7 +592,9 @@ namespace SvgNet.SvgGdi
                     _curveOrigin = _moveTo;
 
                     System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
-                } finally {
+                }
+                finally
+                {
                     if (_br != null)
                         _br.Close();
                     if (_ms != null)
@@ -580,7 +606,8 @@ namespace SvgNet.SvgGdi
             {
                 MemoryStream _ms = null;
                 BinaryReader _br = null;
-                try {
+                try
+                {
                     _ms = new MemoryStream(recordData);
                     _br = new BinaryReader(_ms);
 
@@ -590,7 +617,8 @@ namespace SvgNet.SvgGdi
 
                     var originalPoints = new PointF[totalNumberOfPoints];
 
-                    for (var j = 0; j < originalPoints.Length; j++) {
+                    for (var j = 0; j < originalPoints.Length; j++)
+                    {
                         originalPoints[j].X = _br.ReadInt16();
                         originalPoints[j].Y = _br.ReadInt16();
                     }
@@ -605,7 +633,8 @@ namespace SvgNet.SvgGdi
                     points[0].X = _moveTo.X;
                     points[0].Y = _moveTo.Y;
 
-                    for (var j = 1; j < points.Length; j++) {
+                    for (var j = 1; j < points.Length; j++)
+                    {
                         // Every curve is defined by 3 points. The first two are the Bezier curve's control points.
                         // The 3rd is the endpoint. This is the point we'll use (only)
                         points[j] = originalPoints[((j - 1) * PointsPerCurve) + (PointsPerCurve - 1)];
@@ -614,12 +643,14 @@ namespace SvgNet.SvgGdi
                     // Clone last point to the current _moveTo cursor
                     _moveTo = new PointF(points[points.Length - 1].X, points[points.Length - 1].Y);
 
-                    Transform.TransformPoints(points);
+                    _transform.TransformPoints(points);
 
                     DrawLine(points, 0, points.Length);
 
                     System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
-                } finally {
+                }
+                finally
+                {
                     if (_br != null)
                         _br.Close();
                     if (_ms != null)
@@ -631,7 +662,8 @@ namespace SvgNet.SvgGdi
             {
                 MemoryStream _ms = null;
                 BinaryReader _br = null;
-                try {
+                try
+                {
                     _ms = new MemoryStream(recordData);
                     _br = new BinaryReader(_ms);
 
@@ -645,7 +677,9 @@ namespace SvgNet.SvgGdi
                     InternalProcessPolyline16(1, totalNumberOfPoints, numberOfPoints, _br);
 
                     System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
-                } finally {
+                }
+                finally
+                {
                     if (_br != null)
                         _br.Close();
                     if (_ms != null)
@@ -657,7 +691,8 @@ namespace SvgNet.SvgGdi
             {
                 MemoryStream _ms = null;
                 BinaryReader _br = null;
-                try {
+                try
+                {
                     _ms = new MemoryStream(recordData);
                     _br = new BinaryReader(_ms);
 
@@ -672,7 +707,9 @@ namespace SvgNet.SvgGdi
                     InternalProcessPolyline16(numberOfPolygons, totalNumberOfPoints, numberOfPoints, _br);
 
                     System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
-                } finally {
+                }
+                finally
+                {
                     if (_br != null)
                         _br.Close();
                     if (_ms != null)
@@ -684,7 +721,8 @@ namespace SvgNet.SvgGdi
             {
                 MemoryStream _ms = null;
                 BinaryReader _br = null;
-                try {
+                try
+                {
                     _ms = new MemoryStream(recordData);
                     _br = new BinaryReader(_ms);
 
@@ -698,7 +736,8 @@ namespace SvgNet.SvgGdi
                     points[0].X = _moveTo.X;
                     points[0].Y = _moveTo.Y;
 
-                    for (var j = 1; j < points.Length; j++) {
+                    for (var j = 1; j < points.Length; j++)
+                    {
                         points[j].X = _br.ReadInt16();
                         points[j].Y = _br.ReadInt16();
                     }
@@ -706,12 +745,14 @@ namespace SvgNet.SvgGdi
                     // Clone last point to the current _moveTo cursor
                     _moveTo = new PointF(points[points.Length - 1].X, points[points.Length - 1].Y);
 
-                    Transform.TransformPoints(points);
+                    _transform.TransformPoints(points);
 
                     DrawLine(points, 0, points.Length);
 
                     System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
-                } finally {
+                }
+                finally
+                {
                     if (_br != null)
                         _br.Close();
                     if (_ms != null)
@@ -723,7 +764,8 @@ namespace SvgNet.SvgGdi
             {
                 MemoryStream _ms = null;
                 BinaryReader _br = null;
-                try {
+                try
+                {
                     _ms = new MemoryStream(recordData);
                     _br = new BinaryReader(_ms);
 
@@ -740,7 +782,9 @@ namespace SvgNet.SvgGdi
                     InternalProcessPolyline16(numberOfPolygons, totalNumberOfPoints, numberOfPoints, _br);
 
                     System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
-                } finally {
+                }
+                finally
+                {
                     if (_br != null)
                         _br.Close();
                     if (_ms != null)
@@ -752,27 +796,35 @@ namespace SvgNet.SvgGdi
             {
                 MemoryStream _ms = null;
                 BinaryReader _br = null;
-                try {
+                try
+                {
                     _ms = new MemoryStream(recordData);
                     _br = new BinaryReader(_ms);
 
                     var ihObject = _br.ReadUInt32();
 
-                    if (ihObject >= StockObjectMinCode && ihObject <= StockObjectMaxCode) {
-                        var stockObject = (EmfStockObject)(ihObject - StockObjectMinCode + (int)EmfStockObject.MinValue);
+                    if (ihObject >= _stockObjectMinCode && ihObject <= _stockObjectMaxCode)
+                    {
+                        var stockObject = (EmfStockObject)(ihObject - _stockObjectMinCode + (int)EmfStockObject.MinValue);
                         InternalSelectObject(stockObject);
-                    } else {
-                        if (_objects.TryGetValue(ihObject, out ObjectHandle objectHandle)) {
-                            if (objectHandle.IsStockObject) {
+                    } else
+                    {
+                        if (_objects.TryGetValue(ihObject, out ObjectHandle objectHandle))
+                        {
+                            if (objectHandle.IsStockObject)
+                            {
                                 InternalSelectObject(objectHandle.GetStockObject());
-                            } else if (objectHandle.IsBrush) {
+                            } else if (objectHandle.IsBrush)
+                            {
                                 _brush = objectHandle.GetBrush();
                             }
                         }
                     }
 
                     System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
-                } finally {
+                }
+                finally
+                {
                     if (_br != null)
                         _br.Close();
                     if (_ms != null)
@@ -784,7 +836,8 @@ namespace SvgNet.SvgGdi
             {
                 MemoryStream _ms = null;
                 BinaryReader _br = null;
-                try {
+                try
+                {
                     _ms = new MemoryStream(recordData);
                     _br = new BinaryReader(_ms);
 
@@ -793,7 +846,9 @@ namespace SvgNet.SvgGdi
                     System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
 
                     FillPolygon(_lineBuffer.GetPoints(), _brush);
-                } finally {
+                }
+                finally
+                {
                     if (_br != null)
                         _br.Close();
                     if (_ms != null)
@@ -808,18 +863,20 @@ namespace SvgNet.SvgGdi
                     _points = new List<NormalizedPoint>();
                     _normalizedPoints = new List<NormalizedPoint>();
                     _visualPoints = new List<VisualPoint>();
-                    _epsilonSquare = (UnitSizeEpsilon * unitSize) * (UnitSizeEpsilon * unitSize);
+                    _epsilonSquare = (_unitSizeEpsilon * unitSize) * (_unitSizeEpsilon * unitSize);
                 }
 
                 public bool IsEmpty => _points.Count == 0;
 
                 public void Add(PointF[] points, int offset, int count)
                 {
-                    if (IsEmpty) {
+                    if (IsEmpty)
+                    {
                         MakeRoom(count);
                         for (var i = 0; i < count; i++)
                             _points.Add(Add(points[offset + i]));
-                    } else {
+                    } else
+                    {
                         if (!IsVisuallyIdentical(GetLastPoint(), points[offset]))
                             throw new ArgumentOutOfRangeException();
 
@@ -850,8 +907,10 @@ namespace SvgNet.SvgGdi
                     var points = new List<NormalizedPoint> {
                         _points[0]
                     };
-                    for (var i = 1; i < _points.Count; i++) {
-                        if (!IsVisuallyIdentical(points[points.Count - 1], _points[i])) {
+                    for (var i = 1; i < _points.Count; i++)
+                    {
+                        if (!IsVisuallyIdentical(points[points.Count - 1], _points[i]))
+                        {
                             points.Add(_points[i]);
                         }
                     }
@@ -861,14 +920,18 @@ namespace SvgNet.SvgGdi
 
                     var result = new List<PointF>();
 
-                    for (var i = 0; i < points.Count; i++) {
+                    for (var i = 0; i < points.Count; i++)
+                    {
                         var visualPoint = _visualPoints[points[i].VisualIndex];
-                        if (!visualPoint.IsLocked) {
+                        if (!visualPoint.IsLocked)
+                        {
                             // Calculate the visual point's appearance as "the middle" of all points
                             double sumX = 0;
                             double sumY = 0;
-                            for (int j = 0, siblingCount = visualPoint.Weight; siblingCount > 0; j++) {
-                                if (_normalizedPoints[j].VisualIndex == visualPoint.VisualIndex) {
+                            for (int j = 0, siblingCount = visualPoint.Weight; siblingCount > 0; j++)
+                            {
+                                if (_normalizedPoints[j].VisualIndex == visualPoint.VisualIndex)
+                                {
                                     sumX += _normalizedPoints[j].Point.X;
                                     sumY += _normalizedPoints[j].Point.Y;
                                     siblingCount--;
@@ -884,7 +947,7 @@ namespace SvgNet.SvgGdi
                     return result.ToArray();
                 }
 
-                private static readonly float UnitSizeEpsilon = 2.0f;
+                private const float _unitSizeEpsilon = 2.0f;
                 private readonly float _epsilonSquare;
                 private readonly List<NormalizedPoint> _normalizedPoints;
                 private readonly List<NormalizedPoint> _points;
@@ -897,8 +960,10 @@ namespace SvgNet.SvgGdi
                     NormalizedPoint result;
                     VisualPoint visualPoint;
 
-                    for (var i = _normalizedPoints.Count - 1; i >= 0; i--) {
-                        if (IsVisuallyIdentical(_normalizedPoints[i].Point, point)) {
+                    for (var i = _normalizedPoints.Count - 1; i >= 0; i--)
+                    {
+                        if (IsVisuallyIdentical(_normalizedPoints[i].Point, point))
+                        {
                             visualPoint = _visualPoints[_normalizedPoints[i].VisualIndex];
                             visualPoint.Weight++;
                             result = new NormalizedPoint { Point = point, VisualIndex = visualPoint.VisualIndex };
@@ -1091,7 +1156,8 @@ namespace SvgNet.SvgGdi
         {
             get => _smoothingMode;
             set {
-                switch (value) {
+                switch (value)
+                {
                     case SmoothingMode.Invalid:
                         break;
 
@@ -1126,7 +1192,8 @@ namespace SvgNet.SvgGdi
         {
             get => throw new SvgGdiNotImplementedException("get_TextRenderingHint");
             set {
-                switch (value) {
+                switch (value)
+                {
                     case TextRenderingHint.AntiAlias:
                         _cur.Style.Set("text-rendering", "auto"); break;
                     case TextRenderingHint.AntiAliasGridFit:
@@ -1200,7 +1267,8 @@ namespace SvgNet.SvgGdi
         {
             string s = GDIArc2SVGPath(x, y, width, height, startAngle, sweepAngle, false);
 
-            var arc = new SvgPathElement {
+            var arc = new SvgPathElement
+            {
                 D = s,
                 Style = new SvgStyle(pen)
             };
@@ -1229,7 +1297,8 @@ namespace SvgNet.SvgGdi
         /// </summary>
         public void DrawBezier(Pen pen, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
         {
-            var bez = new SvgPathElement {
+            var bez = new SvgPathElement
+            {
                 D = "M " + x1.ToString("F", CultureInfo.InvariantCulture) + " " + y1.ToString("F", CultureInfo.InvariantCulture) + " C " +
                     x2.ToString("F", CultureInfo.InvariantCulture) + " " + y2.ToString("F", CultureInfo.InvariantCulture) + " " +
                     x3.ToString("F", CultureInfo.InvariantCulture) + " " + y3.ToString("F", CultureInfo.InvariantCulture) + " " +
@@ -1260,7 +1329,8 @@ namespace SvgNet.SvgGdi
 
             string s = "M " + points[0].X.ToString("F", CultureInfo.InvariantCulture) + " " + points[0].Y.ToString("F", CultureInfo.InvariantCulture) + " C ";
 
-            for (int i = 1; i < points.Length; ++i) {
+            for (int i = 1; i < points.Length; ++i)
+            {
                 s += points[i].X.ToString("F", CultureInfo.InvariantCulture) + " " + points[i].Y.ToString("F", CultureInfo.InvariantCulture) + " ";
             }
 
@@ -1392,7 +1462,8 @@ namespace SvgNet.SvgGdi
         /// </summary>
         public void DrawEllipse(Pen pen, float x, float y, float width, float height)
         {
-            var el = new SvgEllipseElement(x + width / 2, y + height / 2, width / 2, height / 2) {
+            var el = new SvgEllipseElement(x + width / 2, y + height / 2, width / 2, height / 2)
+            {
                 Style = new SvgStyle(pen)
             };
             if (!_transforms.Result.IsIdentity)
@@ -1586,9 +1657,11 @@ namespace SvgNet.SvgGdi
         /// </summary>
         public void DrawLine(Pen pen, float x1, float y1, float x2, float y2)
         {
-            if (IsEndAnchorSimple(pen.StartCap) && IsEndAnchorSimple(pen.EndCap)) {
+            if (IsEndAnchorSimple(pen.StartCap) && IsEndAnchorSimple(pen.EndCap))
+            {
                 // This code works, but not for CustomLineCup style
-                var lin = new SvgLineElement(x1, y1, x2, y2) {
+                var lin = new SvgLineElement(x1, y1, x2, y2)
+                {
                     Style = new SvgStyle(pen)
                 };
                 if (!_transforms.Result.IsIdentity)
@@ -1596,7 +1669,8 @@ namespace SvgNet.SvgGdi
                 _cur.AddChild(lin);
 
                 DrawEndAnchors(pen, new PointF(x1, y1), new PointF(x2, y2));
-            } else {
+            } else
+            {
                 DrawLines(pen, new PointF[] { new PointF(x1, y1), new PointF(x2, y2) });
             }
         }
@@ -1624,9 +1698,11 @@ namespace SvgNet.SvgGdi
             if (points.Length <= 1)
                 return;
 
-            if (IsEndAnchorSimple(pen.StartCap) && IsEndAnchorSimple(pen.EndCap)) {
+            if (IsEndAnchorSimple(pen.StartCap) && IsEndAnchorSimple(pen.EndCap))
+            {
                 // This code works, but not for CustomLineCap style
-                var pl = new SvgPolylineElement(points) {
+                var pl = new SvgPolylineElement(points)
+                {
                     Style = new SvgStyle(pen)
                 };
                 if (!_transforms.Result.IsIdentity)
@@ -1650,7 +1726,8 @@ namespace SvgNet.SvgGdi
             var maxX = points[0].X;
             var minY = points[0].Y;
             var maxY = points[0].Y;
-            for (var i = 1; i < points.Length; i++) {
+            for (var i = 1; i < points.Length; i++)
+            {
                 var point = points[i];
                 minX = Math.Min(minX, point.X);
                 maxX = Math.Max(maxX, point.X);
@@ -1664,22 +1741,27 @@ namespace SvgNet.SvgGdi
             bounds.Offset(-zero.X, -zero.Y);
 
             // Make the original point-path "zero"-based
-            for (var i = 0; i < points.Length; i++) {
+            for (var i = 0; i < points.Length; i++)
+            {
                 points[i].X -= zero.X;
                 points[i].Y -= zero.Y;
             }
 
-            using (var metafileBuffer = new MemoryStream()) {
+            using (var metafileBuffer = new MemoryStream())
+            {
                 Metafile metafile = null;
 
-                try {
+                try
+                {
                     /* For discussion of tricky metafile details see:
                      * - http://nicholas.piasecki.name/blog/2009/06/drawing-o-an-in-memory-metafile-in-c-sharp/
                      * - http://stackoverflow.com/a/1533053/2626313
                      */
 
-                    using (var temporaryBitmap = new Bitmap(1, 1)) {
-                        using (var temporaryCanvas = Graphics.FromImage(temporaryBitmap)) {
+                    using (var temporaryBitmap = new Bitmap(1, 1))
+                    {
+                        using (var temporaryCanvas = Graphics.FromImage(temporaryBitmap))
+                        {
                             var hdc = temporaryCanvas.GetHdc();
                             metafile = new Metafile(
                                 metafileBuffer,
@@ -1692,10 +1774,13 @@ namespace SvgNet.SvgGdi
                         }
                     }
 
-                    using (var metafileCanvas = Graphics.FromImage(metafile)) {
+                    using (var metafileCanvas = Graphics.FromImage(metafile))
+                    {
                         metafileCanvas.DrawLines(pen, points);
                     }
-                } finally {
+                }
+                finally
+                {
                     if (metafile != null)
                         metafile.Dispose();
                 }
@@ -1704,10 +1789,12 @@ namespace SvgNet.SvgGdi
 
                 var metafileIsEmpty = true;
                 var parser = new MetafileTools.MetafileParser();
-                parser.EnumerateMetafile(metafileBuffer, pen.Width, zero, (PointF[] linePoints) => {
+                parser.EnumerateMetafile(metafileBuffer, pen.Width, zero, (PointF[] linePoints) =>
+                {
                     metafileIsEmpty = false;
 
-                    var pl = new SvgPolylineElement(linePoints) {
+                    var pl = new SvgPolylineElement(linePoints)
+                    {
                         Style = new SvgStyle(pen)
                     };
 
@@ -1717,24 +1804,28 @@ namespace SvgNet.SvgGdi
                     if (!_transforms.Result.IsIdentity)
                         pl.Transform = new SvgTransformList(_transforms.Result.Clone());
                     _cur.AddChild(pl);
-                }, (PointF[] linePoints, Brush fillBrush) => {
+                }, (PointF[] linePoints, Brush fillBrush) =>
+                {
                     // TODO: received shapes dont' have the vertex list "normalized" correctly
                     // metafileIsEmpty = false;
                     // FillPolygon(fillBrush, linePoints);
                 });
 
-                if (metafileIsEmpty) {
+                if (metafileIsEmpty)
+                {
                     // TODO: metafile recording on OpenSUSE Linux with Mono 3.8.0 does not seem to work at all
                     // as the supposed implementation in https://github.com/mono/libgdiplus/blob/master/src/graphics-metafile.c is
                     // full of "TODO". In this case we should take a graceful fallback approach
 
                     // Restore points array to the original values they had when entered the function
-                    for (var i = 0; i < points.Length; i++) {
+                    for (var i = 0; i < points.Length; i++)
+                    {
                         points[i].X += zero.X;
                         points[i].Y += zero.Y;
                     }
 
-                    var pl = new SvgPolylineElement(points) {
+                    var pl = new SvgPolylineElement(points)
+                    {
                         Style = new SvgStyle(pen)
                     };
                     if (!_transforms.Result.IsIdentity)
@@ -1765,8 +1856,10 @@ namespace SvgNet.SvgGdi
         /// </remarks>
         public void DrawPath(Pen pen, GraphicsPath path)
         {
-            foreach (SvgPath data in HandleGraphicsPath(path)) {
-                var pathElement = new SvgPathElement {
+            foreach (SvgPath data in HandleGraphicsPath(path))
+            {
+                var pathElement = new SvgPathElement
+                {
                     Style = new SvgStyle(pen),
                     D = data
                 };
@@ -1783,7 +1876,8 @@ namespace SvgNet.SvgGdi
         {
             string s = GDIArc2SVGPath(x, y, width, height, startAngle, sweepAngle, true);
 
-            var pie = new SvgPathElement {
+            var pie = new SvgPathElement
+            {
                 D = s,
                 Style = new SvgStyle(pen)
             };
@@ -1813,7 +1907,8 @@ namespace SvgNet.SvgGdi
         /// </summary>
         public void DrawPolygon(Pen pen, PointF[] points)
         {
-            var pl = new SvgPolygonElement(points) {
+            var pl = new SvgPolygonElement(points)
+            {
                 Style = new SvgStyle(pen)
             };
             if (!_transforms.Result.IsIdentity)
@@ -1840,7 +1935,8 @@ namespace SvgNet.SvgGdi
         /// </summary>
         public void DrawRectangle(Pen pen, float x, float y, float width, float height)
         {
-            var rc = new SvgRectElement(x, y, width, height) {
+            var rc = new SvgRectElement(x, y, width, height)
+            {
                 Style = new SvgStyle(pen)
             };
             if (!_transforms.Result.IsIdentity)
@@ -1858,7 +1954,8 @@ namespace SvgNet.SvgGdi
         /// </summary>
         public void DrawRectangles(Pen pen, RectangleF[] rects)
         {
-            foreach (RectangleF rc in rects) {
+            foreach (RectangleF rc in rects)
+            {
                 DrawRectangle(pen, rc.Left, rc.Top, rc.Width, rc.Height);
             }
         }
@@ -1868,7 +1965,8 @@ namespace SvgNet.SvgGdi
         /// </summary>
         public void DrawRectangles(Pen pen, Rectangle[] rects)
         {
-            foreach (Rectangle rc in rects) {
+            foreach (Rectangle rc in rects)
+            {
                 DrawRectangle(pen, rc.Left, rc.Top, rc.Width, (float)rc.Height);
             }
         }
@@ -1997,7 +2095,8 @@ namespace SvgNet.SvgGdi
         /// </summary>
         public void FillEllipse(Brush brush, float x, float y, float width, float height)
         {
-            var el = new SvgEllipseElement(x + width / 2, y + height / 2, width / 2, height / 2) {
+            var el = new SvgEllipseElement(x + width / 2, y + height / 2, width / 2, height / 2)
+            {
                 Style = HandleBrush(brush)
             };
             if (!_transforms.Result.IsIdentity)
@@ -2020,8 +2119,10 @@ namespace SvgNet.SvgGdi
         /// </summary>
         public void FillPath(Brush brush, GraphicsPath path)
         {
-            foreach (var svgPath in HandleGraphicsPath(path)) {
-                var pathElement = new SvgPathElement {
+            foreach (var svgPath in HandleGraphicsPath(path))
+            {
+                var pathElement = new SvgPathElement
+                {
                     Style = HandleBrush(brush),
                     D = svgPath
                 };
@@ -2043,7 +2144,8 @@ namespace SvgNet.SvgGdi
         {
             string s = GDIArc2SVGPath(x, y, width, height, startAngle, sweepAngle, true);
 
-            var pie = new SvgPathElement {
+            var pie = new SvgPathElement
+            {
                 D = s,
                 Style = HandleBrush(brush)
             };
@@ -2077,12 +2179,15 @@ namespace SvgNet.SvgGdi
         /// </summary>
         public void FillPolygon(Brush brush, PointF[] points, FillMode fillmode)
         {
-            var pl = new SvgPolygonElement(points) {
+            var pl = new SvgPolygonElement(points)
+            {
                 Style = HandleBrush(brush)
             };
-            if (fillmode == FillMode.Alternate) {
+            if (fillmode == FillMode.Alternate)
+            {
                 pl.Style.Set("fill-rule", "evenodd");
-            } else {
+            } else
+            {
                 pl.Style.Set("fill-rule", "nonzero");
             }
 
@@ -2110,7 +2215,8 @@ namespace SvgNet.SvgGdi
         /// </summary>
         public void FillRectangle(Brush brush, float x, float y, float width, float height)
         {
-            var rc = new SvgRectElement(x, y, width, height) {
+            var rc = new SvgRectElement(x, y, width, height)
+            {
                 Style = HandleBrush(brush)
             };
             if (!_transforms.Result.IsIdentity)
@@ -2133,7 +2239,8 @@ namespace SvgNet.SvgGdi
         /// </summary>
         public void FillRectangles(Brush brush, RectangleF[] rects)
         {
-            foreach (RectangleF rc in rects) {
+            foreach (RectangleF rc in rects)
+            {
                 FillRectangle(brush, rc);
             }
         }
@@ -2143,7 +2250,8 @@ namespace SvgNet.SvgGdi
         /// </summary>
         public void FillRectangles(Brush brush, Rectangle[] rects)
         {
-            foreach (Rectangle rc in rects) {
+            foreach (Rectangle rc in rects)
+            {
                 FillRectangle(brush, rc);
             }
         }
@@ -2438,7 +2546,8 @@ namespace SvgNet.SvgGdi
             SvgStyledTransformedElement l3 = null;
             SvgStyledTransformedElement l4 = null;
 
-            switch (hs) {
+            switch (hs)
+            {
                 case HatchStyle.Cross:
                     l1 = new SvgLineElement(4, 0, 4, 8);
                     l2 = new SvgLineElement(0, 4, 8, 4);
@@ -2721,22 +2830,26 @@ namespace SvgNet.SvgGdi
                     break;
             }
 
-            if (l1 != null) {
+            if (l1 != null)
+            {
                 l1.Style.Set("stroke", col);
                 l1.Style.Set("fill", col);
                 patty.AddChild(l1);
             }
-            if (l2 != null) {
+            if (l2 != null)
+            {
                 l2.Style.Set("stroke", col);
                 l2.Style.Set("fill", col);
                 patty.AddChild(l2);
             }
-            if (l3 != null) {
+            if (l3 != null)
+            {
                 l3.Style.Set("stroke", col);
                 l3.Style.Set("fill", col);
                 patty.AddChild(l3);
             }
-            if (l4 != null) {
+            if (l4 != null)
+            {
                 l4.Style.Set("stroke", col);
                 l4.Style.Set("fill", col);
                 patty.AddChild(l4);
@@ -2771,7 +2884,7 @@ namespace SvgNet.SvgGdi
             nrv.X /= (float)Math.Sqrt(nrvlen / (10 * t * t));
             nrv.Y /= (float)Math.Sqrt(nrvlen / (10 * t * t));
 
-            PointF[] ret = new PointF[2];
+            var ret = new PointF[2];
 
             ret[0] = new PointF(pt.X + nlv.X, pt.Y + nlv.Y);
             ret[1] = new PointF(pt.X + nrv.X, pt.Y + nrv.Y);
@@ -2784,7 +2897,8 @@ namespace SvgNet.SvgGdi
             if (c.A == 0)
                 return;
 
-            var rc = new SvgRectElement(x, y, w, h) {
+            var rc = new SvgRectElement(x, y, w, h)
+            {
                 Id = ""
             };
             rc.Style.Set("fill", "rgb(" + c.R + "," + c.G + "," + c.B + ")");
@@ -2807,13 +2921,15 @@ namespace SvgNet.SvgGdi
 
             sweepAngle += startAngle;
 
-            if (sweepAngle > startAngle) {
+            if (sweepAngle > startAngle)
+            {
                 float tmp = startAngle;
                 startAngle = sweepAngle;
                 sweepAngle = tmp;
             }
 
-            if (sweepAngle - startAngle > Math.PI || startAngle - sweepAngle > Math.PI) {
+            if (sweepAngle - startAngle > Math.PI || startAngle - sweepAngle > Math.PI)
+            {
                 longArc = 1;
             }
 
@@ -2827,7 +2943,8 @@ namespace SvgNet.SvgGdi
                 " A " + (width / 2f).ToString("F", CultureInfo.InvariantCulture) + " " + (height / 2f).ToString("F", CultureInfo.InvariantCulture) + " " +
                 "0 " + longArc.ToString() + " 0 " + end.X.ToString("F", CultureInfo.InvariantCulture) + " " + end.Y.ToString("F", CultureInfo.InvariantCulture);
 
-            if (pie) {
+            if (pie)
+            {
                 s += " L " + center.X.ToString("F", CultureInfo.InvariantCulture) + "," + center.Y.ToString("F", CultureInfo.InvariantCulture);
                 s += " L " + start.X.ToString("F", CultureInfo.InvariantCulture) + "," + start.Y.ToString("F", CultureInfo.InvariantCulture);
             }
@@ -2837,7 +2954,8 @@ namespace SvgNet.SvgGdi
 
         private static Graphics GetDefaultGraphics()
         {
-            if (_g == null) {
+            if (_g == null)
+            {
                 var b = new Bitmap(1, 1);
                 _g = Graphics.FromImage(b);
             }
@@ -2852,7 +2970,8 @@ namespace SvgNet.SvgGdi
         /// </summary>
         private static bool IsEndAnchorSimple(LineCap lc)
         {
-            switch (lc) {
+            switch (lc)
+            {
                 case LineCap.NoAnchor:
                 case LineCap.Flat:
                 case LineCap.ArrowAnchor:
@@ -2868,8 +2987,9 @@ namespace SvgNet.SvgGdi
 
         private static PointF[] Point2PointF(Point[] p)
         {
-            PointF[] pf = new PointF[p.Length];
-            for (int i = 0; i < p.Length; ++i) {
+            var pf = new PointF[p.Length];
+            for (int i = 0; i < p.Length; ++i)
+            {
                 pf[i] = new PointF(p[i].X, p[i].Y);
             }
 
@@ -2888,7 +3008,8 @@ namespace SvgNet.SvgGdi
             res.Add(points[0]);
             res.Add(ControlPoint(points[1], points[0], tension));
 
-            for (int i = 1; i < l; ++i) {
+            for (int i = 1; i < l; ++i)
+            {
                 PointF[] pts = ControlPoints(points[i - 1], points[i + 1], points[i], tension);
                 res.Add(pts[0]);
                 res.Add(points[i]);
@@ -2898,7 +3019,8 @@ namespace SvgNet.SvgGdi
             res.Add(ControlPoint(points[l - 1], points[l], tension));
             res.Add(points[l]);
 
-            if (closed) {
+            if (closed)
+            {
                 //adjust rh cp of point 0
                 PointF[] pts = ControlPoints(points[l], points[1], points[0], tension);
                 res[1] = pts[1];
@@ -2914,10 +3036,12 @@ namespace SvgNet.SvgGdi
                 res.Add(points[0]);
 
                 return (PointF[])res.ToArray(typeof(PointF));
-            } else {
+            } else
+            {
                 var subset = new ArrayList();
 
-                for (int i = start * 3; i < (start + num) * 3; ++i) {
+                for (int i = start * 3; i < (start + num) * 3; ++i)
+                {
                     subset.Add(res[i]);
                 }
 
@@ -2933,20 +3057,25 @@ namespace SvgNet.SvgGdi
 
             float scalex = 1, scaley = 1;
 
-            if (scale) {
+            if (scale)
+            {
                 scalex = w / b.Width;
                 scaley = h / b.Height;
             }
 
-            for (int line = 0; line < b.Height; ++line) {
-                for (int col = 0; col < b.Width; ++col) {
+            for (int line = 0; line < b.Height; ++line)
+            {
+                for (int col = 0; col < b.Width; ++col)
+                {
                     //This is SO slow, but better than making the whole library 'unsafe'
                     Color c = b.GetPixel(col, line);
 
-                    if (!scale) {
+                    if (!scale)
+                    {
                         if (col <= w && line <= h)
                             DrawImagePixel(g, c, x + col, y + line, 1, 1);
-                    } else {
+                    } else
+                    {
                         DrawImagePixel(g, c, x + (col * scalex), y + (line * scaley), scalex, scaley);
                     }
                 }
@@ -2974,7 +3103,8 @@ namespace SvgNet.SvgGdi
             SvgStyledTransformedElement anchor = null;
             PointF[] points = null;
 
-            switch (lc) {
+            switch (lc)
+            {
                 case LineCap.NoAnchor:
                     break;
 
@@ -3009,7 +3139,8 @@ namespace SvgNet.SvgGdi
                     break;
 
                 case LineCap.Custom:
-                    if (clc != null) {
+                    if (clc != null)
+                    {
                         if (!ignoreUnsupportedLineCaps)
                             throw new SvgGdiNotImplementedException("DrawEndAnchor custom");
                     }
@@ -3048,13 +3179,19 @@ namespace SvgNet.SvgGdi
             CustomLineCap clcend = null;
 
             //GDI+ native dll throws an exception if someone forgot to specify custom cap
-            try {
+            try
+            {
                 clcstart = pen.CustomStartCap;
-            } catch (Exception) {
             }
-            try {
+            catch (Exception)
+            {
+            }
+            try
+            {
                 clcend = pen.CustomEndCap;
-            } catch (Exception) {
+            }
+            catch (Exception)
+            {
             }
 
             DrawEndAnchor(pen.StartCap, clcstart, pen.Color, pen.Width, start, startAngle, ignoreUnsupportedLineCaps);
@@ -3066,7 +3203,8 @@ namespace SvgNet.SvgGdi
             if (s != null && s.Contains("\n"))
                 throw new SvgGdiNotImplementedException("DrawText multiline text");
 
-            var txt = new SvgTextElement(s, rect.X, rect.Y) {
+            var txt = new SvgTextElement(s, rect.X, rect.Y)
+            {
                 //GDI takes x and y as the upper left corner; svg takes them as the lower left.
                 //We must therefore move the text one line down, but SVG does not understand about lines,
                 //so we do as best we can, applying a downward translation before the current GDI translation.
@@ -3077,11 +3215,13 @@ namespace SvgNet.SvgGdi
             };
             txt.Style += new SvgStyle(font);
 
-            switch (fmt.Alignment) {
+            switch (fmt.Alignment)
+            {
                 case StringAlignment.Near:
                     break;
 
-                case StringAlignment.Center: {
+                case StringAlignment.Center:
+                    {
                         if (ignoreRect)
                             throw new SvgGdiNotImplementedException("DrawText automatic rect");
 
@@ -3090,7 +3230,8 @@ namespace SvgNet.SvgGdi
                     }
                     break;
 
-                case StringAlignment.Far: {
+                case StringAlignment.Far:
+                    {
                         if (ignoreRect)
                             throw new SvgGdiNotImplementedException("DrawText automatic rect");
 
@@ -3103,7 +3244,8 @@ namespace SvgNet.SvgGdi
                     throw new SvgGdiNotImplementedException("DrawText horizontal alignment");
             }
 
-            if (!ignoreRect && ((fmt.FormatFlags & StringFormatFlags.NoClip) != StringFormatFlags.NoClip)) {
+            if (!ignoreRect && ((fmt.FormatFlags & StringFormatFlags.NoClip) != StringFormatFlags.NoClip))
+            {
                 var clipper = new SvgClipPathElement();
                 clipper.Id += "_text_clipper";
                 var rc = new SvgRectElement(rect.X, rect.Y, rect.Width, rect.Height);
@@ -3113,11 +3255,14 @@ namespace SvgNet.SvgGdi
                 txt.Style.Set("clip-path", new SvgUriReference(clipper));
             }
 
-            switch (fmt.LineAlignment) {
-                case StringAlignment.Near: {
+            switch (fmt.LineAlignment)
+            {
+                case StringAlignment.Near:
+                    {
                         // TODO: ??
                         // txt.Style.Set("baseline-shift", "-86%");//a guess.
-                        var span = new SvgTspanElement(s) {
+                        var span = new SvgTspanElement(s)
+                        {
                             DY = new SvgLength(txt.Style.Get("font-size").ToString())
                         };
                         txt.Text = null;
@@ -3125,12 +3270,14 @@ namespace SvgNet.SvgGdi
                     }
                     break;
 
-                case StringAlignment.Center: {
+                case StringAlignment.Center:
+                    {
                         if (ignoreRect)
                             throw new SvgGdiNotImplementedException("DrawText automatic rect");
 
                         txt.Y.Value = txt.Y.Value + (rect.Height / 2);
-                        var span = new SvgTspanElement(s) {
+                        var span = new SvgTspanElement(s)
+                        {
                             DY = new SvgLength(txt.Style.Get("font-size").ToString())
                         };
                         span.DY.Value = span.DY.Value * ((1 - GetFontDescentPercentage(font)) - 0.5f);
@@ -3139,7 +3286,8 @@ namespace SvgNet.SvgGdi
                     }
                     break;
 
-                case StringAlignment.Far: {
+                case StringAlignment.Far:
+                    {
                         if (ignoreRect)
                             throw new SvgGdiNotImplementedException("DrawText automatic rect");
 
@@ -3147,7 +3295,8 @@ namespace SvgNet.SvgGdi
                         // This would solve the alignment as well, but it's not supported by Internet Explorer
                         //
                         // txt.Attributes["dominant-baseline"] = "text-after-edge";
-                        var span = new SvgTspanElement(s) {
+                        var span = new SvgTspanElement(s)
+                        {
                             DY = new SvgLength(txt.Style.Get("font-size").ToString())
                         };
                         span.DY.Value = span.DY.Value * ((1 - GetFontDescentPercentage(font)) - 1);
@@ -3169,7 +3318,8 @@ namespace SvgNet.SvgGdi
 
             string s = "M " + points[0].X.ToString("F", CultureInfo.InvariantCulture) + " " + points[0].Y.ToString("F", CultureInfo.InvariantCulture) + " C ";
 
-            for (int i = 1; i < points.Length; ++i) {
+            for (int i = 1; i < points.Length; ++i)
+            {
                 s += points[i].X.ToString("F", CultureInfo.InvariantCulture) + " " + points[i].Y.ToString("F", CultureInfo.InvariantCulture) + " ";
             }
 
@@ -3201,14 +3351,17 @@ namespace SvgNet.SvgGdi
         /// <returns></returns>
         private SvgStyle HandleBrush(Brush br)
         {
-            if (br is SolidBrush sbr) {
+            if (br is SolidBrush sbr)
+            {
                 return new SvgStyle(sbr);
             }
 
-            if (br is LinearGradientBrush grbr) {
+            if (br is LinearGradientBrush grbr)
+            {
                 RectangleF rc = grbr.Rectangle;
                 var grad = new SvgLinearGradientElement(rc.Left, rc.Top, rc.Right, rc.Bottom);
-                switch (grbr.WrapMode) {
+                switch (grbr.WrapMode)
+                {
                     //I have not been able to test Clamp because using a clamped gradient appears to crash the process
                     //under XP (?!?!)
                     case WrapMode.Clamp:
@@ -3222,15 +3375,20 @@ namespace SvgNet.SvgGdi
                 ColorBlend cb = null;
 
                 //GDI dll tends to crash when you try and access some members of gradient brushes that haven't been specified.
-                try {
+                try
+                {
                     cb = grbr.InterpolationColors;
-                } catch (Exception) { }
+                }
+                catch (Exception) { }
 
-                if (cb != null) {
-                    for (int i = 0; i < grbr.InterpolationColors.Colors.Length; ++i) {
+                if (cb != null)
+                {
+                    for (int i = 0; i < grbr.InterpolationColors.Colors.Length; ++i)
+                    {
                         grad.AddChild(new SvgStopElement(grbr.InterpolationColors.Positions[i], grbr.InterpolationColors.Colors[i]));
                     }
-                } else {
+                } else
+                {
                     grad.AddChild(new SvgStopElement("0%", grbr.LinearColors[0]));
                     grad.AddChild(new SvgStopElement("100%", grbr.LinearColors[1]));
                 }
@@ -3244,7 +3402,8 @@ namespace SvgNet.SvgGdi
                 return s;
             }
 
-            if (br is HatchBrush habr) {
+            if (br is HatchBrush habr)
+            {
                 var patty = new SvgPatternElement(0, 0, 8, 8, null);
                 patty.Style.Set("shape-rendering", "crispEdges");
                 patty.Style.Set("stroke-linecap", "butt");
@@ -3273,18 +3432,22 @@ namespace SvgNet.SvgGdi
         {
             var pathBuilder = new StringBuilder();
             using (var subpaths = new GraphicsPathIterator(path))
-            using (var subpath = new GraphicsPath(path.FillMode)) {
+            using (var subpath = new GraphicsPath(path.FillMode))
+            {
                 subpaths.Rewind();
 
                 //Iterate through all the subpaths in the path. Each subpath will contain either
                 //lines or Bezier curves
-                for (int s = 0; s < subpaths.SubpathCount; s++) {
-                    if (subpaths.NextSubpath(subpath, out var isClosed) == 0) {
+                for (int s = 0; s < subpaths.SubpathCount; s++)
+                {
+                    if (subpaths.NextSubpath(subpath, out var isClosed) == 0)
+                    {
                         continue; //go to next subpath if this one has zero points.
                     }
 
                     PathPointType lastType = PathPointType.Start;
-                    for (int i = 0; i < subpath.PathPoints.Length; i++) {
+                    for (int i = 0; i < subpath.PathPoints.Length; i++)
+                    {
                         /* Each subpath point has a corresponding path point type which can be:
                          *The point starts the subpath
                          *The point is a line point
@@ -3318,7 +3481,8 @@ namespace SvgNet.SvgGdi
                         lastType = pathType;
                     }
 
-                    if (isClosed) {
+                    if (isClosed)
+                    {
                         // Close path
                         pathBuilder.Append(" Z");
                     }
@@ -3358,7 +3522,8 @@ namespace SvgNet.SvgGdi
 
                     _result = new Matrix();
 
-                    foreach (Matrix mat in _mx) {
+                    foreach (Matrix mat in _mx)
+                    {
                         if (!mat.IsIdentity)
                             _result.Multiply(mat);
                     }

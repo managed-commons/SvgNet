@@ -16,7 +16,7 @@ namespace SvgNet.SvgTypes
     /// </summary>
     public class PathSeg : ICloneable
     {
-        private bool _abs;
+        private readonly bool _abs;
         public float[] _data;
         public SvgPathSegType _type;
 

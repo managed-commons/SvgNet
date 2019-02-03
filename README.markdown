@@ -8,6 +8,9 @@ __SvgNet is now available as a Nuget:__ [SvgNet](https://www.nuget.org/packages/
 
 Work in progress: __version 2.0.0 is .NET Standard 2.0 compatible and works with .NET Core 2.0__
 
+To build it properly you need .NET Core 2.0.3 SDK installed as it is pinned (via global.json) to that version 
+that has graphics dlls available, no present in later versions
+
 ----------
 
 ## License: BSD
