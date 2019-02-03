@@ -16,33 +16,32 @@ namespace SvgNet.SvgTypes
     /// </summary>
     public class PathSeg : ICloneable
     {
-        private readonly bool _abs;
         public float[] _data;
         public SvgPathSegType _type;
 
         public PathSeg(SvgPathSegType t, bool a, float[] arr)
         {
             _type = t;
-            _abs = a;
+            Abs = a;
             _data = arr;
         }
 
-        public bool Abs => _abs;
+        public bool Abs { get; private set; }
 
         public string Char
         {
             get {
                 switch (_type) {
-                    case SvgPathSegType.SVG_SEGTYPE_MOVETO: return (_abs ? "M" : "m");
+                    case SvgPathSegType.SVG_SEGTYPE_MOVETO: return (Abs ? "M" : "m");
                     case SvgPathSegType.SVG_SEGTYPE_CLOSEPATH: return "z";
-                    case SvgPathSegType.SVG_SEGTYPE_LINETO: return (_abs ? "L" : "l");
-                    case SvgPathSegType.SVG_SEGTYPE_HLINETO: return (_abs ? "H" : "h");
-                    case SvgPathSegType.SVG_SEGTYPE_VLINETO: return (_abs ? "V" : "v");
-                    case SvgPathSegType.SVG_SEGTYPE_CURVETO: return (_abs ? "C" : "c");
-                    case SvgPathSegType.SVG_SEGTYPE_SMOOTHCURVETO: return (_abs ? "S" : "s");
-                    case SvgPathSegType.SVG_SEGTYPE_BEZIERTO: return (_abs ? "Q" : "q");
-                    case SvgPathSegType.SVG_SEGTYPE_SMOOTHBEZIERTO: return (_abs ? "T" : "t");
-                    case SvgPathSegType.SVG_SEGTYPE_ARCTO: return (_abs ? "A" : "a");
+                    case SvgPathSegType.SVG_SEGTYPE_LINETO: return (Abs ? "L" : "l");
+                    case SvgPathSegType.SVG_SEGTYPE_HLINETO: return (Abs ? "H" : "h");
+                    case SvgPathSegType.SVG_SEGTYPE_VLINETO: return (Abs ? "V" : "v");
+                    case SvgPathSegType.SVG_SEGTYPE_CURVETO: return (Abs ? "C" : "c");
+                    case SvgPathSegType.SVG_SEGTYPE_SMOOTHCURVETO: return (Abs ? "S" : "s");
+                    case SvgPathSegType.SVG_SEGTYPE_BEZIERTO: return (Abs ? "Q" : "q");
+                    case SvgPathSegType.SVG_SEGTYPE_SMOOTHBEZIERTO: return (Abs ? "T" : "t");
+                    case SvgPathSegType.SVG_SEGTYPE_ARCTO: return (Abs ? "A" : "a");
                 }
 
                 throw new SvgException("Invalid PathSeg type", _type.ToString());
@@ -53,6 +52,6 @@ namespace SvgNet.SvgTypes
 
         public SvgPathSegType Type => _type;
 
-        public object Clone() => new PathSeg(_type, _abs, (float[])_data.Clone());
+        public object Clone() => new PathSeg(_type, Abs, (float[])_data.Clone());
     };
 }
