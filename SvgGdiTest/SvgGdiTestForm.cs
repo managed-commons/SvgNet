@@ -514,6 +514,11 @@ namespace SvgGdiTest
                 myPath2.AddEllipse(120, 120, 120, 140);
                 myPath2.AddBezier(130, 160, 170, 160, 150, 130, 200, 110);
                 ig.DrawPath(new Pen(Color.Blue, 1.7f), myPath2);
+
+                GraphicsPath myPath3 = new GraphicsPath();
+                myPath3.AddEllipse(120, 50, 50, 50);
+                myPath3.AddEllipse(135, 65, 30, 30);
+                ig.FillPath(Brushes.Blue, myPath3);
             }
             else if (s == "Path Polygon")
             {
