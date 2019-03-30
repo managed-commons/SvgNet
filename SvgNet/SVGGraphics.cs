@@ -2288,6 +2288,14 @@ namespace SvgNet.SvgGdi
             SvgPathElement pathElement = new SvgPathElement();
             SvgPath svgPath = HandleGraphicsPath(path);
             pathElement.Style = HandleBrush(brush);
+            if (path.FillMode == FillMode.Alternate)
+            {
+                pathElement.Style.Set("fill-rule", "evenodd");
+            }
+            else
+            {
+                pathElement.Style.Set("fill-rule", "nonzero");
+            }
             pathElement.D = svgPath;
             if (!_transforms.Result.IsIdentity)
                 pathElement.Transform = new SvgTransformList(_transforms.Result.Clone());
