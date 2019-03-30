@@ -1992,15 +1992,13 @@ namespace SvgNet.SvgGdi
         /// </remarks>
         public void DrawPath(Pen pen, GraphicsPath path)
         {
-            foreach (SvgPath data in HandleGraphicsPath(path))
-            {
-                SvgPathElement pathElement = new SvgPathElement();
-                pathElement.Style = new SvgStyle(pen);
-                pathElement.D = data;
-                if (!_transforms.Result.IsIdentity)
-                    pathElement.Transform = new SvgTransformList(_transforms.Result.Clone());
-                _cur.AddChild(pathElement);
-            }
+            SvgPathElement pathElement = new SvgPathElement();
+            SvgPath data = HandleGraphicsPath(path);
+            pathElement.Style = new SvgStyle(pen);
+            pathElement.D = data;
+            if (!_transforms.Result.IsIdentity)
+                pathElement.Transform = new SvgTransformList(_transforms.Result.Clone());
+            _cur.AddChild(pathElement);
         }
 
         /// <summary>
@@ -2287,15 +2285,13 @@ namespace SvgNet.SvgGdi
         /// </summary>
         public void FillPath(Brush brush, GraphicsPath path)
         {
-            foreach (var svgPath in HandleGraphicsPath(path))
-            {
-                var pathElement = new SvgPathElement();
-                pathElement.Style = HandleBrush(brush);
-                pathElement.D = svgPath;
-                if (!_transforms.Result.IsIdentity)
-                    pathElement.Transform = new SvgTransformList(_transforms.Result.Clone());
-                _cur.AddChild(pathElement);
-            }
+            SvgPathElement pathElement = new SvgPathElement();
+            SvgPath svgPath = HandleGraphicsPath(path);
+            pathElement.Style = HandleBrush(brush);
+            pathElement.D = svgPath;
+            if (!_transforms.Result.IsIdentity)
+                pathElement.Transform = new SvgTransformList(_transforms.Result.Clone());
+            _cur.AddChild(pathElement);
         }
 
         /// <summary>
@@ -3557,7 +3553,7 @@ namespace SvgNet.SvgGdi
             _cur.AddChild(bez);
         }
 
-        private IEnumerable<SvgPath> HandleGraphicsPath(GraphicsPath path)
+        private SvgPath HandleGraphicsPath(GraphicsPath path)
         {
             StringBuilder pathBuilder = new StringBuilder();
             using (GraphicsPathIterator subpaths = new GraphicsPathIterator(path))
@@ -3589,6 +3585,7 @@ namespace SvgNet.SvgGdi
                         {
                             case PathPointType.Start:
                                 //Move to start point
+                                if (pathBuilder.Length > 0) pathBuilder.Append(" ");
                                 pathBuilder.AppendFormat(CultureInfo.InvariantCulture, "M {0},{1}", point.X, point.Y);
                                 break;
                             case PathPointType.Line:
@@ -3613,10 +3610,9 @@ namespace SvgNet.SvgGdi
                         // Close path
                         pathBuilder.Append(" Z");
                     }
-
-                    yield return new SvgPath(pathBuilder.ToString());
-                    pathBuilder.Clear();
                 }
+
+                return new SvgPath(pathBuilder.ToString());
             }
         }
 
