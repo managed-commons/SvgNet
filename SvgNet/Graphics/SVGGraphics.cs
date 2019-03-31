@@ -2123,6 +2123,14 @@ namespace SvgNet.SvgGdi
                 Style = HandleBrush(brush),
                 D = data
             };
+            if (path.FillMode == FillMode.Alternate)
+            {
+                pathElement.Style.Set("fill-rule", "evenodd");
+            } else
+            {
+                pathElement.Style.Set("fill-rule", "nonzero");
+            }
+
             if (!_transforms.Result.IsIdentity)
                 pathElement.Transform = new SvgTransformList(_transforms.Result.Clone());
             _cur.AddChild(pathElement);
