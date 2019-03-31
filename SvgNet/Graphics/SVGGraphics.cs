@@ -3329,6 +3329,13 @@ namespace SvgNet.SvgGdi
 
             bez.Style = HandleBrush(brush);
             bez.Transform = new SvgTransformList(_transforms.Result.Clone());
+            if (fillmode == FillMode.Alternate)
+            {
+                bez.Style.Set("fill-rule", "evenodd");
+            } else
+            {
+                bez.Style.Set("fill-rule", "nonzero");
+            }
             _cur.AddChild(bez);
         }
 
