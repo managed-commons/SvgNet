@@ -373,6 +373,10 @@ namespace SvgNet
             myPath.AddBeziers(pathPoints1);
             myPath.AddLines(pathPoints2);
 
+            // Add path closed interior test
+            myPath.AddEllipse(190, 15, 50, 50);
+            myPath.AddEllipse(225, 30, 30, 30);
+
             ig.FillPath(new SolidBrush(Color.Aqua), myPath);
             ig.DrawPath(new Pen(Color.Black, 5f), myPath);
         }
