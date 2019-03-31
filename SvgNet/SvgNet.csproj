@@ -5,7 +5,7 @@
     <AssemblyName>SVG</AssemblyName>
     <PackageId>SvgNet</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>    
-    <Version>2.0.0</Version>    
+    <Version>2.0.1</Version>    
     <RootNamespace>SVG</RootNamespace>
     <DocumentationFile>svgnetdoc.xml</DocumentationFile>
     <NoWarn>CS1591</NoWarn>    
@@ -24,7 +24,10 @@
     <Product>SvgNet</Product>
     <ProductVersion>8.0.30319</ProductVersion>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>## 2.0.0 - Support for .NET Standard 2.0</PackageReleaseNotes>    
+    <PackageReleaseNotes>## 2.0.1 - Support for .NET Standard 2.0
+Merge PR #24 
+- Fix for Issue #22  Paths with overlaps doesn't fill correctly
+- Bezier paths didn't get filled</PackageReleaseNotes>    
   </PropertyGroup>
   
   <ItemGroup Condition="'$(TargetFramework)' != 'net40'">    
