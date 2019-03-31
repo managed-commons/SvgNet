@@ -1856,17 +1856,15 @@ namespace SvgNet.SvgGdi
         /// </remarks>
         public void DrawPath(Pen pen, GraphicsPath path)
         {
-            foreach (SvgPath data in HandleGraphicsPath(path))
+            SvgPath data = HandleGraphicsPath(path);
+            var pathElement = new SvgPathElement
             {
-                var pathElement = new SvgPathElement
-                {
-                    Style = new SvgStyle(pen),
-                    D = data
-                };
-                if (!_transforms.Result.IsIdentity)
-                    pathElement.Transform = new SvgTransformList(_transforms.Result.Clone());
-                _cur.AddChild(pathElement);
-            }
+                Style = new SvgStyle(pen),
+                D = data
+            };
+            if (!_transforms.Result.IsIdentity)
+                pathElement.Transform = new SvgTransformList(_transforms.Result.Clone());
+            _cur.AddChild(pathElement);
         }
 
         /// <summary>
@@ -2119,17 +2117,15 @@ namespace SvgNet.SvgGdi
         /// </summary>
         public void FillPath(Brush brush, GraphicsPath path)
         {
-            foreach (var svgPath in HandleGraphicsPath(path))
+            SvgPath data = HandleGraphicsPath(path);
+            var pathElement = new SvgPathElement
             {
-                var pathElement = new SvgPathElement
-                {
-                    Style = HandleBrush(brush),
-                    D = svgPath
-                };
-                if (!_transforms.Result.IsIdentity)
-                    pathElement.Transform = new SvgTransformList(_transforms.Result.Clone());
-                _cur.AddChild(pathElement);
-            }
+                Style = HandleBrush(brush),
+                D = data
+            };
+            if (!_transforms.Result.IsIdentity)
+                pathElement.Transform = new SvgTransformList(_transforms.Result.Clone());
+            _cur.AddChild(pathElement);
         }
 
         /// <summary>
@@ -3435,7 +3431,7 @@ namespace SvgNet.SvgGdi
             return new SvgStyle(new SolidBrush(Color.Salmon));
         }
 
-        private IEnumerable<SvgPath> HandleGraphicsPath(GraphicsPath path)
+        private SvgPath HandleGraphicsPath(GraphicsPath path)
         {
             var pathBuilder = new StringBuilder();
             using (var subpaths = new GraphicsPathIterator(path))
@@ -3466,6 +3462,7 @@ namespace SvgNet.SvgGdi
                         {
                             case PathPointType.Start:
                                 //Move to start point
+                                if (pathBuilder.Length > 0) pathBuilder.Append(" ");
                                 pathBuilder.AppendFormat(CultureInfo.InvariantCulture, "M {0},{1}", point.X, point.Y);
                                 break;
 
@@ -3493,10 +3490,9 @@ namespace SvgNet.SvgGdi
                         // Close path
                         pathBuilder.Append(" Z");
                     }
-
-                    yield return new SvgPath(pathBuilder.ToString());
-                    pathBuilder.Clear();
                 }
+
+                return new SvgPath(pathBuilder.ToString());
             }
         }
 
