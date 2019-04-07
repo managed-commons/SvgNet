@@ -64,10 +64,10 @@ namespace SvgNet.SvgTypes
         /// </summary>
         public void FromString(string s)
         {
-            int start = -1, end = 0;
+            int start = -1;
 
             do {
-                end = s.IndexOf(")", start + 1);
+                var end = s.IndexOf(")", start + 1);
 
                 if (end == -1) return;
 
@@ -92,6 +92,6 @@ namespace SvgNet.SvgTypes
             return result;
         }
 
-        private ArrayList _t = new ArrayList();
+        private readonly ArrayList _t = new ArrayList();
     }
 }

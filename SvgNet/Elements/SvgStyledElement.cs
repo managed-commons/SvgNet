@@ -6,6 +6,7 @@
     Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
 
+using System;
 using System.Xml;
 using SvgNet.SvgTypes;
 
@@ -31,26 +32,7 @@ namespace SvgNet
         /// </summary>
         public SvgStyle Style
         {
-            get {
-                var o = _atts["style"];
-                SvgStyle st = null;
-
-                if (o == null) {
-                    st = new SvgStyle();
-                    _atts["style"] = st;
-                    return st;
-                }
-
-                if (o.GetType() == typeof(SvgStyle))
-                    return (SvgStyle)o;
-                else {
-                    //in case the property was set as a string, make a real object and save it.
-                    st = new SvgStyle(o.ToString());
-                    _atts["style"] = st;
-                    return st;
-                }
-            }
-
+            get => GetTypedAttribute("style", (obj) => new SvgStyle(obj.ToString()));
             set => _atts["style"] = value;
         }
 
@@ -60,26 +42,7 @@ namespace SvgNet
         /// </summary>
         public SvgTransformList Transform
         {
-            get {
-                var o = _atts["transform"];
-                SvgTransformList tl = null;
-
-                if (o == null) {
-                    tl = new SvgTransformList();
-                    _atts["transform"] = tl;
-                    return tl;
-                }
-
-                if (o.GetType() == typeof(SvgTransformList))
-                    return (SvgTransformList)o;
-                else {
-                    //in case the property was set as a string, make a real object and save it.
-                    tl = new SvgTransformList(o.ToString());
-                    _atts["transform"] = tl;
-                    return tl;
-                }
-            }
-
+            get => GetTypedAttribute("transform", (obj) => new SvgTransformList(obj.ToString()));
             set => _atts["transform"] = value;
         }
 
@@ -90,12 +53,16 @@ namespace SvgNet
         /// <param name="el"></param>
         public override void ReadXmlElement(XmlDocument doc, XmlElement el)
         {
-            foreach (XmlAttribute att in el.Attributes) {
-                if (att.Name == "style") {
+            foreach (XmlAttribute att in el.Attributes)
+            {
+                if (att.Name == "style")
+                {
                     Style = new SvgStyle(att.Value);
-                } else if (att.Name == "transform") {
+                } else if (att.Name == "transform")
+                {
                     Transform = new SvgTransformList(att.Value);
-                } else {
+                } else
+                {
                     this[att.Name] = att.Value;
                 }
             }
@@ -111,20 +78,26 @@ namespace SvgNet
         public override void WriteXmlElements(XmlDocument doc, XmlElement parent)
         {
             var me = doc.CreateElement("", Name, doc.NamespaceURI);
-            foreach (string s in _atts.Keys) {
+            foreach (string s in _atts.Keys)
+            {
                 var attribute = _atts[s];
-                if (attribute != null) {
-                    if (s == "style") {
+                if (attribute != null)
+                {
+                    if (s == "style")
+                    {
                         WriteStyle(doc, me, attribute);
-                    } else if (s == "transform") {
+                    } else if (s == "transform")
+                    {
                         WriteTransform(doc, me, attribute);
-                    } else {
+                    } else
+                    {
                         me.SetAttribute(s, doc.NamespaceURI, attribute.ToString());
                     }
                 }
             }
 
-            foreach (SvgElement el in _children) {
+            foreach (SvgElement el in _children)
+            {
                 el.WriteXmlElements(doc, me);
             }
 
@@ -136,7 +109,8 @@ namespace SvgNet
 
         private static void WriteStyle(XmlDocument doc, XmlElement me, object o)
         {
-            if (o.GetType() != typeof(SvgStyle)) {
+            if (o.GetType() != typeof(SvgStyle))
+            {
                 me.SetAttribute("style", doc.NamespaceURI, o.ToString());
                 return;
             }

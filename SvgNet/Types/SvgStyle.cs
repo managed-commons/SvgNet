@@ -234,7 +234,7 @@ namespace SvgNet.SvgTypes
             return result.ToString();
         }
 
-        private Hashtable _styles = new Hashtable();
+        private readonly Hashtable _styles = new Hashtable();
 
         private static string InvariantCultureToString(object styleValue)
         {

@@ -10,7 +10,6 @@ using System;
 using System.Collections;
 using System.Globalization;
 using System.IO;
-using System.Text;
 using System.Xml;
 
 namespace SvgNet
@@ -88,7 +87,8 @@ namespace SvgNet
         /// <param name="ch"></param>
         public virtual void AddChild(SvgElement ch)
         {
-            if (ch.Parent != null) {
+            if (ch.Parent != null)
+            {
                 throw new SvgException("Child already has a parent", ch.ToString());
             }
 
@@ -102,7 +102,8 @@ namespace SvgNet
         /// <param name="ch"></param>
         public virtual void AddChildren(params SvgElement[] ch)
         {
-            foreach (SvgElement el in ch) {
+            foreach (SvgElement el in ch)
+            {
                 AddChild(el);
             }
         }
@@ -114,7 +115,8 @@ namespace SvgNet
         /// <param name="el"></param>
         public virtual void ReadXmlElement(XmlDocument doc, XmlElement el)
         {
-            foreach (XmlAttribute att in el.Attributes) {
+            foreach (XmlAttribute att in el.Attributes)
+            {
                 // TODO: after namespaced attributes are supported in the writer code (WriteXmlElements) re-enable
                 // their reading.
                 // For now we'll skip namespaced attributes
@@ -170,33 +172,36 @@ namespace SvgNet
         public virtual void WriteXmlElements(XmlDocument doc, XmlElement parent)
         {
             var me = doc.CreateElement("", Name, doc.NamespaceURI);
-            foreach (string s in _atts.Keys) {
-                if (_atts[s] is float) {
+            foreach (string s in _atts.Keys)
+            {
+                if (_atts[s] is float)
+                {
                     me.SetAttribute(s, doc.NamespaceURI, ((float)_atts[s]).ToString(CultureInfo.InvariantCulture));
-                } else if (_atts[s] is double) {
+                } else if (_atts[s] is double)
+                {
                     me.SetAttribute(s, doc.NamespaceURI, ((double)_atts[s]).ToString(CultureInfo.InvariantCulture));
-                } else {
+                } else
+                {
                     me.SetAttribute(s, doc.NamespaceURI, _atts[s].ToString());
                 }
             }
 
-            foreach (SvgElement el in _children) {
+            foreach (SvgElement el in _children)
+            {
                 el.WriteXmlElements(doc, me);
             }
 
-            if (parent == null) {
+            if (parent == null)
+            {
                 doc.AppendChild(me);
-            } else {
+            } else
+            {
                 parent.AppendChild(me);
             }
         }
 
-        private static int _idcounter;
-
         protected Hashtable _atts;
-
         protected ArrayList _children;
-
         protected SvgElement _parent;
 
         protected void Defaults()
@@ -207,10 +212,21 @@ namespace SvgNet
             _idcounter++;
         }
 
-        private static string ToXmlString(XmlDocument doc)
+        protected T GetTypedAttribute<T>(string attributeName, Func<object, T> fromString) where T : new()
         {
-            return doc.OuterXml;
+            T SetNewAttributeValue(T st)
+            {
+                _atts[attributeName] = st;
+                return st;
+            }
+            var o = _atts[attributeName];
+            //in case the property was set as a string, make a real object and save it.
+            return o == null ? SetNewAttributeValue(new T()) : (o is T) ? (T)o : SetNewAttributeValue(fromString(o));
         }
+
+        private static int _idcounter;
+
+        private static string ToXmlString(XmlDocument doc) => doc.OuterXml;
 
         private class DummyXmlResolver : XmlResolver
         {

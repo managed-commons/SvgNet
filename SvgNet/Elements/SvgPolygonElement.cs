@@ -6,6 +6,7 @@
 	Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
 
+using System.Drawing;
 using SvgNet.SvgTypes;
 
 namespace SvgNet.SvgElements
@@ -15,9 +16,7 @@ namespace SvgNet.SvgElements
     /// </summary>
     public class SvgPolygonElement : SvgStyledTransformedElement
     {
-        public SvgPolygonElement()
-        {
-        }
+        public SvgPolygonElement(params PointF[] points) => Points = points;
 
         public SvgPolygonElement(SvgPoints points) => Points = points;
 
