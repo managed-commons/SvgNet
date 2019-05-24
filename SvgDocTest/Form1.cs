@@ -100,13 +100,19 @@ namespace SvgDocTest
 
             //adding multiple children
 
-            var yellowEllipse = new SvgEllipseElement(20, 20, 8, 12);
-            yellowEllipse.Style = "fill:yellow;stroke:red";
 
             root.AddChildren(
                 new SvgRectElement(5, 5, 5, 5),
-                yellowEllipse,
-                new SvgTextElement("Textastic!", 30, 20)
+                new SvgEllipseElement(20, 20, 8, 12)
+                {
+                    Style = "fill:yellow;stroke:red"
+                },
+
+                new SvgAElement("https://github.com/managed-commons/SvgNet").AddChildren(
+                    new SvgTextElement("Textastic!", 30, 20)
+                    {
+                        Style = "fill:midnightblue;stroke:navy;stroke-width:1px;font-size:30px;font-family:Calibri"
+                    })
                 );
 
             //group and path

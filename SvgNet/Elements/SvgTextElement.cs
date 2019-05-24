@@ -6,64 +6,43 @@
     Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
 
-using System.Xml;
+using System;
 using SvgNet.SvgTypes;
 
-namespace SvgNet {
+namespace SvgNet.SvgElements {
 
-    /// <summary>
-    /// Represents the text contained in a title, desc, text, or tspan element.  Maps to an XmlText object in an XML document.  It is inherited from
-    /// </summary>
-    public class TextNode : SvgElement {
+    public abstract class SvgBaseTextElement : SvgStyledTransformedElement {
 
-        public TextNode() {
+        public SvgLength DX {
+            get => (SvgLength)_atts["dx"];
+            set => _atts["dx"] = value;
         }
 
-        public TextNode(string s) => Text = s;
-
-        public override string Name => "a text node, not an svg element";
-
-        public string Text { get; set; }
-
-        /// <summary>
-        /// Adds a child, and sets the child's parent to this element.
-        /// </summary>
-        /// <param name="ch"></param>
-        public override void AddChild(SvgElement ch) => throw new SvgException("A TextNode cannot have children");
-
-        /// <summary>
-        /// Adds a variable number of children
-        /// </summary>
-        /// <param name="ch"></param>
-        public override void AddChildren(params SvgElement[] ch) => throw new SvgException("A TextNode cannot have children");
-
-        /// <summary>
-        /// Given a document and a current node, read this element from the node.
-        /// </summary>
-        /// <param name="doc"></param>
-        /// <param name="el"></param>
-        public override void ReadXmlElement(XmlDocument doc, XmlElement el) {
-            throw new SvgException("TextNode::ReadXmlElement should not be called; " +
-                "the value should be filled in with a string when the XML doc is being read.", "");
+        public SvgLength DY {
+            get => (SvgLength)_atts["dy"];
+            set => _atts["dy"] = value;
         }
 
-        /// <summary>
-        /// Overridden to simply create an XML text node below the parent.
-        /// </summary>
-        /// <param name="doc"></param>
-        /// <param name="parent"></param>
-        public override void WriteXmlElements(XmlDocument doc, XmlElement parent) {
-            XmlText xt = doc.CreateTextNode(Text);
+        public string LengthAdjust {
+            get => (string)_atts["lengthAdjust"];
+            set => _atts["lengthAdjust"] = value;
+        }
 
-            if (parent == null)
-                doc.AppendChild(xt);
-            else
-                parent.AppendChild(xt);
+        public SvgNumList Rotate {
+            get => (SvgNumList)_atts["rotate"];
+            set => _atts["rotate"] = value;
+        }
+
+        public SvgLength X {
+            get => (SvgLength)_atts["x"];
+            set => _atts["x"] = value;
+        }
+
+        public SvgLength Y {
+            get => (SvgLength)_atts["y"];
+            set => _atts["y"] = value;
         }
     }
-}
-
-namespace SvgNet.SvgElements {
 
     /// <summary>
     /// Represents a <c>text</c> element.  The SVG text element is unusual in that it expects actual XML text nodes below
@@ -71,7 +50,7 @@ namespace SvgNet.SvgElements {
     /// <c>SvgTextElement</c> therefore has to be serialized
     /// to XML slightly differently.
     /// </summary>
-    public class SvgTextElement : SvgStyledTransformedElement, IElementWithText {
+    public class SvgTextElement : SvgBaseTextElement, IElementWithText {
 
         public SvgTextElement() {
         }
@@ -88,27 +67,7 @@ namespace SvgNet.SvgElements {
             Y = y;
         }
 
-        public SvgLength DX {
-            get => (SvgLength)_atts["dx"];
-            set => _atts["dx"] = value;
-        }
-
-        public SvgLength DY {
-            get => (SvgLength)_atts["dy"];
-            set => _atts["dy"] = value;
-        }
-
-        public string LengthAdjust {
-            get => (string)_atts["lengthAdjust"];
-            set => _atts["lengthAdjust"] = value;
-        }
-
         public override string Name => "text";
-
-        public SvgNumList Rotate {
-            get => (SvgNumList)_atts["rotate"];
-            set => _atts["rotate"] = value;
-        }
 
         public string Text {
             get => ((TextNode)FirstChild).Text;
@@ -119,42 +78,23 @@ namespace SvgNet.SvgElements {
             get => (SvgLength)_atts["textLength"];
             set => _atts["textLength"] = value;
         }
-
-        public SvgLength X {
-            get => (SvgLength)_atts["x"];
-            set => _atts["x"] = value;
-        }
-
-        public SvgLength Y {
-            get => (SvgLength)_atts["y"];
-            set => _atts["y"] = value;
-        }
     }
 
     /// <summary>
     /// Represents a <c>tref</c> element.
     /// </summary>
-    public class SvgTrefElement : SvgStyledTransformedElement, IElementWithXRef {
+    [Obsolete]
+    public class SvgTrefElement : SvgBaseTextElement, IElementWithXRef {
 
         public SvgTrefElement() {
         }
 
-        public SvgTrefElement(string s) => Href = s;
+        public SvgTrefElement(string href) => Href = href;
 
-        public SvgTrefElement(string s, float x, float y) {
-            Href = s;
+        public SvgTrefElement(string href, float x, float y) {
+            Href = href;
             X = x;
             Y = y;
-        }
-
-        public SvgLength DX {
-            get => (SvgLength)_atts["dx"];
-            set => _atts["dx"] = value;
-        }
-
-        public SvgLength DY {
-            get => (SvgLength)_atts["dy"];
-            set => _atts["dy"] = value;
         }
 
         public string Href {
@@ -162,41 +102,11 @@ namespace SvgNet.SvgElements {
             set => _atts["xlink:href"] = value;
         }
 
-        public string LengthAdjust {
-            get => (string)_atts["lengthAdjust"];
-            set => _atts["lengthAdjust"] = value;
-        }
-
         public override string Name => "tref";
-
-        public SvgNumList Rotate {
-            get => (SvgNumList)_atts["rotate"];
-            set => _atts["rotate"] = value;
-        }
-
-        public string Text {
-            get => ((TextNode)FirstChild).Text;
-            set => ((TextNode)FirstChild).Text = value;
-        }
-
-        public SvgLength TextLength {
-            get => (SvgLength)_atts["textLength"];
-            set => _atts["textLength"] = value;
-        }
-
-        public SvgLength X {
-            get => (SvgLength)_atts["x"];
-            set => _atts["x"] = value;
-        }
 
         public SvgXRef XRef {
             get => new SvgXRef(this);
             set => value.WriteToElement(this);
-        }
-
-        public SvgLength Y {
-            get => (SvgLength)_atts["y"];
-            set => _atts["y"] = value;
         }
     }
 
@@ -205,63 +115,17 @@ namespace SvgNet.SvgElements {
     /// it, rather than consisting only of attributes and child elements.  <c>SvgTextElement</c> therefore has to be serialized
     /// to XML slightly differently.
     /// </summary>
-    public class SvgTspanElement : SvgStyledTransformedElement, IElementWithText {
+    public class SvgTspanElement : SvgTextElement {
 
         public SvgTspanElement() {
         }
 
-        public SvgTspanElement(string s) {
-            var tn = new TextNode(s);
-            AddChild(tn);
+        public SvgTspanElement(string s) : base(s) {
         }
 
-        public SvgTspanElement(string s, float x, float y) {
-            var tn = new TextNode(s);
-            AddChild(tn);
-            X = x;
-            Y = y;
-        }
-
-        public SvgLength DX {
-            get => (SvgLength)_atts["dx"];
-            set => _atts["dx"] = value;
-        }
-
-        public SvgLength DY {
-            get => (SvgLength)_atts["dy"];
-            set => _atts["dy"] = value;
-        }
-
-        public string LengthAdjust {
-            get => (string)_atts["lengthAdjust"];
-            set => _atts["lengthAdjust"] = value;
+        public SvgTspanElement(string s, float x, float y) : base(s, x, y) {
         }
 
         public override string Name => "tspan";
-
-        public SvgNumList Rotate {
-            get => (SvgNumList)_atts["rotate"];
-            set => _atts["rotate"] = value;
-        }
-
-        public string Text {
-            get => ((TextNode)FirstChild).Text;
-            set => ((TextNode)FirstChild).Text = value;
-        }
-
-        public SvgLength TextLength {
-            get => (SvgLength)_atts["textLength"];
-            set => _atts["textLength"] = value;
-        }
-
-        public SvgLength X {
-            get => (SvgLength)_atts["x"];
-            set => _atts["x"] = value;
-        }
-
-        public SvgLength Y {
-            get => (SvgLength)_atts["y"];
-            set => _atts["y"] = value;
-        }
     }
 }

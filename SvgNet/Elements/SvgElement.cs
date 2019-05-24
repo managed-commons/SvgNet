@@ -35,6 +35,8 @@ namespace SvgNet {
     /// </list>
     /// </summary>
     public class SvgElement {
+        public const string svgNamespaceURI = "http://www.w3.org/2000/svg";
+        public const string xlinkNamespaceURI = "http://www.w3.org/1999/xlink";
 
         public SvgElement() => Id = GenerateNewId();
 
@@ -92,10 +94,11 @@ namespace SvgNet {
         /// Adds a variable number of children
         /// </summary>
         /// <param name="ch"></param>
-        public virtual void AddChildren(params SvgElement[] ch) {
+        public virtual SvgElement AddChildren(params SvgElement[] ch) {
             foreach (SvgElement el in ch) {
                 AddChild(el);
             }
+            return this;
         }
 
         /// <summary>
@@ -136,7 +139,8 @@ namespace SvgNet {
             //write out our SVG tree to the new XmlDocument
             WriteXmlElements(doc, null);
 
-            doc.DocumentElement.SetAttribute("xmlns", "http://www.w3.org/2000/svg");
+            doc.DocumentElement.SetAttribute("xmlns", svgNamespaceURI);
+            doc.DocumentElement.SetAttribute("xmlns:xlink", xlinkNamespaceURI);
 
             var ents = string.Empty;
             if (compressAttributes)

@@ -27,7 +27,7 @@ namespace SvgNet {
             var asm = Assembly.GetExecutingAssembly();
             var ta = asm.GetExportedTypes();
             foreach (Type t in ta) {
-                if (t.IsSubclassOf(typeof(SvgElement))) {
+                if (t.IsSubclassOf(typeof(SvgElement)) && !t.IsAbstract) {
                     var ci = t.GetConstructor(new Type[0]);
                     if (ci == null)
                         throw new InvalidOperationException($"Type {t.Name} doesn't have the mandatory public parameterless constructor");
