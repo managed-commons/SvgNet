@@ -10,18 +10,17 @@ using System;
 using System.Collections;
 using System.Globalization;
 
-namespace SvgNet.SvgTypes
-{
+namespace SvgNet.SvgTypes {
+
     /// <summary>
     /// A number list, as used in the SVG spec for e.g. the value of a viewBox attribute.  Basically a list of numbers in
     /// any format separated by whitespace and commas.
     /// </summary>
-    public class SvgNumList : ICloneable
-    {
+    public class SvgNumList : ICloneable {
+
         public SvgNumList(string s) => FromString(s);
 
-        public SvgNumList(float[] pts)
-        {
+        public SvgNumList(float[] pts) {
             foreach (float p in pts) {
                 _pts.Add(p);
             }
@@ -29,24 +28,20 @@ namespace SvgNet.SvgTypes
 
         public int Count => _pts.Count;
 
-        public float this[int idx]
-        {
+        public float this[int idx] {
             get => (float)_pts[idx];
             set => _pts[idx] = value;
         }
 
-        public static implicit operator SvgNumList(string s)
-        {
+        public static implicit operator SvgNumList(string s) {
             return new SvgNumList(s);
         }
 
-        public static implicit operator SvgNumList(float[] f)
-        {
+        public static implicit operator SvgNumList(float[] f) {
             return new SvgNumList(f);
         }
 
-        public static float[] String2Floats(string s)
-        {
+        public static float[] String2Floats(string s) {
             try {
                 var sa = s.Split(new char[] { ',', ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
                 var arr = new ArrayList();
@@ -63,8 +58,7 @@ namespace SvgNet.SvgTypes
 
         public object Clone() => new SvgNumList((float[])_pts.ToArray(typeof(float)));
 
-        public void FromString(string s)
-        {
+        public void FromString(string s) {
             try {
                 var fa = String2Floats(s);
 
@@ -76,8 +70,7 @@ namespace SvgNet.SvgTypes
             }
         }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             var builder = new System.Text.StringBuilder();
             foreach (float f in _pts) {
                 builder.Append(f.ToString("F", CultureInfo.InvariantCulture)).Append(" ");

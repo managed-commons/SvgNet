@@ -8,19 +8,17 @@
 
 using System;
 
-namespace SvgNet.SvgTypes
-{
+namespace SvgNet.SvgTypes {
+
     /// <summary>
     /// A segment in an Svg path.  This is not a real SVG type; it is not in the SVG spec.  It is provided for making paths
     /// easier to specify and parse.
     /// </summary>
-    public class PathSeg : ICloneable
-    {
+    public class PathSeg : ICloneable {
         public float[] _data;
         public SvgPathSegType _type;
 
-        public PathSeg(SvgPathSegType t, bool a, float[] arr)
-        {
+        public PathSeg(SvgPathSegType t, bool a, float[] arr) {
             _type = t;
             Abs = a;
             _data = arr;
@@ -28,8 +26,7 @@ namespace SvgNet.SvgTypes
 
         public bool Abs { get; private set; }
 
-        public string Char
-        {
+        public string Char {
             get {
                 switch (_type) {
                     case SvgPathSegType.SVG_SEGTYPE_MOVETO: return (Abs ? "M" : "m");

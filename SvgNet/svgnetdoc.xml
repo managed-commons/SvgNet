@@ -42,13 +42,11 @@
             The name of the XML element that this SVG element represents.
             </summary>
         </member>
-        <member name="P:SvgNet.SvgElement.Parent">
+        <member name="P:SvgNet.SvgElement.Item(System.String)">
             <summary>
             The element whose child this element is; can be null, because SvgElements may only be inserted into a full SVG tree
             long after they are created.
             </summary>
-        </member>
-        <member name="P:SvgNet.SvgElement.Item(System.String)">
             <summary>
             A quick way to get and set attributes.
             </summary>
@@ -1339,6 +1337,11 @@
             Static methods to produce/write/copy Svg documents reside in this class.
             </summary>
         </member>
+        <member name="M:SvgNet.SvgFactory.BuildElementNameDictionary">
+            <summary>
+            Used by LoadFromXML
+            </summary>
+        </member>
         <member name="M:SvgNet.SvgFactory.CloneElement(SvgNet.SvgElement)">
             <summary>
             Create a complete deep copy of the given tree of <c>SvgElement</c> objects.
@@ -1371,11 +1374,6 @@
             <param name="doc"></param>
             <param name="el"></param>
             <returns>A string of entities which can be inserted into the DOCTYPE when the document is written.</returns>
-        </member>
-        <member name="M:SvgNet.SvgFactory.BuildElementNameDictionary">
-            <summary>
-            Used by LoadFromXML
-            </summary>
         </member>
         <member name="M:SvgNet.SvgFactory.RecCompXML(System.Collections.Hashtable,System.Collections.Hashtable,System.Xml.XmlDocument,System.Xml.XmlElement,System.Int32@)">
             <summary>

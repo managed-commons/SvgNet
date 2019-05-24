@@ -11,17 +11,16 @@ using System.Collections;
 using System.Drawing;
 using System.Globalization;
 
-namespace SvgNet.SvgTypes
-{
+namespace SvgNet.SvgTypes {
+
     /// <summary>
     /// A list of points, as specified in the SVG 1.1 spec section 9.8.  Only used in polygon and polyline elements.
     /// </summary>
-    public class SvgPoints : ICloneable
-    {
+    public class SvgPoints : ICloneable {
+
         public SvgPoints(string s) => FromString(s);
 
-        public SvgPoints(PointF[] pts)
-        {
+        public SvgPoints(PointF[] pts) {
             foreach (PointF p in pts) {
                 _pts.Add(p.X);
                 _pts.Add(p.Y);
@@ -32,8 +31,7 @@ namespace SvgNet.SvgTypes
         /// The array must have an even length
         /// </summary>
         /// <param name="pts"></param>
-        public SvgPoints(float[] pts)
-        {
+        public SvgPoints(float[] pts) {
             if (pts.Length % 2 != 0)
                 throw new SvgException("Invalid SvgPoints", pts.ToString());
 
@@ -42,13 +40,11 @@ namespace SvgNet.SvgTypes
             }
         }
 
-        public static implicit operator SvgPoints(string s)
-        {
+        public static implicit operator SvgPoints(string s) {
             return new SvgPoints(s);
         }
 
-        public static implicit operator SvgPoints(PointF[] pts)
-        {
+        public static implicit operator SvgPoints(PointF[] pts) {
             return new SvgPoints(pts);
         }
 
@@ -59,8 +55,7 @@ namespace SvgNet.SvgTypes
         /// in other words it looks the same as a SvgNumList
         /// </summary>
         /// <param name="s"></param>
-        public void FromString(string s)
-        {
+        public void FromString(string s) {
             try {
                 var fa = SvgNumList.String2Floats(s);
                 foreach (float f in fa) {
@@ -74,8 +69,7 @@ namespace SvgNet.SvgTypes
                 throw new SvgException("Invalid SvgPoints", s);
         }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             var builder = new System.Text.StringBuilder();
             foreach (float f in _pts) {
                 builder.Append(f.ToString("F", CultureInfo.InvariantCulture)).Append(" ");

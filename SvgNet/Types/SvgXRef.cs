@@ -7,22 +7,16 @@
 */
 
 using System;
-using System.Collections;
-using System.Drawing;
-using System.Globalization;
-using System.Text.RegularExpressions;
 
-namespace SvgNet.SvgTypes
-{
+namespace SvgNet.SvgTypes {
 
     /// <summary>
     /// Represents a URI reference.  Unlike most svg types, uri references are represented by more than one attribute
     /// of an element.  This means special measures are required to get and set uri references.
     /// </summary>
-    public class SvgXRef : ICloneable
-    {
-        public SvgXRef()
-        {
+    public class SvgXRef : ICloneable {
+
+        public SvgXRef() {
         }
 
         public SvgXRef(string href) => Href = href;
@@ -43,8 +37,7 @@ namespace SvgNet.SvgTypes
 
         public string Type { get; set; } = "simple";
 
-        public object Clone()
-        {
+        public object Clone() {
             var r = new SvgXRef {
                 Href = Href,
                 Type = Type,
@@ -57,8 +50,7 @@ namespace SvgNet.SvgTypes
             return r;
         }
 
-        public void ReadFromElement(SvgStyledTransformedElement el)
-        {
+        public void ReadFromElement(SvgStyledTransformedElement el) {
             Href = (string)el["xlink:href"];
             Role = (string)el["xlink:role"];
             Arcrole = (string)el["xlink:arcrole"];
@@ -70,8 +62,7 @@ namespace SvgNet.SvgTypes
 
         public override string ToString() => Href;
 
-        public void WriteToElement(SvgStyledTransformedElement el)
-        {
+        public void WriteToElement(SvgStyledTransformedElement el) {
             el["xlink:href"] = Href;
             //if (_type != "simple") el["xlink:type"] = _type;
             el["xlink:role"] = Role;

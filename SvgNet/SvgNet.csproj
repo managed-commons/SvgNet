@@ -5,7 +5,7 @@
     <AssemblyName>SVG</AssemblyName>
     <PackageId>SvgNet</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>    
-    <Version>2.0.2</Version>    
+    <Version>2.0.3</Version>    
     <RootNamespace>SVG</RootNamespace>
     <DocumentationFile>svgnetdoc.xml</DocumentationFile>
     <NoWarn>CS1591</NoWarn>    
@@ -24,10 +24,10 @@
     <Product>SvgNet</Product>
     <ProductVersion>8.0.30319</ProductVersion>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>## 2.0.1 - Support for .NET Standard 2.0
-Merge PR #24 
-- Fix for Issue #22  Paths with overlaps doesn't fill correctly
-- Bezier paths didn't get filled</PackageReleaseNotes>    
+    <PackageReleaseNotes>## 2.0.3
+-- Issue#25: viewBox fix
+-- Missing parameterless constructor in SvgPolygonElement causing exception on SvgFactory.BuildElementNameDictionary (with new Unit Test to prevent similar things to pass undetected again)
+-- Formatting standards added to .editorconfig</PackageReleaseNotes>    
   </PropertyGroup>
   
   <ItemGroup Condition="'$(TargetFramework)' != 'net40'">    

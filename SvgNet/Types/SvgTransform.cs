@@ -9,22 +9,21 @@
 using System;
 using System.Drawing.Drawing2D;
 
-namespace SvgNet.SvgTypes
-{
+namespace SvgNet.SvgTypes {
+
     /// <summary>
     /// Represents a single element in an SVG transformation list.  The transformation is represented internally as a
     /// GDI+ Matrix object.
     /// </summary>
-    public class SvgTransform : ICloneable
-    {
+    public class SvgTransform : ICloneable {
+
         public SvgTransform() => _m = new Matrix();
 
         public SvgTransform(string s) => FromString(s);
 
         public SvgTransform(Matrix m) => _m = m;
 
-        public Matrix Matrix
-        {
+        public Matrix Matrix {
             get => _m;
             set => _m = value;
         }
@@ -35,8 +34,7 @@ namespace SvgNet.SvgTypes
         /// Parse a transformation according to the SVG standard.  This is complex enough that it makes
         /// me wish it was worth using a real parser, but antlr is so unwieldy.
         /// </summary>
-        public void FromString(string s)
-        {
+        public void FromString(string s) {
             _m = new Matrix();
 
             string name, args;
@@ -106,8 +104,7 @@ namespace SvgNet.SvgTypes
         /// Currently, we always output as matrix() no matter how the transform was specified.
         /// </summary>
         /// <returns></returns>
-        public override string ToString()
-        {
+        public override string ToString() {
             string result = "matrix(";
 
             foreach (float f in _m.Elements) {

@@ -8,10 +8,10 @@
 
 using System;
 
-namespace SvgNet
-{
-    public static class ObjectExtensions
-    {
+namespace SvgNet {
+
+    public static class ObjectExtensions {
+
         public static object CloneIfPossible(this object o) => (o as ICloneable)?.Clone() ?? o;
     }
 }

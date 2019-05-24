@@ -1,39 +1,35 @@
 /*
-	Copyright © 2003 RiskCare Ltd. All rights reserved.
-	Copyright © 2010 SvgNet & SvgGdi Bridge Project. All rights reserved.
-	Copyright © 2015-2019 Rafael Teixeira, Mojmír Němeček, Benjamin Peterson and Other Contributors
+    Copyright © 2003 RiskCare Ltd. All rights reserved.
+    Copyright © 2010 SvgNet & SvgGdi Bridge Project. All rights reserved.
+    Copyright © 2015-2019 Rafael Teixeira, Mojmír Němeček, Benjamin Peterson and Other Contributors
 
-	Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
+    Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
 
 using SvgNet.SvgTypes;
 
-namespace SvgNet.SvgElements
-{
+namespace SvgNet.SvgElements {
+
     /// <summary>
     /// Represents a <c>svg</c> element
     /// </summary>
-    public class SvgSvgElement : SvgElement
-    {
-        public SvgSvgElement()
-        {
+    public class SvgSvgElement : SvgElement {
+
+        public SvgSvgElement() {
         }
 
-        public SvgSvgElement(SvgLength width, SvgLength height)
-        {
+        public SvgSvgElement(SvgLength width, SvgLength height) {
             Width = width;
             Height = height;
         }
 
-        public SvgSvgElement(SvgLength width, SvgLength height, SvgNumList vport)
-        {
+        public SvgSvgElement(SvgLength width, SvgLength height, SvgNumList vport) {
             Width = width;
             Height = height;
             ViewBox = vport;
         }
 
-        public SvgSvgElement(SvgLength x, SvgLength y, SvgLength width, SvgLength height, SvgNumList vport)
-        {
+        public SvgSvgElement(SvgLength x, SvgLength y, SvgLength width, SvgLength height, SvgNumList vport) {
             X = x;
             Y = y;
             Width = width;
@@ -41,46 +37,39 @@ namespace SvgNet.SvgElements
             ViewBox = vport;
         }
 
-        public SvgLength Height
-        {
+        public SvgLength Height {
             get => (SvgLength)_atts["height"];
             set => _atts["height"] = value;
         }
 
         public override string Name => "svg";
 
-        public string PreserveAspectRatio
-        {
+        public string PreserveAspectRatio {
             get => (string)_atts["preserveAspectRatio"];
             set => _atts["preserveAspectRatio"] = value;
         }
 
-        public string Version
-        {
+        public string Version {
             get => (string)_atts["version"];
             set => _atts["version"] = value;
         }
 
-        public SvgNumList ViewBox
-        {
-            get => (SvgNumList)_atts["viewbox"];
-            set => _atts["viewbox"] = value;
+        public SvgNumList ViewBox {
+            get => (SvgNumList)_atts["viewBox"];
+            set => _atts["viewBox"] = value;
         }
 
-        public SvgLength Width
-        {
+        public SvgLength Width {
             get => (SvgLength)_atts["width"];
             set => _atts["width"] = value;
         }
 
-        public SvgLength X
-        {
+        public SvgLength X {
             get => (SvgLength)_atts["x"];
             set => _atts["x"] = value;
         }
 
-        public SvgLength Y
-        {
+        public SvgLength Y {
             get => (SvgLength)_atts["y"];
             set => _atts["y"] = value;
         }

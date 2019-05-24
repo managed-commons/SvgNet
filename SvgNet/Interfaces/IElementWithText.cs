@@ -6,15 +6,12 @@
 	Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
 
+namespace SvgNet {
 
-namespace SvgNet
-{
     /// <summary>
     /// Interface for SvgElements that have a text node.
     /// </summary>
-    public interface IElementWithText
-    {
-        string Text
-        { get; set; }
+    public interface IElementWithText {
+        string Text { get; set; }
     }
 }

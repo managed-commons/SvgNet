@@ -6,14 +6,12 @@
     Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
 
+namespace SvgNet.SvgTypes {
 
-namespace SvgNet.SvgTypes
-{
     /// <summary>
     /// The various units in which an SvgLength can be specified.
     /// </summary>
-    public enum SvgLengthType
-    {
+    public enum SvgLengthType {
         SVG_LENGTHTYPE_UNKNOWN = 0,
         SVG_LENGTHTYPE_NUMBER = 1,
         SVG_LENGTHTYPE_PERCENTAGE = 2,

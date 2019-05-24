@@ -18,14 +18,15 @@ public static class RectAlignedTextTest
         DrawTest(ig, baseFont);
     }
 
+    private const int _canvasSize = (3 * _rectSize) + (4 * _rectGap);
     private const int _rectFontSize = 20;
     private const int _rectGap = 20;
     private const int _rectSize = 150;
-    private const int _canvasSize = (3 * _rectSize) + (4 * _rectGap);
 
     private static void DrawRect(IGraphics canvas, string id, Rectangle rect, StringAlignment horizontalAlignment, StringAlignment verticalAlignment, Font baseFont)
     {
-        var format = new StringFormat {
+        var format = new StringFormat
+        {
             Alignment = horizontalAlignment,
             LineAlignment = verticalAlignment,
             FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.NoClip
@@ -38,7 +39,8 @@ public static class RectAlignedTextTest
 
         {
             // Draw label
-            var labelFormat = new StringFormat {
+            var labelFormat = new StringFormat
+            {
                 Alignment = StringAlignment.Near,
                 LineAlignment = StringAlignment.Center,
                 FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.NoClip
@@ -58,8 +60,10 @@ public static class RectAlignedTextTest
         var alignments = new StringAlignment[] { StringAlignment.Near, StringAlignment.Center, StringAlignment.Far };
 
         int id = 1;
-        foreach (var verticalAlignment in alignments) {
-            foreach (var horizontalAlignment in alignments) {
+        foreach (var verticalAlignment in alignments)
+        {
+            foreach (var horizontalAlignment in alignments)
+            {
                 var x = _rectGap + ((int)horizontalAlignment) * (_rectSize + _rectGap);
                 var y = _rectGap + ((int)verticalAlignment) * (_rectSize + _rectGap);
                 var rect = new Rectangle(x, y, _rectSize, _rectSize);

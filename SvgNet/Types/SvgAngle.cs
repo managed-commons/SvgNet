@@ -9,17 +9,16 @@
 using System;
 using System.Globalization;
 
-namespace SvgNet.SvgTypes
-{
+namespace SvgNet.SvgTypes {
+
     /// <summary>
     /// An angle, as found here and there throughout the SVG spec
     /// </summary>
-    public class SvgAngle : ICloneable
-    {
+    public class SvgAngle : ICloneable {
+
         public SvgAngle(string s) => FromString(s);
 
-        public SvgAngle(float num, SvgAngleType type)
-        {
+        public SvgAngle(float num, SvgAngleType type) {
             Value = num;
             Type = type;
         }
@@ -28,15 +27,13 @@ namespace SvgNet.SvgTypes
 
         public float Value { get; set; }
 
-        public static implicit operator SvgAngle(string s)
-        {
+        public static implicit operator SvgAngle(string s) {
             return new SvgAngle(s);
         }
 
         public object Clone() => new SvgAngle(Value, Type);
 
-        public void FromString(string s)
-        {
+        public void FromString(string s) {
             var i = s.LastIndexOfAny(new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' });
             if (i == -1)
                 return;
@@ -65,8 +62,7 @@ namespace SvgNet.SvgTypes
             }
         }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             var s = Value.ToString("F", CultureInfo.InvariantCulture);
             switch (Type) {
                 case SvgAngleType.SVG_ANGLETYPE_DEG:

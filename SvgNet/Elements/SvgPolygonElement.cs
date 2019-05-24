@@ -1,29 +1,32 @@
 /*
-	Copyright © 2003 RiskCare Ltd. All rights reserved.
-	Copyright © 2010 SvgNet & SvgGdi Bridge Project. All rights reserved.
-	Copyright © 2015-2019 Rafael Teixeira, Mojmír Němeček, Benjamin Peterson and Other Contributors
+    Copyright © 2003 RiskCare Ltd. All rights reserved.
+    Copyright © 2010 SvgNet & SvgGdi Bridge Project. All rights reserved.
+    Copyright © 2015-2019 Rafael Teixeira, Mojmír Němeček, Benjamin Peterson and Other Contributors
 
-	Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
+    Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
 
 using System.Drawing;
 using SvgNet.SvgTypes;
 
-namespace SvgNet.SvgElements
-{
+namespace SvgNet.SvgElements {
+
     /// <summary>
     /// Represents a <c>polygon</c> element
     /// </summary>
-    public class SvgPolygonElement : SvgStyledTransformedElement
-    {
+    public class SvgPolygonElement : SvgStyledTransformedElement {
+
         public SvgPolygonElement(params PointF[] points) => Points = points;
 
         public SvgPolygonElement(SvgPoints points) => Points = points;
 
+        public SvgPolygonElement() {
+            // used by some reflection code
+        }
+
         public override string Name => "polygon";
 
-        public SvgPoints Points
-        {
+        public SvgPoints Points {
             get => (SvgPoints)_atts["points"];
             set => _atts["points"] = value;
         }

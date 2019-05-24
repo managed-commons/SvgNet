@@ -6,14 +6,12 @@
     Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
 
+namespace SvgNet.SvgTypes {
 
-namespace SvgNet.SvgTypes
-{
     /// <summary>
     /// The units in which an SvgAngle can be specified
     /// </summary>
-    public enum SvgAngleType
-    {
+    public enum SvgAngleType {
         SVG_ANGLETYPE_UNKNOWN = 0,
         SVG_ANGLETYPE_UNSPECIFIED = 1,
         SVG_ANGLETYPE_DEG = 2,

@@ -10,41 +10,35 @@ using System;
 using System.Collections;
 using System.Drawing.Drawing2D;
 
-namespace SvgNet.SvgTypes
-{
+namespace SvgNet.SvgTypes {
 
     /// <summary>
     /// Represents an SVG transform-list, as specified in section 7.6 of the SVG 1.1 standard.
     /// </summary>
-    public class SvgTransformList : ICloneable
-    {
-        public SvgTransformList()
-        {
+    public class SvgTransformList : ICloneable {
+
+        public SvgTransformList() {
         }
 
         public SvgTransformList(string s) => FromString(s);
 
-        public SvgTransformList(Matrix m)
-        {
+        public SvgTransformList(Matrix m) {
             var tr = new SvgTransform(m);
             _t.Add(tr);
         }
 
         public int Count => _t.Count;
 
-        public SvgTransform this[int idx]
-        {
+        public SvgTransform this[int idx] {
             get => (SvgTransform)_t[idx];
             set => _t[idx] = value;
         }
 
-        public static implicit operator SvgTransformList(string s)
-        {
+        public static implicit operator SvgTransformList(string s) {
             return new SvgTransformList(s);
         }
 
-        public static implicit operator SvgTransformList(Matrix m)
-        {
+        public static implicit operator SvgTransformList(Matrix m) {
             return new SvgTransformList(m);
         }
 
@@ -52,8 +46,7 @@ namespace SvgNet.SvgTypes
 
         public void Add(Matrix m) => _t.Add(new SvgTransform(m));
 
-        public object Clone()
-        {
+        public object Clone() {
             //use to/from string as a shortcut
             return new SvgTransformList(ToString());
         }
@@ -62,8 +55,7 @@ namespace SvgNet.SvgTypes
         /// Parse a string containing a whitespace-separated list of transformations as per the SVG
         /// standard
         /// </summary>
-        public void FromString(string s)
-        {
+        public void FromString(string s) {
             int start = -1;
 
             do {
@@ -80,8 +72,7 @@ namespace SvgNet.SvgTypes
             while (true);
         }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             string result = "";
 
             foreach (SvgTransform tr in _t) {

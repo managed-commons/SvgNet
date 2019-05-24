@@ -11,19 +11,24 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Drawing.Text;
 
-namespace SvgNet.SvgGdi
-{
+namespace SvgNet.SvgGdi {
+
     /// <summary>
     /// An IGraphics implementation that simply passes every call through to a GDI+ <c>Graphics</c> object.
     /// </summary>
-    public class GdiGraphics : IGraphics
-    {
+    public class GdiGraphics : IGraphics {
+
         public GdiGraphics(Graphics g) => _g = g;
 
         public Region Clip { get => _g.Clip; set => _g.Clip = value; }
+        public RectangleF ClipBounds => _g.ClipBounds;
         public CompositingMode CompositingMode { get => _g.CompositingMode; set => _g.CompositingMode = value; }
         public CompositingQuality CompositingQuality { get => _g.CompositingQuality; set => _g.CompositingQuality = value; }
+        public float DpiX => _g.DpiX;
+        public float DpiY => _g.DpiY;
         public InterpolationMode InterpolationMode { get => _g.InterpolationMode; set => _g.InterpolationMode = value; }
+        public bool IsClipEmpty => _g.IsClipEmpty;
+        public bool IsVisibleClipEmpty => _g.IsVisibleClipEmpty;
         public float PageScale { get => _g.PageScale; set => _g.PageScale = value; }
         public GraphicsUnit PageUnit { get => _g.PageUnit; set => _g.PageUnit = value; }
         public PixelOffsetMode PixelOffsetMode { get => _g.PixelOffsetMode; set => _g.PixelOffsetMode = value; }
@@ -32,11 +37,6 @@ namespace SvgNet.SvgGdi
         public int TextContrast { get => _g.TextContrast; set => _g.TextContrast = value; }
         public TextRenderingHint TextRenderingHint { get => _g.TextRenderingHint; set => _g.TextRenderingHint = value; }
         public Matrix Transform { get => _g.Transform; set => _g.Transform = value; }
-        public RectangleF ClipBounds => _g.ClipBounds;
-        public float DpiX => _g.DpiX;
-        public float DpiY => _g.DpiY;
-        public bool IsClipEmpty => _g.IsClipEmpty;
-        public bool IsVisibleClipEmpty => _g.IsVisibleClipEmpty;
         public RectangleF VisibleClipBounds => _g.VisibleClipBounds;
 
         public void AddMetafileComment(byte[] data) => _g.AddMetafileComment(data);
@@ -291,8 +291,7 @@ namespace SvgNet.SvgGdi
 
         public Region[] MeasureCharacterRanges(string text, Font font, RectangleF layoutRect, StringFormat stringFormat) => _g.MeasureCharacterRanges(text, font, layoutRect, stringFormat);
 
-        public SizeF MeasureString(string text, Font font, SizeF layoutArea, StringFormat stringFormat, out int charactersFitted, out int linesFilled)
-        {
+        public SizeF MeasureString(string text, Font font, SizeF layoutArea, StringFormat stringFormat, out int charactersFitted, out int linesFilled) {
             var siz = _g.MeasureString(text, font, layoutArea, stringFormat, out var a, out var b); charactersFitted = a; linesFilled = b; return siz;
         }
 

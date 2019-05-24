@@ -1,9 +1,9 @@
 /*
-	Copyright © 2003 RiskCare Ltd. All rights reserved.
-	Copyright © 2010 SvgNet & SvgGdi Bridge Project. All rights reserved.
-	Copyright © 2015-2019 Rafael Teixeira, Mojmír Němeček, Benjamin Peterson and Other Contributors
+    Copyright © 2003 RiskCare Ltd. All rights reserved.
+    Copyright © 2010 SvgNet & SvgGdi Bridge Project. All rights reserved.
+    Copyright © 2015-2019 Rafael Teixeira, Mojmír Němeček, Benjamin Peterson and Other Contributors
 
-	Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
+    Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
 
 using SvgNet;
@@ -37,8 +37,10 @@ namespace SvgDocTest
         /// </summary>
         protected override void Dispose(bool disposing)
         {
-            if (disposing) {
-                if (components != null) {
+            if (disposing)
+            {
+                if (components != null)
+                {
                     components.Dispose();
                 }
             }
@@ -76,7 +78,8 @@ namespace SvgDocTest
 
         private void button1_Click(object sender, System.EventArgs e)
         {
-            OpenFileDialog dlg = new OpenFileDialog {
+            OpenFileDialog dlg = new OpenFileDialog
+            {
                 AutoUpgradeEnabled = true,
                 CheckFileExists = true,
                 DefaultExt = ".svg",
@@ -85,37 +88,46 @@ namespace SvgDocTest
                 Title = "Choose one Scalable Vector Graphics file"
             };
 
-            if (dlg.ShowDialog() == DialogResult.OK) {
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
                 ProcessSvgFile(dlg.FileName);
             }
         }
 
         private void button2_Click(object sender, System.EventArgs e)
         {
-            SvgSvgElement root = new SvgSvgElement("4in", "4in", "0,0 100,100");
+            SvgSvgElement root = new SvgSvgElement("4in", "4in", "-10,-10 250,250");
 
             //adding multiple children
 
+            var yellowEllipse = new SvgEllipseElement(20, 20, 8, 12);
+            yellowEllipse.Style = "fill:yellow;stroke:red";
+
             root.AddChildren(
                 new SvgRectElement(5, 5, 5, 5),
-                new SvgEllipseElement(30, 10, 8, 12),
-                new SvgTextElement("Textastic!", 3, 20)
+                yellowEllipse,
+                new SvgTextElement("Textastic!", 30, 20)
                 );
 
             //group and path
 
-            SvgGroupElement grp = new SvgGroupElement("green_group") {
+            SvgGroupElement grp = new SvgGroupElement("green_group")
+            {
                 Style = "fill:green;stroke:black;"
             };
 
-            SvgEllipseElement ell = new SvgEllipseElement {
+            grp.AddChild(new SvgRectElement(30, 30, 5, 20));
+
+            SvgEllipseElement ell = new SvgEllipseElement
+            {
                 CX = 50,
                 CY = 50,
                 RX = 10,
                 RY = 20
             };
 
-            SvgPathElement pathy = new SvgPathElement {
+            SvgPathElement pathy = new SvgPathElement
+            {
                 D = "M 20,80 C 20,90 30,80 70,100 C 70,100 40,60 50,60 z",
                 Style = ell.Style
             };

@@ -8,23 +8,21 @@
 
 using SvgNet.SvgTypes;
 
-namespace SvgNet.SvgElements
-{
+namespace SvgNet.SvgElements {
+
     /// <summary>
     /// Represents a <c>polyline</c> element
     /// </summary>
-    public class SvgPolylineElement : SvgStyledTransformedElement
-    {
-        public SvgPolylineElement()
-        {
+    public class SvgPolylineElement : SvgStyledTransformedElement {
+
+        public SvgPolylineElement() {
         }
 
         public SvgPolylineElement(SvgPoints points) => Points = points;
 
         public override string Name => "polyline";
 
-        public SvgPoints Points
-        {
+        public SvgPoints Points {
             get => (SvgPoints)_atts["points"];
             set => _atts["points"] = value;
         }

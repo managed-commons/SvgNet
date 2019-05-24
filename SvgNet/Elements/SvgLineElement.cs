@@ -8,19 +8,17 @@
 
 using SvgNet.SvgTypes;
 
-namespace SvgNet.SvgElements
-{
+namespace SvgNet.SvgElements {
+
     /// <summary>
     /// Represents a <c>line</c> element
     /// </summary>
-    public class SvgLineElement : SvgStyledTransformedElement
-    {
-        public SvgLineElement()
-        {
+    public class SvgLineElement : SvgStyledTransformedElement {
+
+        public SvgLineElement() {
         }
 
-        public SvgLineElement(SvgLength x1, SvgLength y1, SvgLength x2, SvgLength y2)
-        {
+        public SvgLineElement(SvgLength x1, SvgLength y1, SvgLength x2, SvgLength y2) {
             X1 = x1;
             Y1 = y1;
             X2 = x2;
@@ -29,26 +27,22 @@ namespace SvgNet.SvgElements
 
         public override string Name => "line";
 
-        public SvgLength X1
-        {
+        public SvgLength X1 {
             get => (SvgLength)_atts["x1"];
             set => _atts["x1"] = value;
         }
 
-        public SvgLength X2
-        {
+        public SvgLength X2 {
             get => (SvgLength)_atts["x2"];
             set => _atts["x2"] = value;
         }
 
-        public SvgLength Y1
-        {
+        public SvgLength Y1 {
             get => (SvgLength)_atts["y1"];
             set => _atts["y1"] = value;
         }
 
-        public SvgLength Y2
-        {
+        public SvgLength Y2 {
             get => (SvgLength)_atts["y2"];
             set => _atts["y2"] = value;
         }

@@ -12,13 +12,34 @@ using System.Reflection;
 using System.Xml;
 using SvgNet.SvgElements;
 
-namespace SvgNet
-{
+namespace SvgNet {
+
     /// <summary>
     /// Static methods to produce/write/copy Svg documents reside in this class.
     /// </summary>
-    public static class SvgFactory
-    {
+    public static class SvgFactory {
+
+        /// <summary>
+        /// Used by LoadFromXML
+        /// </summary>
+        public static Hashtable BuildElementNameDictionary() {
+            var dict = new Hashtable();
+            var asm = Assembly.GetExecutingAssembly();
+            var ta = asm.GetExportedTypes();
+            foreach (Type t in ta) {
+                if (t.IsSubclassOf(typeof(SvgElement))) {
+                    var ci = t.GetConstructor(new Type[0]);
+                    if (ci == null)
+                        throw new InvalidOperationException($"Type {t.Name} doesn't have the mandatory public parameterless constructor");
+                    var e = (SvgElement)ci.Invoke(new object[0]);
+                    if (e.Name != "?" /* default name of abstract SvgElements */) {
+                        dict[e.Name] = e.GetType();
+                    }
+                }
+            }
+            return dict;
+        }
+
         /// <summary>
         /// Create a complete deep copy of the given tree of <c>SvgElement</c> objects.
         /// A new set of elements is created, and if the attributes are cloneable they are deep-copied too.
@@ -26,8 +47,7 @@ namespace SvgNet
         /// </summary>
         /// <param name="el"></param>
         /// <returns></returns>
-        public static SvgElement CloneElement(SvgElement el)
-        {
+        public static SvgElement CloneElement(SvgElement el) {
             var clone = (SvgElement)el.GetType().GetConstructor(new Type[0]).Invoke(new object[0]);
 
             foreach (string key in el.Attributes.Keys) {
@@ -52,8 +72,7 @@ namespace SvgNet
         /// <param name="doc"></param>
         /// <param name="el"></param>
         /// <returns></returns>
-        public static SvgElement LoadFromXML(XmlDocument doc, XmlElement el)
-        {
+        public static SvgElement LoadFromXML(XmlDocument doc, XmlElement el) {
             if (el == null) {
                 foreach (XmlNode noddo in doc.ChildNodes) {
                     if (noddo.GetType() == typeof(XmlElement)) {
@@ -67,7 +86,7 @@ namespace SvgNet
                 return null;
 
             if (_elementNameDictionary == null) {
-                BuildElementNameDictionary();
+                _elementNameDictionary = BuildElementNameDictionary();
             }
 
             var t = (Type)_elementNameDictionary[el.Name];
@@ -88,8 +107,7 @@ namespace SvgNet
         /// <param name="doc"></param>
         /// <param name="el"></param>
         /// <returns>A string of entities which can be inserted into the DOCTYPE when the document is written.</returns>
-        internal static string CompressXML(XmlDocument doc, XmlElement el)
-        {
+        internal static string CompressXML(XmlDocument doc, XmlElement el) {
             var entities = new Hashtable();
             var singletons = new Hashtable();
 
@@ -133,28 +151,6 @@ namespace SvgNet
         private static Hashtable _elementNameDictionary;
 
         /// <summary>
-        /// Used by LoadFromXML
-        /// </summary>
-        private static void BuildElementNameDictionary()
-        {
-            _elementNameDictionary = new Hashtable();
-
-            var asm = Assembly.GetExecutingAssembly();
-
-            var ta = asm.GetExportedTypes();
-
-            foreach (Type t in ta) {
-                if (t.IsSubclassOf(typeof(SvgElement))) {
-                    var e = (SvgElement)t.GetConstructor(new Type[0]).Invoke(new object[0]);
-
-                    if (e.Name != "?" /* default name of abstract SvgElements */) {
-                        _elementNameDictionary[e.Name] = e.GetType();
-                    }
-                }
-            }
-        }
-
-        /// <summary>
         /// Used by CompressXML
         /// </summary>
         /// <param name="entities">Map of attribute to entity name</param>
@@ -162,8 +158,7 @@ namespace SvgNet
         /// <param name="doc"></param>
         /// <param name="el"></param>
         /// <param name="idx">Number that is incremented to provide new entity names</param>
-        private static void RecCompXML(Hashtable entities, Hashtable singletons, XmlDocument doc, XmlElement el, ref int idx)
-        {
+        private static void RecCompXML(Hashtable entities, Hashtable singletons, XmlDocument doc, XmlElement el, ref int idx) {
             var keys = new ArrayList();
 
             foreach (XmlAttribute att in el.Attributes) {
@@ -206,8 +201,7 @@ namespace SvgNet
         /// <param name="e"></param>
         /// <param name="doc"></param>
         /// <param name="el"></param>
-        private static void RecLoadFromXML(SvgElement e, XmlDocument doc, XmlElement el)
-        {
+        private static void RecLoadFromXML(SvgElement e, XmlDocument doc, XmlElement el) {
             e.ReadXmlElement(doc, el);
 
             foreach (XmlNode noddo in el.ChildNodes) {
@@ -237,8 +231,7 @@ namespace SvgNet
             }
         }
 
-        private struct EntitySingleton
-        {
+        private struct EntitySingleton {
             public string AttributeName;
             public XmlElement Element;
         }

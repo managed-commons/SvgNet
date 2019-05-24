@@ -8,27 +8,24 @@
 
 using SvgNet.SvgTypes;
 
-namespace SvgNet.SvgElements
-{
+namespace SvgNet.SvgElements {
+
     /// <summary>
     /// Represents a <c>path</c> element
     /// </summary>
-    public class SvgPathElement : SvgStyledTransformedElement
-    {
-        public SvgPathElement()
-        {
+    public class SvgPathElement : SvgStyledTransformedElement {
+
+        public SvgPathElement() {
         }
 
-        public SvgPath D
-        {
+        public SvgPath D {
             get => (SvgPath)_atts["d"];
             set => _atts["d"] = value.ToString();
         }
 
         public override string Name => "path";
 
-        public SvgNumber PathLength
-        {
+        public SvgNumber PathLength {
             get => (SvgNumber)_atts["pathlength"];
             set => _atts["pathlength"] = value;
         }

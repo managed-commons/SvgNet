@@ -8,65 +8,56 @@
 
 using SvgNet.SvgTypes;
 
-namespace SvgNet.SvgElements
-{
+namespace SvgNet.SvgElements {
+
     /// <summary>
     ///
     /// </summary>
-    public class SvgFilterElement : SvgElement
-    {
-        public SvgFilterElement()
-        {
+    public class SvgFilterElement : SvgElement {
+
+        public SvgFilterElement() {
         }
 
-        public SvgFilterElement(SvgLength x, SvgLength y, SvgLength w, SvgLength h)
-        {
+        public SvgFilterElement(SvgLength x, SvgLength y, SvgLength w, SvgLength h) {
             X = x;
             Y = y;
             Width = w;
             Height = h;
         }
 
-        public string FilterRes
-        {
+        public string FilterRes {
             get => (string)_atts["filterRes"];
             set => _atts["filterRes"] = value;
         }
 
-        public string FilterUnits
-        {
+        public string FilterUnits {
             get => (string)_atts["filterUnits"];
             set => _atts["filterUnits"] = value;
         }
 
-        public SvgLength Height
-        {
+        public SvgLength Height {
             get => (SvgLength)_atts["height"];
             set => _atts["height"] = value;
         }
 
         public override string Name => "filter";
 
-        public string PrimitiveUnits
-        {
+        public string PrimitiveUnits {
             get => (string)_atts["primitiveUnits"];
             set => _atts["primitiveUnits"] = value;
         }
 
-        public SvgLength Width
-        {
+        public SvgLength Width {
             get => (SvgLength)_atts["width"];
             set => _atts["width"] = value;
         }
 
-        public SvgLength X
-        {
+        public SvgLength X {
             get => (SvgLength)_atts["x"];
             set => _atts["x"] = value;
         }
 
-        public SvgLength Y
-        {
+        public SvgLength Y {
             get => (SvgLength)_atts["y"];
             set => _atts["y"] = value;
         }

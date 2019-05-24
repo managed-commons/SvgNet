@@ -8,26 +8,23 @@
 
 using SvgNet.SvgTypes;
 
-namespace SvgNet.SvgElements
-{
+namespace SvgNet.SvgElements {
+
     /// <summary>
     /// Represents an SVG pattern element, which defines a fill pattern by defining a viewport onto a subscene.
     /// </summary>
-    public class SvgPatternElement : SvgStyledTransformedElement
-    {
-        public SvgPatternElement()
-        {
+    public class SvgPatternElement : SvgStyledTransformedElement {
+
+        public SvgPatternElement() {
         }
 
-        public SvgPatternElement(SvgLength width, SvgLength height, SvgNumList vport)
-        {
+        public SvgPatternElement(SvgLength width, SvgLength height, SvgNumList vport) {
             Width = width;
             Height = height;
             ViewBox = vport;
         }
 
-        public SvgPatternElement(SvgLength x, SvgLength y, SvgLength width, SvgLength height, SvgNumList vport)
-        {
+        public SvgPatternElement(SvgLength x, SvgLength y, SvgLength width, SvgLength height, SvgNumList vport) {
             X = x;
             Y = y;
             Width = width;
@@ -35,58 +32,49 @@ namespace SvgNet.SvgElements
             ViewBox = vport;
         }
 
-        public SvgLength Height
-        {
+        public SvgLength Height {
             get => (SvgLength)_atts["height"];
             set => _atts["height"] = value;
         }
 
         public override string Name => "pattern";
 
-        public string PatternContentUnits
-        {
+        public string PatternContentUnits {
             get => (string)_atts["patternContentUnits"];
             set => _atts["patternContentUnits"] = value;
         }
 
-        public SvgTransformList PatternTransform
-        {
+        public SvgTransformList PatternTransform {
             get => (SvgTransformList)_atts["patternTransform"];
             set => _atts["patternTransform"] = value;
         }
 
-        public string PatternUnits
-        {
+        public string PatternUnits {
             get => (string)_atts["patternUnits"];
             set => _atts["patternUnits"] = value;
         }
 
-        public string PreserveAspectRatio
-        {
+        public string PreserveAspectRatio {
             get => (string)_atts["preserveAspectRatio"];
             set => _atts["preserveAspectRatio"] = value;
         }
 
-        public SvgNumList ViewBox
-        {
-            get => (SvgNumList)_atts["viewbox"];
-            set => _atts["viewbox"] = value;
+        public SvgNumList ViewBox {
+            get => (SvgNumList)_atts["viewBox"];
+            set => _atts["viewBox"] = value;
         }
 
-        public SvgLength Width
-        {
+        public SvgLength Width {
             get => (SvgLength)_atts["width"];
             set => _atts["width"] = value;
         }
 
-        public SvgLength X
-        {
+        public SvgLength X {
             get => (SvgLength)_atts["x"];
             set => _atts["x"] = value;
         }
 
-        public SvgLength Y
-        {
+        public SvgLength Y {
             get => (SvgLength)_atts["y"];
             set => _atts["y"] = value;
         }

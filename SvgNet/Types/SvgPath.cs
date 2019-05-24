@@ -10,30 +10,27 @@ using System;
 using System.Collections;
 using System.Globalization;
 
-namespace SvgNet.SvgTypes
-{
+namespace SvgNet.SvgTypes {
+
     /// <summary>
     /// A path, composed of segments, as described in the SVG 1.1 spec section 8.3
     /// </summary>
-    public class SvgPath : ICloneable
-    {
+    public class SvgPath : ICloneable {
+
         public SvgPath(string s) => FromString(s);
 
         public int Count => _path.Count;
 
-        public PathSeg this[int idx]
-        {
+        public PathSeg this[int idx] {
             get => (PathSeg)_path[idx];
             set => _path[idx] = value;
         }
 
-        public static implicit operator SvgPath(string s)
-        {
+        public static implicit operator SvgPath(string s) {
             return new SvgPath(s);
         }
 
-        public object Clone()
-        {
+        public object Clone() {
             //we resort to using to/from string rather than writing an efficient clone, for the moment.
             return new SvgPath(ToString());
         }
@@ -42,8 +39,7 @@ namespace SvgNet.SvgTypes
         /// The parsing of the path is not completely perfect yet.  You can only have one space between path elements.
         /// </summary>
         /// <param name="s"></param>
-        public void FromString(string s)
-        {
+        public void FromString(string s) {
             var sa = s.Split(new char[] { ' ', ',', '\t', '\r', '\n' });
 
             PathSeg ps;
@@ -135,8 +131,7 @@ namespace SvgNet.SvgTypes
             }
         }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             PathSeg prev = null;
             var builder = new System.Text.StringBuilder();
             foreach (PathSeg seg in _path) {

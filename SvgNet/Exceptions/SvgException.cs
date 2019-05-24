@@ -8,22 +8,20 @@
 
 using System;
 
-namespace SvgNet
-{
+namespace SvgNet {
+
     /// <summary>
     /// A general-purpose exception for problems that occur in SvgNet.
     /// </summary>
     [Serializable]
-    public class SvgException : Exception
-    {
-        public SvgException(string msg, string ctx)
-        {
+    public class SvgException : Exception {
+
+        public SvgException(string msg, string ctx) {
             _msg = msg;
             _ctx = ctx;
         }
 
-        public SvgException(string msg)
-        {
+        public SvgException(string msg) {
             _msg = msg;
             _ctx = "";
         }

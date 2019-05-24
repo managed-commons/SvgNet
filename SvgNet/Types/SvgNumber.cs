@@ -9,31 +9,28 @@
 using System;
 using System.Globalization;
 
-namespace SvgNet.SvgTypes
-{
+namespace SvgNet.SvgTypes {
+
     /// <summary>
     /// A number, as specified in the SVG standard.  It is stored as a float.
     /// </summary>
-    public class SvgNumber : ICloneable
-    {
+    public class SvgNumber : ICloneable {
+
         public SvgNumber(string s) => FromString(s);
 
         public SvgNumber(int n) => _num = n;
 
         public SvgNumber(float n) => _num = n;
 
-        public static implicit operator SvgNumber(string s)
-        {
+        public static implicit operator SvgNumber(string s) {
             return new SvgNumber(s);
         }
 
-        public static implicit operator SvgNumber(int n)
-        {
+        public static implicit operator SvgNumber(int n) {
             return new SvgNumber(n);
         }
 
-        public static implicit operator SvgNumber(float n)
-        {
+        public static implicit operator SvgNumber(float n) {
             return new SvgNumber(n);
         }
 
@@ -43,8 +40,7 @@ namespace SvgNet.SvgTypes
         /// float.Parse is used to parse the string.  float.Parse does not follow the exact rules of the SVG spec.
         /// </summary>
         /// <param name="s"></param>
-        public void FromString(string s)
-        {
+        public void FromString(string s) {
             try {
                 _num = float.Parse(s, CultureInfo.InvariantCulture);
             } catch {

@@ -12,34 +12,31 @@ using System.Drawing;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace SvgNet.SvgTypes
-{
+namespace SvgNet.SvgTypes {
+
     /// <summary>
     /// A color, as found in CSS2 and used in SVG.  As well as a GDI Color object, SvgColor stores
     /// the string it was initialized from, so that when a color specified as 'black' is written out,
     /// it will be written 'black' rather than '#000000'
     /// </summary>
-    public class SvgColor : ICloneable
-    {
+    public class SvgColor : ICloneable {
+
         public SvgColor(string s) => FromString(s);
 
         public SvgColor(Color c) => Color = c;
 
-        public SvgColor(Color c, string s)
-        {
+        public SvgColor(Color c, string s) {
             Color = c;
             _original_string = s;
         }
 
         public Color Color { get; set; }
 
-        public static implicit operator SvgColor(Color c)
-        {
+        public static implicit operator SvgColor(Color c) {
             return new SvgColor(c);
         }
 
-        public static implicit operator SvgColor(string s)
-        {
+        public static implicit operator SvgColor(string s) {
             return new SvgColor(s);
         }
 
@@ -50,8 +47,7 @@ namespace SvgNet.SvgTypes
         /// the FromString of this type stores the original string
         /// </summary>
         /// <param name="s"></param>
-        public void FromString(string s)
-        {
+        public void FromString(string s) {
             _original_string = s;
 
             if (s.StartsWith("#")) {
@@ -75,8 +71,7 @@ namespace SvgNet.SvgTypes
         /// If the SvgColor was constructed from a string, use that string; otherwise use rgb() form
         /// </summary>
         /// <returns></returns>
-        public override string ToString()
-        {
+        public override string ToString() {
             if (_original_string != null)
                 return _original_string;
 
@@ -94,8 +89,7 @@ namespace SvgNet.SvgTypes
         private static readonly Hashtable _stdcols = new Hashtable();
         private string _original_string;
 
-        private void FromHexString(string s)
-        {
+        private void FromHexString(string s) {
             int r, g, b;
             s = s.Substring(1);
 
@@ -117,8 +111,7 @@ namespace SvgNet.SvgTypes
             }
         }
 
-        private void FromRGBString(string s)
-        {
+        private void FromRGBString(string s) {
 #pragma warning disable CC0021 // Use nameof
             int r, g, b;
             var rg = new Regex(@"[rgbRGB ]+\( *(?<r>\d+)[, ]+(?<g>\d+)[, ]+(?<b>\d+) *\)");

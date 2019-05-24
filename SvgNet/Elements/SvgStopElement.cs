@@ -8,19 +8,17 @@
 
 using SvgNet.SvgTypes;
 
-namespace SvgNet.SvgElements
-{
+namespace SvgNet.SvgElements {
+
     /// <summary>
     /// Represents an SVG stop element, which specifies one color in a gradient.
     /// </summary>
-    public class SvgStopElement : SvgStyledTransformedElement
-    {
-        public SvgStopElement()
-        {
+    public class SvgStopElement : SvgStyledTransformedElement {
+
+        public SvgStopElement() {
         }
 
-        public SvgStopElement(SvgLength num, SvgColor col)
-        {
+        public SvgStopElement(SvgLength num, SvgColor col) {
             Offset = num;
 
             Style.Set("stop-color", col);
@@ -28,8 +26,7 @@ namespace SvgNet.SvgElements
 
         public override string Name => "stop";
 
-        public SvgLength Offset
-        {
+        public SvgLength Offset {
             get => (SvgLength)_atts["offset"];
             set => _atts["offset"] = value;
         }

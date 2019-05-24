@@ -8,47 +8,41 @@
 
 using SvgNet.SvgTypes;
 
-namespace SvgNet.SvgElements
-{
+namespace SvgNet.SvgElements {
+
     /// <summary>
     /// Represents a <c>rect</c> element
     /// </summary>
-    public class SvgRectElement : SvgStyledTransformedElement
-    {
-        public SvgRectElement()
-        {
+    public class SvgRectElement : SvgStyledTransformedElement {
+
+        public SvgRectElement() {
         }
 
-        public SvgRectElement(SvgLength x, SvgLength y, SvgLength w, SvgLength h)
-        {
+        public SvgRectElement(SvgLength x, SvgLength y, SvgLength w, SvgLength h) {
             X = x;
             Y = y;
             Width = w;
             Height = h;
         }
 
-        public SvgLength Height
-        {
+        public SvgLength Height {
             get => (SvgLength)_atts["height"];
             set => _atts["height"] = value;
         }
 
         public override string Name => "rect";
 
-        public SvgLength Width
-        {
+        public SvgLength Width {
             get => (SvgLength)_atts["width"];
             set => _atts["width"] = value;
         }
 
-        public SvgLength X
-        {
+        public SvgLength X {
             get => (SvgLength)_atts["x"];
             set => _atts["x"] = value;
         }
 
-        public SvgLength Y
-        {
+        public SvgLength Y {
             get => (SvgLength)_atts["y"];
             set => _atts["y"] = value;
         }

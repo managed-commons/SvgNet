@@ -8,63 +8,54 @@
 
 using SvgNet.SvgTypes;
 
-namespace SvgNet.SvgElements
-{
+namespace SvgNet.SvgElements {
+
     /// <summary>
     /// Represents an svg radialGradient element
     /// </summary>
-    public class SvgRadialGradientElement : SvgStyledTransformedElement
-    {
-        public SvgRadialGradientElement()
-        {
+    public class SvgRadialGradientElement : SvgStyledTransformedElement {
+
+        public SvgRadialGradientElement() {
         }
 
-        public SvgLength CX
-        {
+        public SvgLength CX {
             get => (SvgLength)_atts["cx"];
             set => _atts["cx"] = value;
         }
 
-        public SvgLength CY
-        {
+        public SvgLength CY {
             get => (SvgLength)_atts["cy"];
             set => _atts["cy"] = value;
         }
 
-        public SvgLength FX
-        {
+        public SvgLength FX {
             get => (SvgLength)_atts["fx"];
             set => _atts["fx"] = value;
         }
 
-        public SvgLength FY
-        {
+        public SvgLength FY {
             get => (SvgLength)_atts["fy"];
             set => _atts["fy"] = value;
         }
 
-        public SvgTransformList GradientTransform
-        {
+        public SvgTransformList GradientTransform {
             get => (SvgTransformList)_atts["gradientTransform"];
             set => _atts["gradientTransform"] = value;
         }
 
-        public string GradientUnits
-        {
+        public string GradientUnits {
             get => (string)_atts["gradientUnits"];
             set => _atts["gradientUnits"] = value;
         }
 
         public override string Name => "radialGradient";
 
-        public SvgLength R
-        {
+        public SvgLength R {
             get => (SvgLength)_atts["r"];
             set => _atts["r"] = value;
         }
 
-        public string SpreadMethod
-        {
+        public string SpreadMethod {
             get => (string)_atts["spreadMethod"];
             set => _atts["spreadMethod"] = value;
         }

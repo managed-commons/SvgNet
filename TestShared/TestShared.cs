@@ -16,7 +16,8 @@ namespace SvgNet
 {
     public static class TestShared
     {
-        public static Dictionary<string, Action<IGraphics>> Renderers { get; } = new Dictionary<string, Action<IGraphics>>() {
+        public static Dictionary<string, Action<IGraphics>> Renderers { get; } = new Dictionary<string, Action<IGraphics>>()
+        {
             ["Clipping"] = RenderClipping,
             ["Transforms"] = RenderTransforms,
             ["Lines"] = RenderLines,
@@ -96,7 +97,8 @@ namespace SvgNet
                 new PointF(190, 210)
         };
 
-            var bpn = new Pen(Color.MediumSeaGreen, 2.3f) {
+            var bpn = new Pen(Color.MediumSeaGreen, 2.3f)
+            {
                 DashStyle = DashStyle.Custom,
                 DashPattern = new float[] { 6, 1, 5, 2, 4, 3, 3, 4, 2, 5, 6, 1 }
             };
@@ -148,7 +150,8 @@ namespace SvgNet
         {
             var gbr1 = new LinearGradientBrush(new Point(0, 0), new Point(30, 20), Color.Blue, Color.Plum);
 
-            var blend = new ColorBlend(3) {
+            var blend = new ColorBlend(3)
+            {
                 Colors = new Color[] { Color.Red, Color.Yellow, Color.MediumSlateBlue },
                 Positions = new float[] { 0, .3f, 1f }
             };
@@ -163,7 +166,8 @@ namespace SvgNet
             };
             ig.FillPolygon(gbr1, sp);
 
-            var gbr2 = new LinearGradientBrush(new Point(0, 0), new Point(10, 20), Color.WhiteSmoke, Color.CornflowerBlue) {
+            var gbr2 = new LinearGradientBrush(new Point(0, 0), new Point(10, 20), Color.WhiteSmoke, Color.CornflowerBlue)
+            {
                 WrapMode = WrapMode.TileFlipXY
             };
             var sp2 = new Point[]
@@ -205,7 +209,8 @@ namespace SvgNet
         {
             ig.SmoothingMode = SmoothingMode.AntiAlias;
 
-            var ow = new Pen(Color.Purple, 12.6f) {
+            var ow = new Pen(Color.Purple, 12.6f)
+            {
                 EndCap = LineCap.Round,
                 StartCap = LineCap.Round,
                 MiterLimit = 6f,
@@ -214,7 +219,8 @@ namespace SvgNet
 
             ig.SmoothingMode = SmoothingMode.None;
 
-            var tp = new Pen(Color.Red, 2.7f) {
+            var tp = new Pen(Color.Red, 2.7f)
+            {
                 DashStyle = DashStyle.DashDot
             };
 
@@ -321,7 +327,8 @@ namespace SvgNet
             myPath.SetMarkers();
             myPath.AddEllipse(220, 220, 100, 100);
             ig.DrawPath(new Pen(Color.Black, 1.7f), myPath);
-            var gbr2 = new LinearGradientBrush(new Point(0, 0), new Point(10, 20), Color.WhiteSmoke, Color.CornflowerBlue) {
+            var gbr2 = new LinearGradientBrush(new Point(0, 0), new Point(10, 20), Color.WhiteSmoke, Color.CornflowerBlue)
+            {
                 WrapMode = WrapMode.TileFlipXY
             };
             ig.FillPath(gbr2, myPath);
@@ -388,7 +395,8 @@ namespace SvgNet
             var fnt3 = new Font("", 40, FontStyle.Underline);
 
             var rc1 = new Rectangle(30, 30, 220, 20);
-            var fmt1 = new StringFormat {
+            var fmt1 = new StringFormat
+            {
                 Alignment = StringAlignment.Near
             };
 
@@ -396,7 +404,8 @@ namespace SvgNet
             ig.DrawString("Text...1", fnt1, new SolidBrush(Color.DarkGreen), rc1, fmt1);
 
             var rc2 = new Rectangle(0, 0, 120, 20);
-            var fmt2 = new StringFormat {
+            var fmt2 = new StringFormat
+            {
                 Alignment = StringAlignment.Center
             };
 
@@ -409,7 +418,8 @@ namespace SvgNet
             ig.ResetTransform();
 
             var rc3 = new Rectangle(30, 90, 300, 30);
-            var fmt3 = new StringFormat {
+            var fmt3 = new StringFormat
+            {
                 Alignment = StringAlignment.Far
             };
 

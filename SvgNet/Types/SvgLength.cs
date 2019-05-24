@@ -9,23 +9,21 @@
 using System;
 using System.Globalization;
 
-namespace SvgNet.SvgTypes
-{
+namespace SvgNet.SvgTypes {
+
     /// <summary>
     /// A length or coordinate component (in SVG 1.1 the specification says they are the same)
     /// </summary>
-    public class SvgLength : ICloneable
-    {
+    public class SvgLength : ICloneable {
+
         public SvgLength(string s) => FromString(s);
 
-        public SvgLength(float f)
-        {
+        public SvgLength(float f) {
             Value = f;
             Type = SvgLengthType.SVG_LENGTHTYPE_UNKNOWN;
         }
 
-        public SvgLength(float f, SvgLengthType type)
-        {
+        public SvgLength(float f, SvgLengthType type) {
             Value = f;
             Type = type;
         }
@@ -34,20 +32,17 @@ namespace SvgNet.SvgTypes
 
         public float Value { get; set; }
 
-        public static implicit operator SvgLength(string s)
-        {
+        public static implicit operator SvgLength(string s) {
             return new SvgLength(s);
         }
 
-        public static implicit operator SvgLength(float s)
-        {
+        public static implicit operator SvgLength(float s) {
             return new SvgLength(s);
         }
 
         public object Clone() => new SvgLength(Value, Type);
 
-        public void FromString(string s)
-        {
+        public void FromString(string s) {
             var i = s.LastIndexOfAny(new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' });
             if (i == -1)
                 return;
@@ -100,8 +95,7 @@ namespace SvgNet.SvgTypes
             }
         }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             var s = Value.ToString("F", CultureInfo.InvariantCulture);
             switch (Type) {
                 case SvgLengthType.SVG_LENGTHTYPE_PERCENTAGE:

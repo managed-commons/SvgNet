@@ -12,8 +12,8 @@ using System.Globalization;
 using System.IO;
 using System.Xml;
 
-namespace SvgNet
-{
+namespace SvgNet {
+
     /// <summary>
     /// The base class for SVG elements.  It represents some part of an SVG document, either an element (rect, circle etc) or a text item.  Duties include:
     /// <list type="bulleted">
@@ -34,15 +34,11 @@ namespace SvgNet
     /// </item>
     /// </list>
     /// </summary>
-    public class SvgElement
-    {
-        public SvgElement() => Defaults();
+    public class SvgElement {
 
-        public SvgElement(string id)
-        {
-            Defaults();
-            Id = id;
-        }
+        public SvgElement() => Id = GenerateNewId();
+
+        public SvgElement(string id) => Id = id;
 
         /// <summary>
         /// A hashtable containing this element's attributes.  Keys are strings but values can be any type; they will only be
@@ -53,10 +49,9 @@ namespace SvgNet
         /// <summary>
         /// An ArrayList containing this element's children
         /// </summary>
-        public ArrayList Children => _children;
+        public ArrayList Children { get; protected set; } = new ArrayList();
 
-        public string Id
-        {
+        public string Id {
             get => (string)_atts["id"];
             set => _atts["id"] = value;
         }
@@ -66,17 +61,16 @@ namespace SvgNet
         /// </summary>
         public virtual string Name => "?";
 
+        public SvgElement Parent { get; protected set; }
+
         /// <summary>
         /// The element whose child this element is; can be null, because SvgElements may only be inserted into a full SVG tree
         /// long after they are created.
         /// </summary>
-        public SvgElement Parent => _parent;
-
         /// <summary>
         /// A quick way to get and set attributes.
         /// </summary>
-        public object this[string attname]
-        {
+        public object this[string attname] {
             get => _atts[attname];
             set => _atts[attname] = value;
         }
@@ -85,25 +79,21 @@ namespace SvgNet
         /// Adds a child, and sets the child's parent to this element.
         /// </summary>
         /// <param name="ch"></param>
-        public virtual void AddChild(SvgElement ch)
-        {
-            if (ch.Parent != null)
-            {
+        public virtual void AddChild(SvgElement ch) {
+            if (ch.Parent != null) {
                 throw new SvgException("Child already has a parent", ch.ToString());
             }
 
-            _children.Add(ch);
-            ch._parent = this;
+            Children.Add(ch);
+            ch.Parent = this;
         }
 
         /// <summary>
         /// Adds a variable number of children
         /// </summary>
         /// <param name="ch"></param>
-        public virtual void AddChildren(params SvgElement[] ch)
-        {
-            foreach (SvgElement el in ch)
-            {
+        public virtual void AddChildren(params SvgElement[] ch) {
+            foreach (SvgElement el in ch) {
                 AddChild(el);
             }
         }
@@ -113,10 +103,8 @@ namespace SvgNet
         /// </summary>
         /// <param name="doc"></param>
         /// <param name="el"></param>
-        public virtual void ReadXmlElement(XmlDocument doc, XmlElement el)
-        {
-            foreach (XmlAttribute att in el.Attributes)
-            {
+        public virtual void ReadXmlElement(XmlDocument doc, XmlElement el) {
+            foreach (XmlAttribute att in el.Attributes) {
                 // TODO: after namespaced attributes are supported in the writer code (WriteXmlElements) re-enable
                 // their reading.
                 // For now we'll skip namespaced attributes
@@ -139,8 +127,7 @@ namespace SvgNet
         /// <returns></returns>
         /// <param name="compressAttributes">Should usually be set true.  Causes the XML output to be optimized so that
         /// long attributes like styles and transformations are represented with entities.</param>
-        public string WriteSVGString(bool compressAttributes)
-        {
+        public string WriteSVGString(bool compressAttributes) {
             var doc = new XmlDocument();
 
             var declaration = doc.CreateXmlDeclaration("1.0", null, "yes");
@@ -169,53 +156,34 @@ namespace SvgNet
         /// </summary>
         /// <param name="doc">A document</param>
         /// <param name="parent">A node, or null if this element is to be the root element</param>
-        public virtual void WriteXmlElements(XmlDocument doc, XmlElement parent)
-        {
+        public virtual void WriteXmlElements(XmlDocument doc, XmlElement parent) {
             var me = doc.CreateElement("", Name, doc.NamespaceURI);
-            foreach (string s in _atts.Keys)
-            {
-                if (_atts[s] is float)
-                {
+            foreach (string s in _atts.Keys) {
+                if (_atts[s] is float) {
                     me.SetAttribute(s, doc.NamespaceURI, ((float)_atts[s]).ToString(CultureInfo.InvariantCulture));
-                } else if (_atts[s] is double)
-                {
+                } else if (_atts[s] is double) {
                     me.SetAttribute(s, doc.NamespaceURI, ((double)_atts[s]).ToString(CultureInfo.InvariantCulture));
-                } else
-                {
+                } else {
                     me.SetAttribute(s, doc.NamespaceURI, _atts[s].ToString());
                 }
             }
 
-            foreach (SvgElement el in _children)
-            {
+            foreach (SvgElement el in Children) {
                 el.WriteXmlElements(doc, me);
             }
 
-            if (parent == null)
-            {
+            if (parent == null) {
                 doc.AppendChild(me);
-            } else
-            {
+            } else {
                 parent.AppendChild(me);
             }
         }
 
-        protected Hashtable _atts;
-        protected ArrayList _children;
-        protected SvgElement _parent;
+        protected Hashtable _atts = new Hashtable();
+        protected object FirstChild => Children[0];
 
-        protected void Defaults()
-        {
-            _children = new ArrayList();
-            _atts = new Hashtable();
-            Id = _idcounter.ToString();
-            _idcounter++;
-        }
-
-        protected T GetTypedAttribute<T>(string attributeName, Func<object, T> fromString) where T : new()
-        {
-            T SetNewAttributeValue(T st)
-            {
+        protected T GetTypedAttribute<T>(string attributeName, Func<object, T> fromString) where T : new() {
+            T SetNewAttributeValue(T st) {
                 _atts[attributeName] = st;
                 return st;
             }
@@ -228,8 +196,9 @@ namespace SvgNet
 
         private static string ToXmlString(XmlDocument doc) => doc.OuterXml;
 
-        private class DummyXmlResolver : XmlResolver
-        {
+        private string GenerateNewId() => _idcounter++.ToString();
+
+        private class DummyXmlResolver : XmlResolver {
             public override System.Net.ICredentials Credentials { set { } }
 
             public override object GetEntity(Uri absoluteUri, string role, Type ofObjectToReturn) => new MemoryStream();

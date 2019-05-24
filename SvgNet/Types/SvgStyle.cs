@@ -13,15 +13,14 @@ using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.Text;
 
-namespace SvgNet.SvgTypes
-{
+namespace SvgNet.SvgTypes {
+
     /// <summary>
     /// Represents a CSS2 style, as applied to an SVG element.
     /// </summary>
-    public class SvgStyle : ICloneable
-    {
-        public SvgStyle()
-        {
+    public class SvgStyle : ICloneable {
+
+        public SvgStyle() {
         }
 
         public SvgStyle(string s) => FromString(s);
@@ -31,8 +30,7 @@ namespace SvgNet.SvgTypes
         /// has no equivalent in SVG.
         /// </summary>
         /// <param name="pen"></param>
-        public SvgStyle(Pen pen)
-        {
+        public SvgStyle(Pen pen) {
             var strokeCol = new SvgColor(((SolidBrush)pen.Brush).Color);
             Set("stroke", strokeCol);
             Set("stroke-width", pen.Width);
@@ -109,8 +107,7 @@ namespace SvgNet.SvgTypes
         /// Creates a style based on a GDI brush object.  Only works for solid brushes; pattern brushes are not yet emulated.
         /// </summary>
         /// <param name="brush"></param>
-        public SvgStyle(SolidBrush brush)
-        {
+        public SvgStyle(SolidBrush brush) {
             var col = new SvgColor(brush.Color);
             Set("fill", col);
             Set("stroke", "none");
@@ -121,8 +118,7 @@ namespace SvgNet.SvgTypes
         /// Creates a style based on a GDI+ font object.  GDI+ allows many subtle specifications which have no SVG equivalent.
         /// </summary>
         /// <param name="font"></param>
-        public SvgStyle(Font font)
-        {
+        public SvgStyle(Font font) {
             Set("font-family", font.FontFamily.Name);
 
             if (font.Bold)
@@ -145,14 +141,12 @@ namespace SvgNet.SvgTypes
         /// <summary>
         /// A quick way to get and set style elements.
         /// </summary>
-        public object this[string attname]
-        {
+        public object this[string attname] {
             get => _styles[attname];
             set => _styles[attname] = value;
         }
 
-        public static implicit operator SvgStyle(string s)
-        {
+        public static implicit operator SvgStyle(string s) {
             return new SvgStyle(s);
         }
 
@@ -160,8 +154,7 @@ namespace SvgNet.SvgTypes
         /// Adds two SvgStyles together, resulting in a new object that contains all the attributes of both styles.
         /// Attributes are copied deeply, i.e. cloned if they are <c>ICloneable</c>.
         /// </summary>
-        public static SvgStyle operator +(SvgStyle lhs, SvgStyle rhs)
-        {
+        public static SvgStyle operator +(SvgStyle lhs, SvgStyle rhs) {
             var res = new SvgStyle();
 
             foreach (string key in lhs._styles.Keys) {
@@ -186,8 +179,7 @@ namespace SvgNet.SvgTypes
         /// Parses a CSS string representation as used in SVG.
         /// </summary>
         /// <param name="s"></param>
-        public void FromString(string s)
-        {
+        public void FromString(string s) {
             try {
                 string[] pairs = s.Split(';');
 
@@ -212,8 +204,7 @@ namespace SvgNet.SvgTypes
         /// </summary>
         /// <param name="key"></param>
         /// <param name="val"></param>
-        public void Set(string key, object val)
-        {
+        public void Set(string key, object val) {
             if (val == null || val.ToString() == "") {
                 _styles.Remove(key);
                 return;
@@ -225,8 +216,7 @@ namespace SvgNet.SvgTypes
         /// <summary>
         /// Outputs a CSS string representation as used in SVG.
         /// </summary>
-        public override string ToString()
-        {
+        public override string ToString() {
             var result = new StringBuilder();
             foreach (string s in _styles.Keys) {
                 result.Append(s).Append(':').Append(InvariantCultureToString(_styles[s])).Append(';');
@@ -236,8 +226,7 @@ namespace SvgNet.SvgTypes
 
         private readonly Hashtable _styles = new Hashtable();
 
-        private static string InvariantCultureToString(object styleValue)
-        {
+        private static string InvariantCultureToString(object styleValue) {
             if (styleValue is float)
                 return ((float)styleValue).ToString(CultureInfo.InvariantCulture);
             if (styleValue is double)

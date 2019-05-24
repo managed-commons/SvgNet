@@ -8,35 +8,31 @@
 
 using SvgNet.SvgTypes;
 
-namespace SvgNet.SvgElements
-{
+namespace SvgNet.SvgElements {
+
     /// <summary>
     /// Represents an <c>a</c> element.  It has an xref and a target.
     /// </summary>
-    public class SvgAElement : SvgStyledTransformedElement, IElementWithXRef
-    {
-        public SvgAElement()
-        {
+    public class SvgAElement : SvgStyledTransformedElement, IElementWithXRef {
+
+        public SvgAElement() {
         }
 
         public SvgAElement(string href) => Href = href;
 
-        public string Href
-        {
+        public string Href {
             get => (string)_atts["xlink:href"];
             set => _atts["xlink:href"] = value;
         }
 
         public override string Name => "a";
 
-        public string Target
-        {
+        public string Target {
             get => (string)_atts["target"];
             set => _atts["target"] = value;
         }
 
-        public SvgXRef XRef
-        {
+        public SvgXRef XRef {
             get => new SvgXRef(this);
             set => value.WriteToElement(this);
         }
@@ -45,14 +41,12 @@ namespace SvgNet.SvgElements
     /// <summary>
     /// Represents a <c>clippath</c> element.  It has no particular properties of its own.
     /// </summary>
-    public class SvgClipPathElement : SvgElement
-    {
-        public SvgClipPathElement()
-        {
+    public class SvgClipPathElement : SvgElement {
+
+        public SvgClipPathElement() {
         }
 
-        public SvgClipPathElement(string id) : base(id)
-        {
+        public SvgClipPathElement(string id) : base(id) {
         }
 
         public override string Name => "clipPath";
@@ -61,14 +55,12 @@ namespace SvgNet.SvgElements
     /// <summary>
     /// Represents a <c>defs</c> element.  It has no particular properties of its own.
     /// </summary>
-    public class SvgDefsElement : SvgElement
-    {
-        public SvgDefsElement()
-        {
+    public class SvgDefsElement : SvgElement {
+
+        public SvgDefsElement() {
         }
 
-        public SvgDefsElement(string id) : base(id)
-        {
+        public SvgDefsElement(string id) : base(id) {
         }
 
         public override string Name => "defs";
@@ -77,8 +69,8 @@ namespace SvgNet.SvgElements
     /// <summary>
     /// Represents an element that is not yet represented by a class of its own.
     /// </summary>
-    public class SvgGenericElement : SvgElement
-    {
+    public class SvgGenericElement : SvgElement {
+
         public SvgGenericElement() => _name = "generic svg node";
 
         public SvgGenericElement(string name) => _name = name;
@@ -90,14 +82,12 @@ namespace SvgNet.SvgElements
     /// <summary>
     /// Represents a <c>g</c> element.  It has no particular properties of its own.
     /// </summary>
-    public class SvgGroupElement : SvgStyledTransformedElement
-    {
-        public SvgGroupElement()
-        {
+    public class SvgGroupElement : SvgStyledTransformedElement {
+
+        public SvgGroupElement() {
         }
 
-        public SvgGroupElement(string id) : base(id)
-        {
+        public SvgGroupElement(string id) : base(id) {
         }
 
         public override string Name => "g";
@@ -106,14 +96,12 @@ namespace SvgNet.SvgElements
     /// <summary>
     /// Represents a <c>switch</c> element.  It has no particular properties of its own.
     /// </summary>
-    public class SvgSwitchElement : SvgStyledTransformedElement
-    {
-        public SvgSwitchElement()
-        {
+    public class SvgSwitchElement : SvgStyledTransformedElement {
+
+        public SvgSwitchElement() {
         }
 
-        public SvgSwitchElement(string id) : base(id)
-        {
+        public SvgSwitchElement(string id) : base(id) {
         }
 
         public override string Name => "g";

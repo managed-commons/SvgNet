@@ -10,28 +10,25 @@ using System;
 using System.Xml;
 using SvgNet.SvgTypes;
 
-namespace SvgNet
-{
+namespace SvgNet {
+
     /// <summary>
     /// This is an SvgElement that can have a CSS style and an SVG transformation list.  It contains special properties to make reading and setting the style
     /// and the transformation easier.  All SVG elements that actually represent visual entities or groups of entities are <c>SvgStyledTransformedElements</c>.
     /// </summary>
-    public class SvgStyledTransformedElement : SvgElement
-    {
-        public SvgStyledTransformedElement()
-        {
+    public class SvgStyledTransformedElement : SvgElement {
+
+        public SvgStyledTransformedElement() {
         }
 
-        public SvgStyledTransformedElement(string id) : base(id)
-        {
+        public SvgStyledTransformedElement(string id) : base(id) {
         }
 
         /// <summary>
         /// Provides an easy way to get the attribute called "style" as an <c>SvgStyle</c> object.  If no such attribute has been set, one is created when
         /// this property is read.
         /// </summary>
-        public SvgStyle Style
-        {
+        public SvgStyle Style {
             get => GetTypedAttribute("style", (obj) => new SvgStyle(obj.ToString()));
             set => _atts["style"] = value;
         }
@@ -40,8 +37,7 @@ namespace SvgNet
         /// Provides an easy way to get the attribute called "transform" as an <c>SvgTransformList</c> object.  If no such attribute has been set, one is created when
         /// this property is read.
         /// </summary>
-        public SvgTransformList Transform
-        {
+        public SvgTransformList Transform {
             get => GetTypedAttribute("transform", (obj) => new SvgTransformList(obj.ToString()));
             set => _atts["transform"] = value;
         }
@@ -51,18 +47,13 @@ namespace SvgNet
         /// </summary>
         /// <param name="doc"></param>
         /// <param name="el"></param>
-        public override void ReadXmlElement(XmlDocument doc, XmlElement el)
-        {
-            foreach (XmlAttribute att in el.Attributes)
-            {
-                if (att.Name == "style")
-                {
+        public override void ReadXmlElement(XmlDocument doc, XmlElement el) {
+            foreach (XmlAttribute att in el.Attributes) {
+                if (att.Name == "style") {
                     Style = new SvgStyle(att.Value);
-                } else if (att.Name == "transform")
-                {
+                } else if (att.Name == "transform") {
                     Transform = new SvgTransformList(att.Value);
-                } else
-                {
+                } else {
                     this[att.Name] = att.Value;
                 }
             }
@@ -75,29 +66,22 @@ namespace SvgNet
         /// </summary>
         /// <param name="doc"></param>
         /// <param name="parent"></param>
-        public override void WriteXmlElements(XmlDocument doc, XmlElement parent)
-        {
+        public override void WriteXmlElements(XmlDocument doc, XmlElement parent) {
             var me = doc.CreateElement("", Name, doc.NamespaceURI);
-            foreach (string s in _atts.Keys)
-            {
+            foreach (string s in _atts.Keys) {
                 var attribute = _atts[s];
-                if (attribute != null)
-                {
-                    if (s == "style")
-                    {
+                if (attribute != null) {
+                    if (s == "style") {
                         WriteStyle(doc, me, attribute);
-                    } else if (s == "transform")
-                    {
+                    } else if (s == "transform") {
                         WriteTransform(doc, me, attribute);
-                    } else
-                    {
+                    } else {
                         me.SetAttribute(s, doc.NamespaceURI, attribute.ToString());
                     }
                 }
             }
 
-            foreach (SvgElement el in _children)
-            {
+            foreach (SvgElement el in Children) {
                 el.WriteXmlElements(doc, me);
             }
 
@@ -107,10 +91,8 @@ namespace SvgNet
                 parent.AppendChild(me);
         }
 
-        private static void WriteStyle(XmlDocument doc, XmlElement me, object o)
-        {
-            if (o.GetType() != typeof(SvgStyle))
-            {
+        private static void WriteStyle(XmlDocument doc, XmlElement me, object o) {
+            if (o.GetType() != typeof(SvgStyle)) {
                 me.SetAttribute("style", doc.NamespaceURI, o.ToString());
                 return;
             }
@@ -129,8 +111,7 @@ namespace SvgNet
             doc.CreateEntityReference("pingu");
         }
 
-        private static void WriteTransform(XmlDocument doc, XmlElement me, object o)
-        {
+        private static void WriteTransform(XmlDocument doc, XmlElement me, object o) {
             //if (o.GetType() != typeof(SvgTransformList))
             //{
             me.SetAttribute("transform", doc.NamespaceURI, o.ToString());
