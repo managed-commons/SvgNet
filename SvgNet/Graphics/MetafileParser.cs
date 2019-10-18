@@ -488,23 +488,23 @@ namespace SvgNet.SvgGdi {
                     var eDy = _br.ReadSingle();
                     var iMode = (EmfTransformMode)_br.ReadInt32();
 
-                    var matrix = new Matrix(eM11, eM12, eM21, eM22, eDx, eDy);
+                    using (var matrix = new Matrix(eM11, eM12, eM21, eM22, eDx, eDy)) {
+                        switch (iMode) {
+                            case EmfTransformMode.MWT_IDENTITY:
+                                _transform = new Matrix();
+                                break;
 
-                    switch (iMode) {
-                        case EmfTransformMode.MWT_IDENTITY:
-                            _transform = new Matrix();
-                            break;
+                            case EmfTransformMode.MWT_LEFTMULTIPLY:
+                                _transform.Multiply(matrix, MatrixOrder.Append /* TODO: is it the correct order? */);
+                                break;
 
-                        case EmfTransformMode.MWT_LEFTMULTIPLY:
-                            _transform.Multiply(matrix, MatrixOrder.Append /* TODO: is it the correct order? */);
-                            break;
+                            case EmfTransformMode.MWT_RIGHTMULTIPLY:
+                                _transform.Multiply(matrix, MatrixOrder.Prepend /* TODO: is it the correct order? */);
+                                break;
 
-                        case EmfTransformMode.MWT_RIGHTMULTIPLY:
-                            _transform.Multiply(matrix, MatrixOrder.Prepend /* TODO: is it the correct order? */);
-                            break;
-
-                        default:
-                            throw new NotImplementedException();
+                            default:
+                                throw new NotImplementedException();
+                        }
                     }
 
                     System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);

@@ -40,26 +40,15 @@ namespace SvgNet.SvgTypes {
 
             Value = int.Parse(s.Substring(0, i + 1), CultureInfo.InvariantCulture);
 
-            switch (s.Substring(i + 1)) {
-                case "grad":
-                    Type = SvgAngleType.SVG_ANGLETYPE_GRAD;
-                    break;
+            Type = (s.Substring(i + 1)) switch
+            {
+                "grad" => SvgAngleType.SVG_ANGLETYPE_GRAD,
+                "rad" => SvgAngleType.SVG_ANGLETYPE_RAD,
+                "deg" => SvgAngleType.SVG_ANGLETYPE_DEG,
+                "" => SvgAngleType.SVG_ANGLETYPE_UNSPECIFIED,
 
-                case "rad":
-                    Type = SvgAngleType.SVG_ANGLETYPE_RAD;
-                    break;
-
-                case "deg":
-                    Type = SvgAngleType.SVG_ANGLETYPE_DEG;
-                    break;
-
-                case "":
-                    Type = SvgAngleType.SVG_ANGLETYPE_UNSPECIFIED;
-                    break;
-
-                default:
-                    throw new SvgException("Invalid SvgAngle", s);
-            }
+                _ => throw new SvgException("Invalid SvgAngle", s),
+            };
         }
 
         public override string ToString() {

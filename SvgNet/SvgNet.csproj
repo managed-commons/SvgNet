@@ -1,14 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net40;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net461;netstandard2.0;netstandard2.1</TargetFrameworks>
+    <LangVersion>8.0</LangVersion>
     <AssemblyName>SVG</AssemblyName>
     <PackageId>SvgNet</PackageId>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>    
-    <Version>2.0.3</Version>    
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>2.0.4</Version>
     <RootNamespace>SVG</RootNamespace>
     <DocumentationFile>svgnetdoc.xml</DocumentationFile>
-    <NoWarn>CS1591</NoWarn>    
+    <NoWarn>CS1591</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -16,27 +17,36 @@
     <Company>SvgNet and SvgGdi Bridge Project</Company>
     <Authors>Rafael Teixeira, Mojmír Němeček, Benjamin Peterson</Authors>
     <Copyright>2003, 2010, 2015-2019 RiskCare Ltd, SvgNet and SvgGdi Bridge Project, Rafael Teixeira, Mojmír Němeček</Copyright>
-    <PackageLicenseUrl>https://cdn.rawgit.com/managed-commons/SvgNet/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/managed-commons/SvgNet</PackageProjectUrl>
-    <PackageIconUrl>https://cdn.rawgit.com/managed-commons/SvgNet/master/SvgGdiTest/App.ico</PackageIconUrl>
+    <PackageIcon>svgnet.ico</PackageIcon>
     <RepositoryUrl>https://github.com/managed-commons/SvgNet</RepositoryUrl>
-    <PackageTags>SVG</PackageTags>    
+    <PackageTags>SVG</PackageTags>
     <Product>SvgNet</Product>
     <ProductVersion>8.0.30319</ProductVersion>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>## 2.0.3
--- Issue#25: viewBox fix
--- Missing parameterless constructor in SvgPolygonElement causing exception on SvgFactory.BuildElementNameDictionary (with new Unit Test to prevent similar things to pass undetected again)
--- Formatting standards added to .editorconfig</PackageReleaseNotes>    
+    <PackageReleaseNotes>package both for .NET Standard 2.0 and 2.1 - requires SDK 3.0.100 to build</PackageReleaseNotes>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
-  
-  <ItemGroup Condition="'$(TargetFramework)' != 'net40'">    
-    <PackageReference Include="System.Drawing.Common" Version="4.5.1" />    
+
+  <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="4.6.0" />
     <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <None Remove="svgnetdoc.xml" />
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
-  
+
+  <ItemGroup>
+    <None Include="svgnet.ico">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
 </Project>

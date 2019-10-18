@@ -49,50 +49,21 @@ namespace SvgNet.SvgTypes {
 
             Value = float.Parse(s.Substring(0, i + 1), CultureInfo.InvariantCulture);
 
-            switch (s.Substring(i + 1)) {
-                case "%":
-                    Type = SvgLengthType.SVG_LENGTHTYPE_PERCENTAGE;
-                    break;
+            Type = (s.Substring(i + 1)) switch
+            {
+                "%" => SvgLengthType.SVG_LENGTHTYPE_PERCENTAGE,
+                "em" => SvgLengthType.SVG_LENGTHTYPE_EMS,
+                "ex" => SvgLengthType.SVG_LENGTHTYPE_EXS,
+                "px" => SvgLengthType.SVG_LENGTHTYPE_PX,
+                "cm" => SvgLengthType.SVG_LENGTHTYPE_CM,
+                "mm" => SvgLengthType.SVG_LENGTHTYPE_MM,
+                "in" => SvgLengthType.SVG_LENGTHTYPE_IN,
+                "pt" => SvgLengthType.SVG_LENGTHTYPE_PT,
+                "pc" => SvgLengthType.SVG_LENGTHTYPE_PC,
+                "" => SvgLengthType.SVG_LENGTHTYPE_UNKNOWN,
 
-                case "em":
-                    Type = SvgLengthType.SVG_LENGTHTYPE_EMS;
-                    break;
-
-                case "ex":
-                    Type = SvgLengthType.SVG_LENGTHTYPE_EXS;
-                    break;
-
-                case "px":
-                    Type = SvgLengthType.SVG_LENGTHTYPE_PX;
-                    break;
-
-                case "cm":
-                    Type = SvgLengthType.SVG_LENGTHTYPE_CM;
-                    break;
-
-                case "mm":
-                    Type = SvgLengthType.SVG_LENGTHTYPE_MM;
-                    break;
-
-                case "in":
-                    Type = SvgLengthType.SVG_LENGTHTYPE_IN;
-                    break;
-
-                case "pt":
-                    Type = SvgLengthType.SVG_LENGTHTYPE_PT;
-                    break;
-
-                case "pc":
-                    Type = SvgLengthType.SVG_LENGTHTYPE_PC;
-                    break;
-
-                case "":
-                    Type = SvgLengthType.SVG_LENGTHTYPE_UNKNOWN;
-                    break;
-
-                default:
-                    throw new SvgException("Invalid SvgLength", s);
-            }
+                _ => throw new SvgException("Invalid SvgLength", s),
+            };
         }
 
         public override string ToString() {

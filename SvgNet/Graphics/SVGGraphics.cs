@@ -681,80 +681,77 @@ namespace SvgNet.SvgGdi {
                 points[i].Y -= zero.Y;
             }
 
-            using (var metafileBuffer = new MemoryStream()) {
-                Metafile metafile = null;
+            using var metafileBuffer = new MemoryStream();
+            Metafile metafile = null;
 
-                try {
-                    /* For discussion of tricky metafile details see:
-                     * - http://nicholas.piasecki.name/blog/2009/06/drawing-o-an-in-memory-metafile-in-c-sharp/
-                     * - http://stackoverflow.com/a/1533053/2626313
-                     */
+            try {
+                /* For discussion of tricky metafile details see:
+                 * - http://nicholas.piasecki.name/blog/2009/06/drawing-o-an-in-memory-metafile-in-c-sharp/
+                 * - http://stackoverflow.com/a/1533053/2626313
+                 */
 
-                    using (var temporaryBitmap = new Bitmap(1, 1)) {
-                        using (var temporaryCanvas = Graphics.FromImage(temporaryBitmap)) {
-                            var hdc = temporaryCanvas.GetHdc();
-                            metafile = new Metafile(
-                                metafileBuffer,
-                                hdc,
-                                bounds,
-                                MetafileFrameUnit.GdiCompatible,
-                                EmfType.EmfOnly);
+                using (var temporaryBitmap = new Bitmap(1, 1)) {
+                    using var temporaryCanvas = Graphics.FromImage(temporaryBitmap);
+                    var hdc = temporaryCanvas.GetHdc();
+                    metafile = new Metafile(
+                        metafileBuffer,
+                        hdc,
+                        bounds,
+                        MetafileFrameUnit.GdiCompatible,
+                        EmfType.EmfOnly);
 
-                            temporaryCanvas.ReleaseHdc();
-                        }
-                    }
-
-                    using (var metafileCanvas = Graphics.FromImage(metafile)) {
-                        metafileCanvas.DrawLines(pen, points);
-                    }
-                } finally {
-                    if (metafile != null)
-                        metafile.Dispose();
+                    temporaryCanvas.ReleaseHdc();
                 }
 
-                metafileBuffer.Position = 0;
+                using var metafileCanvas = Graphics.FromImage(metafile);
+                metafileCanvas.DrawLines(pen, points);
+            } finally {
+                if (metafile != null)
+                    metafile.Dispose();
+            }
 
-                var metafileIsEmpty = true;
-                var parser = new MetafileTools.MetafileParser();
-                parser.EnumerateMetafile(metafileBuffer, pen.Width, zero, (PointF[] linePoints) => {
-                    metafileIsEmpty = false;
+            metafileBuffer.Position = 0;
 
-                    var pl = new SvgPolylineElement(linePoints) {
-                        Style = new SvgStyle(pen)
-                    };
+            var metafileIsEmpty = true;
+            var parser = new MetafileTools.MetafileParser();
+            parser.EnumerateMetafile(metafileBuffer, pen.Width, zero, (PointF[] linePoints) => {
+                metafileIsEmpty = false;
 
-                    // Make it pretty
-                    pl.Style.Set("stroke-linecap", "round");
+                var pl = new SvgPolylineElement(linePoints) {
+                    Style = new SvgStyle(pen)
+                };
 
-                    if (!_transforms.Result.IsIdentity)
-                        pl.Transform = new SvgTransformList(_transforms.Result.Clone());
-                    _cur.AddChild(pl);
-                }, (PointF[] linePoints, Brush fillBrush) => {
-                    // TODO: received shapes dont' have the vertex list "normalized" correctly
-                    // metafileIsEmpty = false;
-                    // FillPolygon(fillBrush, linePoints);
-                });
+                // Make it pretty
+                pl.Style.Set("stroke-linecap", "round");
 
-                if (metafileIsEmpty) {
-                    // TODO: metafile recording on OpenSUSE Linux with Mono 3.8.0 does not seem to work at all
-                    // as the supposed implementation in https://github.com/mono/libgdiplus/blob/master/src/graphics-metafile.c is
-                    // full of "TODO". In this case we should take a graceful fallback approach
+                if (!_transforms.Result.IsIdentity)
+                    pl.Transform = new SvgTransformList(_transforms.Result.Clone());
+                _cur.AddChild(pl);
+            }, (PointF[] linePoints, Brush fillBrush) => {
+                // TODO: received shapes dont' have the vertex list "normalized" correctly
+                // metafileIsEmpty = false;
+                // FillPolygon(fillBrush, linePoints);
+            });
 
-                    // Restore points array to the original values they had when entered the function
-                    for (var i = 0; i < points.Length; i++) {
-                        points[i].X += zero.X;
-                        points[i].Y += zero.Y;
-                    }
+            if (metafileIsEmpty) {
+                // TODO: metafile recording on OpenSUSE Linux with Mono 3.8.0 does not seem to work at all
+                // as the supposed implementation in https://github.com/mono/libgdiplus/blob/master/src/graphics-metafile.c is
+                // full of "TODO". In this case we should take a graceful fallback approach
 
-                    var pl = new SvgPolylineElement(points) {
-                        Style = new SvgStyle(pen)
-                    };
-                    if (!_transforms.Result.IsIdentity)
-                        pl.Transform = new SvgTransformList(_transforms.Result.Clone());
-                    _cur.AddChild(pl);
-
-                    DrawEndAnchors(pen, points[0], points[points.Length - 1], ignoreUnsupportedLineCaps: true);
+                // Restore points array to the original values they had when entered the function
+                for (var i = 0; i < points.Length; i++) {
+                    points[i].X += zero.X;
+                    points[i].Y += zero.Y;
                 }
+
+                var pl = new SvgPolylineElement(points) {
+                    Style = new SvgStyle(pen)
+                };
+                if (!_transforms.Result.IsIdentity)
+                    pl.Transform = new SvgTransformList(_transforms.Result.Clone());
+                _cur.AddChild(pl);
+
+                DrawEndAnchors(pen, points[0], points[points.Length - 1], ignoreUnsupportedLineCaps: true);
             }
         }
 
@@ -2236,61 +2233,60 @@ namespace SvgNet.SvgGdi {
 
         private SvgPath HandleGraphicsPath(GraphicsPath path) {
             var pathBuilder = new StringBuilder();
-            using (var subpaths = new GraphicsPathIterator(path))
-            using (var subpath = new GraphicsPath(path.FillMode)) {
-                subpaths.Rewind();
+            using var subpaths = new GraphicsPathIterator(path);
+            using var subpath = new GraphicsPath(path.FillMode);
+            subpaths.Rewind();
 
-                //Iterate through all the subpaths in the path. Each subpath will contain either
-                //lines or Bezier curves
-                for (int s = 0; s < subpaths.SubpathCount; s++) {
-                    if (subpaths.NextSubpath(subpath, out var isClosed) == 0) {
-                        continue; //go to next subpath if this one has zero points.
-                    }
-
-                    PathPointType lastType = PathPointType.Start;
-                    for (int i = 0; i < subpath.PathPoints.Length; i++) {
-                        /* Each subpath point has a corresponding path point type which can be:
-                         *The point starts the subpath
-                         *The point is a line point
-                         *The point is Bezier curve point
-                         */
-                        PointF point = subpath.PathPoints[i];
-                        PathPointType pathType = (PathPointType)subpath.PathTypes[i] & PathPointType.PathTypeMask;
-                        switch (pathType) //Mask off non path-type types
-                        {
-                            case PathPointType.Start:
-                                //Move to start point
-                                if (pathBuilder.Length > 0) pathBuilder.Append(" ");
-                                pathBuilder.AppendFormat(CultureInfo.InvariantCulture, "M {0},{1}", point.X, point.Y);
-                                break;
-
-                            case PathPointType.Line:
-                                // Draw line to current point
-                                if (lastType != PathPointType.Line) pathBuilder.Append(" L");
-                                pathBuilder.AppendFormat(CultureInfo.InvariantCulture, " {0},{1}", point.X, point.Y);
-                                break;
-
-                            case PathPointType.Bezier3:
-                                // Draw curve to current point
-                                if (lastType != PathPointType.Bezier3) pathBuilder.Append(" C");
-                                pathBuilder.AppendFormat(CultureInfo.InvariantCulture, " {0},{1}", point.X, point.Y);
-                                break;
-
-                            default:
-                                continue;
-                        }
-
-                        lastType = pathType;
-                    }
-
-                    if (isClosed) {
-                        // Close path
-                        pathBuilder.Append(" Z");
-                    }
+            //Iterate through all the subpaths in the path. Each subpath will contain either
+            //lines or Bezier curves
+            for (int s = 0; s < subpaths.SubpathCount; s++) {
+                if (subpaths.NextSubpath(subpath, out var isClosed) == 0) {
+                    continue; //go to next subpath if this one has zero points.
                 }
 
-                return new SvgPath(pathBuilder.ToString());
+                PathPointType lastType = PathPointType.Start;
+                for (int i = 0; i < subpath.PathPoints.Length; i++) {
+                    /* Each subpath point has a corresponding path point type which can be:
+                     *The point starts the subpath
+                     *The point is a line point
+                     *The point is Bezier curve point
+                     */
+                    PointF point = subpath.PathPoints[i];
+                    PathPointType pathType = (PathPointType)subpath.PathTypes[i] & PathPointType.PathTypeMask;
+                    switch (pathType) //Mask off non path-type types
+                    {
+                        case PathPointType.Start:
+                            //Move to start point
+                            if (pathBuilder.Length > 0) pathBuilder.Append(" ");
+                            pathBuilder.AppendFormat(CultureInfo.InvariantCulture, "M {0},{1}", point.X, point.Y);
+                            break;
+
+                        case PathPointType.Line:
+                            // Draw line to current point
+                            if (lastType != PathPointType.Line) pathBuilder.Append(" L");
+                            pathBuilder.AppendFormat(CultureInfo.InvariantCulture, " {0},{1}", point.X, point.Y);
+                            break;
+
+                        case PathPointType.Bezier3:
+                            // Draw curve to current point
+                            if (lastType != PathPointType.Bezier3) pathBuilder.Append(" C");
+                            pathBuilder.AppendFormat(CultureInfo.InvariantCulture, " {0},{1}", point.X, point.Y);
+                            break;
+
+                        default:
+                            continue;
+                    }
+
+                    lastType = pathType;
+                }
+
+                if (isClosed) {
+                    // Close path
+                    pathBuilder.Append(" Z");
+                }
             }
+
+            return new SvgPath(pathBuilder.ToString());
         }
 
         /// <summary>

@@ -26,24 +26,21 @@ namespace SvgNet.SvgTypes {
 
         public bool Abs { get; private set; }
 
-        public string Char {
-            get {
-                switch (_type) {
-                    case SvgPathSegType.SVG_SEGTYPE_MOVETO: return (Abs ? "M" : "m");
-                    case SvgPathSegType.SVG_SEGTYPE_CLOSEPATH: return "z";
-                    case SvgPathSegType.SVG_SEGTYPE_LINETO: return (Abs ? "L" : "l");
-                    case SvgPathSegType.SVG_SEGTYPE_HLINETO: return (Abs ? "H" : "h");
-                    case SvgPathSegType.SVG_SEGTYPE_VLINETO: return (Abs ? "V" : "v");
-                    case SvgPathSegType.SVG_SEGTYPE_CURVETO: return (Abs ? "C" : "c");
-                    case SvgPathSegType.SVG_SEGTYPE_SMOOTHCURVETO: return (Abs ? "S" : "s");
-                    case SvgPathSegType.SVG_SEGTYPE_BEZIERTO: return (Abs ? "Q" : "q");
-                    case SvgPathSegType.SVG_SEGTYPE_SMOOTHBEZIERTO: return (Abs ? "T" : "t");
-                    case SvgPathSegType.SVG_SEGTYPE_ARCTO: return (Abs ? "A" : "a");
-                }
+        public string Char => _type switch
+        {
+            SvgPathSegType.SVG_SEGTYPE_MOVETO => (Abs ? "M" : "m"),
+            SvgPathSegType.SVG_SEGTYPE_CLOSEPATH => "z",
+            SvgPathSegType.SVG_SEGTYPE_LINETO => (Abs ? "L" : "l"),
+            SvgPathSegType.SVG_SEGTYPE_HLINETO => (Abs ? "H" : "h"),
+            SvgPathSegType.SVG_SEGTYPE_VLINETO => (Abs ? "V" : "v"),
+            SvgPathSegType.SVG_SEGTYPE_CURVETO => (Abs ? "C" : "c"),
+            SvgPathSegType.SVG_SEGTYPE_SMOOTHCURVETO => (Abs ? "S" : "s"),
+            SvgPathSegType.SVG_SEGTYPE_BEZIERTO => (Abs ? "Q" : "q"),
+            SvgPathSegType.SVG_SEGTYPE_SMOOTHBEZIERTO => (Abs ? "T" : "t"),
+            SvgPathSegType.SVG_SEGTYPE_ARCTO => (Abs ? "A" : "a"),
 
-                throw new SvgException("Invalid PathSeg type", _type.ToString());
-            }
-        }
+            _ => throw new SvgException("Invalid PathSeg type", _type.ToString()),
+        };
 
         public float[] Data => _data;
 
