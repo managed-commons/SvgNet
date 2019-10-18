@@ -19,7 +19,7 @@
     <Copyright>2003, 2010, 2015-2019 RiskCare Ltd, SvgNet and SvgGdi Bridge Project, Rafael Teixeira, Mojmír Němeček</Copyright>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/managed-commons/SvgNet</PackageProjectUrl>
-    <PackageIcon>svgnet.ico</PackageIcon>
+    <PackageIcon>svgnet.png</PackageIcon>
     <RepositoryUrl>https://github.com/managed-commons/SvgNet</RepositoryUrl>
     <PackageTags>SVG</PackageTags>
     <Product>SvgNet</Product>
@@ -40,10 +40,7 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="svgnet.ico">
+    <None Include="svgnet.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
