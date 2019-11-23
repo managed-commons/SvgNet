@@ -9,12 +9,10 @@
 using SvgNet.SvgTypes;
 
 namespace SvgNet.SvgElements {
-
     /// <summary>
     /// Represents an <c>a</c> element.  It has an xref and a target.
     /// </summary>
     public class SvgAElement : SvgStyledTransformedElement, IElementWithXRef {
-
         public SvgAElement() {
         }
 
@@ -42,7 +40,6 @@ namespace SvgNet.SvgElements {
     /// Represents a <c>clippath</c> element.  It has no particular properties of its own.
     /// </summary>
     public class SvgClipPathElement : SvgElement {
-
         public SvgClipPathElement() {
         }
 
@@ -56,7 +53,6 @@ namespace SvgNet.SvgElements {
     /// Represents a <c>defs</c> element.  It has no particular properties of its own.
     /// </summary>
     public class SvgDefsElement : SvgElement {
-
         public SvgDefsElement() {
         }
 
@@ -70,7 +66,6 @@ namespace SvgNet.SvgElements {
     /// Represents an element that is not yet represented by a class of its own.
     /// </summary>
     public class SvgGenericElement : SvgElement {
-
         public SvgGenericElement() => _name = "generic svg node";
 
         public SvgGenericElement(string name) => _name = name;
@@ -83,7 +78,6 @@ namespace SvgNet.SvgElements {
     /// Represents a <c>g</c> element.  It has no particular properties of its own.
     /// </summary>
     public class SvgGroupElement : SvgStyledTransformedElement {
-
         public SvgGroupElement() {
         }
 
@@ -97,7 +91,6 @@ namespace SvgNet.SvgElements {
     /// Represents a <c>switch</c> element.  It has no particular properties of its own.
     /// </summary>
     public class SvgSwitchElement : SvgStyledTransformedElement {
-
         public SvgSwitchElement() {
         }
 

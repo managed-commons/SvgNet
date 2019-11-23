@@ -11,13 +11,11 @@ using System.Xml;
 using SvgNet.SvgTypes;
 
 namespace SvgNet {
-
     /// <summary>
     /// This is an SvgElement that can have a CSS style and an SVG transformation list.  It contains special properties to make reading and setting the style
     /// and the transformation easier.  All SVG elements that actually represent visual entities or groups of entities are <c>SvgStyledTransformedElements</c>.
     /// </summary>
     public class SvgStyledTransformedElement : SvgElement {
-
         public SvgStyledTransformedElement() {
         }
 

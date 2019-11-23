@@ -9,12 +9,10 @@
 using SvgNet.SvgTypes;
 
 namespace SvgNet.SvgElements {
-
     /// <summary>
     /// Represents a <c>path</c> element
     /// </summary>
     public class SvgPathElement : SvgStyledTransformedElement {
-
         public SvgPathElement() {
         }
 

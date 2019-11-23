@@ -9,67 +9,68 @@
 using SvgNet.SvgGdi;
 using System.Drawing;
 
-public static class RectAlignedTextTest
+namespace SvgGdiTest
 {
-    public static void RenderRectAlignedText(IGraphics ig, float width, float height, Font baseFont)
+    public static class RectAlignedTextTest
     {
-        ig.Clear(Color.White);
-        ig.ScaleTransform(width / _canvasSize, height / _canvasSize);
-        DrawTest(ig, baseFont);
-    }
-
-    private const int _canvasSize = (3 * _rectSize) + (4 * _rectGap);
-    private const int _rectFontSize = 20;
-    private const int _rectGap = 20;
-    private const int _rectSize = 150;
-
-    private static void DrawRect(IGraphics canvas, string id, Rectangle rect, StringAlignment horizontalAlignment, StringAlignment verticalAlignment, Font baseFont)
-    {
-        var format = new StringFormat
+        public static void RenderRectAlignedText(IGraphics ig, float width, float height, Font baseFont)
         {
-            Alignment = horizontalAlignment,
-            LineAlignment = verticalAlignment,
-            FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.NoClip
-        };
-
-        var pen = new Pen(new SolidBrush(Color.Black), 1);
-        canvas.DrawRectangle(pen, rect);
-
-        var font = new Font(baseFont.Name, _rectFontSize, baseFont.Style, baseFont.Unit);
-
-        {
-            // Draw label
-            var labelFormat = new StringFormat
-            {
-                Alignment = StringAlignment.Near,
-                LineAlignment = StringAlignment.Center,
-                FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.NoClip
-            };
-            var labelRect = new Rectangle(rect.X, rect.Y - _rectGap, _rectGap, _rectGap);
-            var labelFont = new Font(baseFont.Name, _rectFontSize * 0.8f, baseFont.Style, baseFont.Unit);
-            canvas.DrawString(id, labelFont, new SolidBrush(Color.Black), labelRect, labelFormat);
+            ig.Clear(Color.White);
+            ig.ScaleTransform(width / _canvasSize, height / _canvasSize);
+            DrawTest(ig, baseFont);
         }
 
-        canvas.DrawString("Helloy", font, new SolidBrush(Color.Blue), rect, format);
-    }
+        private const int _canvasSize = (3 * _rectSize) + (4 * _rectGap);
+        private const int _rectFontSize = 20;
+        private const int _rectGap = 20;
+        private const int _rectSize = 150;
 
-    private static void DrawTest(IGraphics canvas, Font baseFont)
-    {
-        canvas.FillRectangle(new SolidBrush(Color.White), new Rectangle(0, 0, _canvasSize, _canvasSize));
-
-        var alignments = new StringAlignment[] { StringAlignment.Near, StringAlignment.Center, StringAlignment.Far };
-
-        int id = 1;
-        foreach (var verticalAlignment in alignments)
+        private static void DrawRect(IGraphics canvas, string id, Rectangle rect, StringAlignment horizontalAlignment, StringAlignment verticalAlignment, Font baseFont)
         {
-            foreach (var horizontalAlignment in alignments)
+            var format = new StringFormat
             {
-                var x = _rectGap + ((int)horizontalAlignment) * (_rectSize + _rectGap);
-                var y = _rectGap + ((int)verticalAlignment) * (_rectSize + _rectGap);
-                var rect = new Rectangle(x, y, _rectSize, _rectSize);
-                DrawRect(canvas, id.ToString(), rect, horizontalAlignment, verticalAlignment, baseFont);
-                id++;
+                Alignment = horizontalAlignment,
+                LineAlignment = verticalAlignment,
+                FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.NoClip
+            };
+
+            var pen = new Pen(new SolidBrush(Color.Black), 1);
+            canvas.DrawRectangle(pen, rect);
+
+            var font = new Font(baseFont.Name, _rectFontSize, baseFont.Style, baseFont.Unit);
+
+            {
+                // Draw label
+                var labelFormat = new StringFormat
+                {
+                    Alignment = StringAlignment.Near,
+                    LineAlignment = StringAlignment.Center,
+                    FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.NoClip
+                };
+                var labelRect = new Rectangle(rect.X, rect.Y - _rectGap, _rectGap, _rectGap);
+                var labelFont = new Font(baseFont.Name, _rectFontSize * 0.8f, baseFont.Style, baseFont.Unit);
+                canvas.DrawString(id, labelFont, new SolidBrush(Color.Black), labelRect, labelFormat);
             }
+
+            canvas.DrawString("Helloy", font, new SolidBrush(Color.Blue), rect, format);
+        }
+
+        private static void DrawTest(IGraphics canvas, Font baseFont)
+        {
+            canvas.FillRectangle(new SolidBrush(Color.White), new Rectangle(0, 0, _canvasSize, _canvasSize));
+
+            var alignments = new StringAlignment[] { StringAlignment.Near, StringAlignment.Center, StringAlignment.Far };
+
+            var id = 1;
+            foreach (var verticalAlignment in alignments)
+                foreach (var horizontalAlignment in alignments)
+                {
+                    var x = _rectGap + ((int)horizontalAlignment * (_rectSize + _rectGap));
+                    var y = _rectGap + ((int)verticalAlignment * (_rectSize + _rectGap));
+                    var rect = new Rectangle(x, y, _rectSize, _rectSize);
+                    DrawRect(canvas, id.ToString(), rect, horizontalAlignment, verticalAlignment, baseFont);
+                    id++;
+                }
         }
     }
 }

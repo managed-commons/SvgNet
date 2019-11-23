@@ -9,13 +9,11 @@
 using System;
 
 namespace SvgNet.SvgTypes {
-
     /// <summary>
     /// Represents a URI reference.  Unlike most svg types, uri references are represented by more than one attribute
     /// of an element.  This means special measures are required to get and set uri references.
     /// </summary>
     public class SvgXRef : ICloneable {
-
         public SvgXRef() {
         }
 

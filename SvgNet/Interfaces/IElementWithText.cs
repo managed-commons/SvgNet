@@ -7,7 +7,6 @@
 */
 
 namespace SvgNet {
-
     /// <summary>
     /// Interface for SvgElements that have a text node.
     /// </summary>

@@ -10,12 +10,10 @@ using System;
 using System.Globalization;
 
 namespace SvgNet.SvgTypes {
-
     /// <summary>
     /// A length or coordinate component (in SVG 1.1 the specification says they are the same)
     /// </summary>
     public class SvgLength : ICloneable {
-
         public SvgLength(string s) => FromString(s);
 
         public SvgLength(float f) {

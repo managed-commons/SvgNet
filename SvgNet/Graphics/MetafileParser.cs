@@ -14,18 +14,13 @@ using System.Drawing.Imaging;
 using System.IO;
 
 namespace SvgNet.SvgGdi {
-
     namespace MetafileTools {       // Classes in this namespace were inspired by the code in http://wmf.codeplex.com/
-
         namespace EmfTools {
-
             public interface IBinaryRecord {
-
                 void Read(BinaryReader reader);
             }
 
             public static class BinaryReaderExtensions {
-
                 /// <summary>
                 /// Skips excess bytes. Work-around for some WMF files that contain undocumented fields.
                 /// </summary>
@@ -44,7 +39,6 @@ namespace SvgNet.SvgGdi {
             /// Implements a EMF META record
             /// </summary>
             public abstract class EmfBinaryRecord : IBinaryRecord {
-
                 /// <summary>
                 /// Gets or sets record length
                 /// </summary>
@@ -74,10 +68,15 @@ namespace SvgNet.SvgGdi {
             }
 
             [Serializable]
-            public class EmfException : Exception {
-
+            public sealed class EmfException : Exception {
                 public EmfException(string message)
                     : base(message) {
+                }
+
+                public EmfException() : base() {
+                }
+
+                public EmfException(string message, Exception innerException) : base(message, innerException) {
                 }
             }
 
@@ -85,7 +84,6 @@ namespace SvgNet.SvgGdi {
             /// Low-level EMF parser
             /// </summary>
             public class EmfReader : IDisposable {
-
                 public EmfReader(Stream stream) {
                     this._stream = stream;
                     _reader = new BinaryReader(stream);
@@ -128,7 +126,6 @@ namespace SvgNet.SvgGdi {
             }
 
             public class EmfUnknownRecord : EmfBinaryRecord {
-
                 public byte[] Data {
                     get;
                     set;
@@ -152,7 +149,6 @@ namespace SvgNet.SvgGdi {
         public delegate void FillPolygonDelegate(PointF[] points, Brush brush);
 
         public class MetafileParser {
-
             public enum EmfBrushStyle {
                 BS_SOLID = 0x0000,
                 BS_NULL = 0x0001,
@@ -209,84 +205,87 @@ namespace SvgNet.SvgGdi {
                 _objects = new Dictionary<uint, ObjectHandle>();
                 _brush = null;
 
-                using (var reader = new EmfTools.EmfReader(emf))
-                    while (!reader.IsEndOfFile)
-                        if (reader.Read() is EmfTools.EmfUnknownRecord record)
-                            switch (record.RecordType) {
-                                case EmfPlusRecordType.EmfHeader:
-                                case EmfPlusRecordType.EmfEof:
-                                case EmfPlusRecordType.EmfSaveDC:
-                                case EmfPlusRecordType.EmfDeleteObject:
-                                case EmfPlusRecordType.EmfExtCreatePen:
-                                case EmfPlusRecordType.EmfCreatePen:
-                                case EmfPlusRecordType.EmfRestoreDC:
-                                case EmfPlusRecordType.EmfSetIcmMode:
-                                case EmfPlusRecordType.EmfSetMiterLimit:
-                                case EmfPlusRecordType.EmfSetPolyFillMode:
-                                    // Harmless records with no significant side-effects on the shape of the drawn outline
-                                    break;
-
-                                case EmfPlusRecordType.EmfSelectObject:
-                                    ProcessSelectObject(record.Data);
-                                    break;
-
-                                case EmfPlusRecordType.EmfCreateBrushIndirect:
-                                    ProcessCreateBrushIndirect(record.Data);
-                                    break;
-
-                                case EmfPlusRecordType.EmfBeginPath:
-                                    ProcessBeginPath(record.Data);
-                                    break;
-
-                                case EmfPlusRecordType.EmfEndPath:
-                                    // TODO:
-                                    break;
-
-                                case EmfPlusRecordType.EmfStrokeAndFillPath:
-                                    ProcessStrokeAndFillPath(record.Data);
-                                    break;
-
-                                case EmfPlusRecordType.EmfMoveToEx:
-                                    ProcessMoveToEx(record.Data);
-                                    break;
-
-                                case EmfPlusRecordType.EmfModifyWorldTransform:
-                                    ProcessModifyWorldTransform(record.Data);
-                                    break;
-
-                                case EmfPlusRecordType.EmfPolygon16:
-                                    ProcessPolygon16(record.Data);
-                                    break;
-
-                                case EmfPlusRecordType.EmfPolyPolygon16:
-                                    ProcessPolyPolygon16(record.Data);
-                                    break;
-
-                                case EmfPlusRecordType.EmfPolyline16:
-                                    ProcessPolyline16(record.Data);
-                                    break;
-
-                                case EmfPlusRecordType.EmfPolylineTo16:
-                                    ProcessPolylineTo16(record.Data);
-                                    break;
-
-                                case EmfPlusRecordType.EmfCloseFigure:
-                                    ProcessCloseFigure(record.Data);
-                                    break;
-
-                                case EmfPlusRecordType.EmfPolyBezierTo16:
-                                    ProcessPolyBezierTo16(record.Data);
-                                    break;
-
-                                default:
-                                    throw new NotImplementedException();
-                            }
+                using (var reader = new EmfTools.EmfReader(emf)) {
+                    while (!reader.IsEndOfFile) if (reader.Read() is EmfTools.EmfUnknownRecord record) Enumerate(record);
+                }
 
                 CommitLine();
             }
 
-            private static readonly uint _stockObjectMaxCode = 0x80000000 + (uint)EmfStockObject.MaxValue;
-            private static readonly uint _stockObjectMinCode = 0x80000000 + (uint)EmfStockObject.MinValue;
+            private void Enumerate(EmfTools.EmfUnknownRecord record) {
+                switch (record.RecordType) {
+                    case EmfPlusRecordType.EmfHeader:
+                    case EmfPlusRecordType.EmfEof:
+                    case EmfPlusRecordType.EmfSaveDC:
+                    case EmfPlusRecordType.EmfDeleteObject:
+                    case EmfPlusRecordType.EmfExtCreatePen:
+                    case EmfPlusRecordType.EmfCreatePen:
+                    case EmfPlusRecordType.EmfRestoreDC:
+                    case EmfPlusRecordType.EmfSetIcmMode:
+                    case EmfPlusRecordType.EmfSetMiterLimit:
+                    case EmfPlusRecordType.EmfSetPolyFillMode:
+                        // Harmless records with no significant side-effects on the shape of the drawn outline
+                        break;
+
+                    case EmfPlusRecordType.EmfSelectObject:
+                        ProcessSelectObject(record.Data);
+                        break;
+
+                    case EmfPlusRecordType.EmfCreateBrushIndirect:
+                        ProcessCreateBrushIndirect(record.Data);
+                        break;
+
+                    case EmfPlusRecordType.EmfBeginPath:
+                        ProcessBeginPath(record.Data);
+                        break;
+
+                    case EmfPlusRecordType.EmfEndPath:
+                        // TODO:
+                        break;
+
+                    case EmfPlusRecordType.EmfStrokeAndFillPath:
+                        ProcessStrokeAndFillPath(record.Data);
+                        break;
+
+                    case EmfPlusRecordType.EmfMoveToEx:
+                        ProcessMoveToEx(record.Data);
+                        break;
+
+                    case EmfPlusRecordType.EmfModifyWorldTransform:
+                        ProcessModifyWorldTransform(record.Data);
+                        break;
+
+                    case EmfPlusRecordType.EmfPolygon16:
+                        ProcessPolygon16(record.Data);
+                        break;
+
+                    case EmfPlusRecordType.EmfPolyPolygon16:
+                        ProcessPolyPolygon16(record.Data);
+                        break;
+
+                    case EmfPlusRecordType.EmfPolyline16:
+                        ProcessPolyline16(record.Data);
+                        break;
+
+                    case EmfPlusRecordType.EmfPolylineTo16:
+                        ProcessPolylineTo16(record.Data);
+                        break;
+
+                    case EmfPlusRecordType.EmfCloseFigure:
+                        ProcessCloseFigure(record.Data);
+                        break;
+
+                    case EmfPlusRecordType.EmfPolyBezierTo16:
+                        ProcessPolyBezierTo16(record.Data);
+                        break;
+
+                    default:
+                        throw new NotImplementedException();
+                }
+            }
+
+            private const uint _stockObjectMaxCode = 0x80000000 + (uint)EmfStockObject.MaxValue;
+            private const uint _stockObjectMinCode = 0x80000000 + (uint)EmfStockObject.MinValue;
             private Brush _brush;
             private PointF _curveOrigin;
             private DrawLineDelegate _drawLine;
@@ -394,10 +393,8 @@ namespace SvgNet.SvgGdi {
                     // Clear the line buffer so that it can record the path
                     CommitLine();
                 } finally {
-                    if (_br != null)
-                        _br.Close();
-                    if (_ms != null)
-                        _ms.Dispose();
+                    _br?.Close();
+                    _ms?.Dispose();
                 }
             }
 
@@ -421,10 +418,8 @@ namespace SvgNet.SvgGdi {
 
                     System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
                 } finally {
-                    if (_br != null)
-                        _br.Close();
-                    if (_ms != null)
-                        _ms.Dispose();
+                    _br?.Close();
+                    _ms?.Dispose();
                 }
             }
 
@@ -466,10 +461,8 @@ namespace SvgNet.SvgGdi {
 
                     System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
                 } finally {
-                    if (_br != null)
-                        _br.Close();
-                    if (_ms != null)
-                        _ms.Dispose();
+                    _br?.Close();
+                    _ms?.Dispose();
                 }
             }
 
@@ -509,10 +502,8 @@ namespace SvgNet.SvgGdi {
 
                     System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
                 } finally {
-                    if (_br != null)
-                        _br.Close();
-                    if (_ms != null)
-                        _ms.Dispose();
+                    _br?.Close();
+                    _ms?.Dispose();
                 }
             }
 
@@ -532,10 +523,8 @@ namespace SvgNet.SvgGdi {
 
                     System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
                 } finally {
-                    if (_br != null)
-                        _br.Close();
-                    if (_ms != null)
-                        _ms.Dispose();
+                    _br?.Close();
+                    _ms?.Dispose();
                 }
             }
 
@@ -582,10 +571,8 @@ namespace SvgNet.SvgGdi {
 
                     System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
                 } finally {
-                    if (_br != null)
-                        _br.Close();
-                    if (_ms != null)
-                        _ms.Dispose();
+                    _br?.Close();
+                    _ms?.Dispose();
                 }
             }
 
@@ -607,10 +594,8 @@ namespace SvgNet.SvgGdi {
 
                     System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
                 } finally {
-                    if (_br != null)
-                        _br.Close();
-                    if (_ms != null)
-                        _ms.Dispose();
+                    _br?.Close();
+                    _ms?.Dispose();
                 }
             }
 
@@ -633,10 +618,8 @@ namespace SvgNet.SvgGdi {
 
                     System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
                 } finally {
-                    if (_br != null)
-                        _br.Close();
-                    if (_ms != null)
-                        _ms.Dispose();
+                    _br?.Close();
+                    _ms?.Dispose();
                 }
             }
 
@@ -671,10 +654,8 @@ namespace SvgNet.SvgGdi {
 
                     System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
                 } finally {
-                    if (_br != null)
-                        _br.Close();
-                    if (_ms != null)
-                        _ms.Dispose();
+                    _br?.Close();
+                    _ms?.Dispose();
                 }
             }
 
@@ -699,10 +680,8 @@ namespace SvgNet.SvgGdi {
 
                     System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
                 } finally {
-                    if (_br != null)
-                        _br.Close();
-                    if (_ms != null)
-                        _ms.Dispose();
+                    _br?.Close();
+                    _ms?.Dispose();
                 }
             }
 
@@ -730,10 +709,8 @@ namespace SvgNet.SvgGdi {
 
                     System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
                 } finally {
-                    if (_br != null)
-                        _br.Close();
-                    if (_ms != null)
-                        _ms.Dispose();
+                    _br?.Close();
+                    _ms?.Dispose();
                 }
             }
 
@@ -750,20 +727,17 @@ namespace SvgNet.SvgGdi {
 
                     FillPolygon(_lineBuffer.GetPoints(), _brush);
                 } finally {
-                    if (_br != null)
-                        _br.Close();
-                    if (_ms != null)
-                        _ms.Dispose();
+                    _br?.Close();
+                    _ms?.Dispose();
                 }
             }
 
             private class LineBuffer {
-
                 public LineBuffer(float unitSize) {
                     _points = new List<NormalizedPoint>();
                     _normalizedPoints = new List<NormalizedPoint>();
                     _visualPoints = new List<VisualPoint>();
-                    _epsilonSquare = (_unitSizeEpsilon * unitSize) * (_unitSizeEpsilon * unitSize);
+                    _epsilonSquare = _unitSizeEpsilon * unitSize * _unitSizeEpsilon * unitSize;
                 }
 
                 public bool IsEmpty => _points.Count == 0;
@@ -871,16 +845,14 @@ namespace SvgNet.SvgGdi {
                 // TODO: TUNE: what's the correct value? Shoud it be based on the matafile's DPI?
                 private bool IsVisuallyIdentical(NormalizedPoint a, PointF b) {
                     for (var i = _normalizedPoints.Count - 1; i >= 0; i--)
-                        if (_normalizedPoints[i].VisualIndex == a.VisualIndex)
-                            if (IsVisuallyIdentical(_normalizedPoints[i].Point, b))
-                                return true;
+                        if (_normalizedPoints[i].VisualIndex == a.VisualIndex && IsVisuallyIdentical(_normalizedPoints[i].Point, b)) return true;
                     return false;
                 }
 
                 private bool IsVisuallyIdentical(PointF a, PointF b) {
                     var dx = a.X - b.X;
                     var dy = a.Y - b.Y;
-                    return (dx * dx + dy * dy) <= _epsilonSquare;
+                    return ((dx * dx) + (dy * dy)) <= _epsilonSquare;
                 }
 
                 private void MakeRoom(int count) {
@@ -895,7 +867,6 @@ namespace SvgNet.SvgGdi {
             }
 
             private class ObjectHandle {
-
                 public ObjectHandle(EmfStockObject stockObject) => _stockObject = stockObject;
 
                 public ObjectHandle(Brush brush) => _brush = brush;

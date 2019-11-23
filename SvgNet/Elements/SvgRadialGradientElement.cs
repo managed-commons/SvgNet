@@ -9,12 +9,10 @@
 using SvgNet.SvgTypes;
 
 namespace SvgNet.SvgElements {
-
     /// <summary>
     /// Represents an svg radialGradient element
     /// </summary>
     public class SvgRadialGradientElement : SvgStyledTransformedElement {
-
         public SvgRadialGradientElement() {
         }
 

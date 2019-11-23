@@ -9,12 +9,10 @@
 using SvgNet.SvgTypes;
 
 namespace SvgNet.SvgElements {
-
     /// <summary>
     /// Represents an SVG stop element, which specifies one color in a gradient.
     /// </summary>
     public class SvgStopElement : SvgStyledTransformedElement {
-
         public SvgStopElement() {
         }
 

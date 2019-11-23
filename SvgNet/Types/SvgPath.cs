@@ -11,12 +11,10 @@ using System.Collections;
 using System.Globalization;
 
 namespace SvgNet.SvgTypes {
-
     /// <summary>
     /// A path, composed of segments, as described in the SVG 1.1 spec section 8.3
     /// </summary>
     public class SvgPath : ICloneable {
-
         public SvgPath(string s) => FromString(s);
 
         public int Count => _path.Count;
@@ -51,8 +49,8 @@ namespace SvgNet.SvgTypes {
             _path = new ArrayList();
 
             while (i < sa.Length) {
-                if (sa[i] == "") {
-                    i += 1;
+                if (sa[i]?.Length == 0) {
+                    i++;
                     continue;
                 }
 
@@ -107,8 +105,8 @@ namespace SvgNet.SvgTypes {
                     //strip off type character
                     sa[i] = sa[i].Substring(1);
 
-                    if (sa[i] == "")
-                        i += 1;
+                    if (sa[i]?.Length == 0)
+                        i++;
                 } else if (pt == SvgPathSegType.SVG_SEGTYPE_MOVETO) {
                     // ensure implicit "lineto" commands are parsed according to SVG 1.1 spec section 8.3.2.
                     pt = SvgPathSegType.SVG_SEGTYPE_LINETO;
@@ -135,11 +133,9 @@ namespace SvgNet.SvgTypes {
             PathSeg prev = null;
             var builder = new System.Text.StringBuilder();
             foreach (PathSeg seg in _path) {
-                if (prev == null ||
-                    (prev.Type != seg.Type &&
-                    !(prev.Type == SvgPathSegType.SVG_SEGTYPE_MOVETO &&
-                    seg.Type == SvgPathSegType.SVG_SEGTYPE_LINETO) ||
-                    prev.Abs != seg.Abs)) {
+                if (prev == null
+                    || (prev.Type != seg.Type && !(prev.Type == SvgPathSegType.SVG_SEGTYPE_MOVETO && seg.Type == SvgPathSegType.SVG_SEGTYPE_LINETO))
+                    || prev.Abs != seg.Abs) {
                     builder.Append(seg.Char).Append(" ");
                 }
                 foreach (float d in seg.Data) {

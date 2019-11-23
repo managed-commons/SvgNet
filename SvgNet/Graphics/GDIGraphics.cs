@@ -12,12 +12,10 @@ using System.Drawing.Imaging;
 using System.Drawing.Text;
 
 namespace SvgNet.SvgGdi {
-
     /// <summary>
     /// An IGraphics implementation that simply passes every call through to a GDI+ <c>Graphics</c> object.
     /// </summary>
     public class GdiGraphics : IGraphics {
-
         public GdiGraphics(Graphics g) => _g = g;
 
         public Region Clip { get => _g.Clip; set => _g.Clip = value; }

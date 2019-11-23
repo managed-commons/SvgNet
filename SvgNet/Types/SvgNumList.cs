@@ -11,13 +11,11 @@ using System.Collections;
 using System.Globalization;
 
 namespace SvgNet.SvgTypes {
-
     /// <summary>
     /// A number list, as used in the SVG spec for e.g. the value of a viewBox attribute.  Basically a list of numbers in
     /// any format separated by whitespace and commas.
     /// </summary>
     public class SvgNumList : ICloneable {
-
         public SvgNumList(string s) => FromString(s);
 
         public SvgNumList(float[] pts) {

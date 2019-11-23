@@ -12,12 +12,10 @@ using System.Drawing;
 using System.Globalization;
 
 namespace SvgNet.SvgTypes {
-
     /// <summary>
     /// A list of points, as specified in the SVG 1.1 spec section 9.8.  Only used in polygon and polyline elements.
     /// </summary>
     public class SvgPoints : ICloneable {
-
         public SvgPoints(string s) => FromString(s);
 
         public SvgPoints(PointF[] pts) {

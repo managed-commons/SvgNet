@@ -7,7 +7,6 @@
 */
 
 namespace SvgNet.SvgTypes {
-
     /// <summary>
     /// The various different types of segment that make up an SVG path, as listed in the SVG Path grammar.
     /// </summary>

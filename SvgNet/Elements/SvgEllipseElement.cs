@@ -9,12 +9,10 @@
 using SvgNet.SvgTypes;
 
 namespace SvgNet.SvgElements {
-
     /// <summary>
     /// Represents an <c>ellipse</c> element.
     /// </summary>
     public class SvgEllipseElement : SvgStyledTransformedElement {
-
         public SvgEllipseElement() {
         }
 

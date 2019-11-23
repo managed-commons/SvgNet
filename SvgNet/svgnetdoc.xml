@@ -96,11 +96,6 @@
             Represents an <c>ellipse</c> element.
             </summary>
         </member>
-        <member name="T:SvgNet.SvgElements.SvgFilterElement">
-             <summary>
-            
-             </summary>
-        </member>
         <member name="T:SvgNet.SvgElements.SvgAElement">
             <summary>
             Represents an <c>a</c> element.  It has an xref and a target.

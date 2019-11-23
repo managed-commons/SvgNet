@@ -19,7 +19,6 @@ using SvgNet.SvgElements;
 using SvgNet.SvgTypes;
 
 namespace SvgNet.SvgGdi {
-
     /// <summary>
     /// This is an IGraphics implementor that builds up an SVG scene.  Use it like a regular <c>Graphics</c> object, and call
     /// <c>WriteXMLString</c> to output SVG.  In this way, whatever you would normally draw becomes available as an SVG document.
@@ -41,7 +40,6 @@ namespace SvgNet.SvgGdi {
     /// </para>
     /// </summary>
     public class SvgGraphics : IGraphics {
-
         public SvgGraphics() : this(Color.FromName("Control")) {
         }
 
@@ -410,7 +408,7 @@ namespace SvgNet.SvgGdi {
         /// Implemented
         /// </summary>
         public void DrawEllipse(Pen pen, float x, float y, float width, float height) {
-            var el = new SvgEllipseElement(x + width / 2, y + height / 2, width / 2, height / 2) {
+            var el = new SvgEllipseElement(x + (width / 2), y + (height / 2), width / 2, height / 2) {
                 Style = new SvgStyle(pen)
             };
             if (!_transforms.Result.IsIdentity)
@@ -706,8 +704,7 @@ namespace SvgNet.SvgGdi {
                 using var metafileCanvas = Graphics.FromImage(metafile);
                 metafileCanvas.DrawLines(pen, points);
             } finally {
-                if (metafile != null)
-                    metafile.Dispose();
+                metafile?.Dispose();
             }
 
             metafileBuffer.Position = 0;
@@ -727,7 +724,7 @@ namespace SvgNet.SvgGdi {
                 if (!_transforms.Result.IsIdentity)
                     pl.Transform = new SvgTransformList(_transforms.Result.Clone());
                 _cur.AddChild(pl);
-            }, (PointF[] linePoints, Brush fillBrush) => {
+            }, (PointF[] __, Brush _) => {
                 // TODO: received shapes dont' have the vertex list "normalized" correctly
                 // metafileIsEmpty = false;
                 // FillPolygon(fillBrush, linePoints);
@@ -989,7 +986,7 @@ namespace SvgNet.SvgGdi {
         /// Implemented
         /// </summary>
         public void FillEllipse(Brush brush, float x, float y, float width, float height) {
-            var el = new SvgEllipseElement(x + width / 2, y + height / 2, width / 2, height / 2) {
+            var el = new SvgEllipseElement(x + (width / 2), y + (height / 2), width / 2, height / 2) {
                 Style = HandleBrush(brush)
             };
             if (!_transforms.Result.IsIdentity)
@@ -1730,7 +1727,7 @@ namespace SvgNet.SvgGdi {
         private static PointF ControlPoint(PointF l, PointF pt, float t) {
             var v = new PointF(l.X - pt.X, l.Y - pt.Y);
 
-            float vlen = (float)Math.Sqrt(v.X * v.X + v.Y * v.Y);
+            float vlen = (float)Math.Sqrt((v.X * v.X) + (v.Y * v.Y));
             v.X /= (float)Math.Sqrt(vlen / (10 * t * t));
             v.Y /= (float)Math.Sqrt(vlen / (10 * t * t));
 
@@ -1745,11 +1742,11 @@ namespace SvgNet.SvgGdi {
             var nlv = new PointF(lv.X - rv.X, lv.Y - rv.Y);
             var nrv = new PointF(rv.X - lv.X, rv.Y - lv.Y);
 
-            float nlvlen = (float)Math.Sqrt(nlv.X * nlv.X + nlv.Y * nlv.Y);
+            float nlvlen = (float)Math.Sqrt((nlv.X * nlv.X) + (nlv.Y * nlv.Y));
             nlv.X /= (float)Math.Sqrt(nlvlen / (10 * t * t));
             nlv.Y /= (float)Math.Sqrt(nlvlen / (10 * t * t));
 
-            float nrvlen = (float)Math.Sqrt(nrv.X * nrv.X + nrv.Y * nrv.Y);
+            float nrvlen = (float)Math.Sqrt((nrv.X * nrv.X) + (nrv.Y * nrv.Y));
             nrv.X /= (float)Math.Sqrt(nrvlen / (10 * t * t));
             nrv.Y /= (float)Math.Sqrt(nrvlen / (10 * t * t));
 
@@ -1780,7 +1777,7 @@ namespace SvgNet.SvgGdi {
 
             var start = new PointF();
             var end = new PointF();
-            var center = new PointF(x + width / 2f, y + height / 2f);
+            var center = new PointF(x + (width / 2f), y + (height / 2f));
 
             startAngle = (startAngle / 360f) * 2f * (float)Math.PI;
             sweepAngle = (sweepAngle / 360f) * 2f * (float)Math.PI;
@@ -1797,11 +1794,11 @@ namespace SvgNet.SvgGdi {
                 longArc = 1;
             }
 
-            start.X = (float)Math.Cos(startAngle) * (width / 2f) + center.X;
-            start.Y = (float)Math.Sin(startAngle) * (height / 2f) + center.Y;
+            start.X = ((float)Math.Cos(startAngle) * (width / 2f)) + center.X;
+            start.Y = ((float)Math.Sin(startAngle) * (height / 2f)) + center.Y;
 
-            end.X = (float)Math.Cos(sweepAngle) * (width / 2f) + center.X;
-            end.Y = (float)Math.Sin(sweepAngle) * (height / 2f) + center.Y;
+            end.X = ((float)Math.Cos(sweepAngle) * (width / 2f)) + center.X;
+            end.Y = ((float)Math.Sin(sweepAngle) * (height / 2f)) + center.Y;
 
             string s = "M " + start.X.ToString("F", CultureInfo.InvariantCulture) + "," + start.Y.ToString("F", CultureInfo.InvariantCulture) +
                 " A " + (width / 2f).ToString("F", CultureInfo.InvariantCulture) + " " + (height / 2f).ToString("F", CultureInfo.InvariantCulture) + " " +
@@ -2022,7 +2019,7 @@ namespace SvgNet.SvgGdi {
         }
 
         private void DrawText(string s, Font font, Brush brush, RectangleF rect, StringFormat fmt, bool ignoreRect) {
-            if (s != null && s.Contains("\n"))
+            if (s?.Contains("\n") == true)
                 throw new SvgGdiNotImplementedException("DrawText multiline text");
 
             var txt = new SvgTextElement(s, rect.X, rect.Y) {
@@ -2045,7 +2042,7 @@ namespace SvgNet.SvgGdi {
                             throw new SvgGdiNotImplementedException("DrawText automatic rect");
 
                         txt.Style.Set("text-anchor", "middle");
-                        txt.X = rect.X + rect.Width / 2;
+                        txt.X = rect.X + (rect.Width / 2);
                     }
                     break;
 
@@ -2088,11 +2085,11 @@ namespace SvgNet.SvgGdi {
                         if (ignoreRect)
                             throw new SvgGdiNotImplementedException("DrawText automatic rect");
 
-                        txt.Y.Value = txt.Y.Value + (rect.Height / 2);
+                        txt.Y.Value += (rect.Height / 2);
                         var span = new SvgTspanElement(s) {
                             DY = new SvgLength(txt.Style.Get("font-size").ToString())
                         };
-                        span.DY.Value = span.DY.Value * ((1 - GetFontDescentPercentage(font)) - 0.5f);
+                        span.DY.Value *= 1 - GetFontDescentPercentage(font) - 0.5f;
                         txt.Text = null;
                         txt.AddChild(span);
                     }
@@ -2102,14 +2099,14 @@ namespace SvgNet.SvgGdi {
                         if (ignoreRect)
                             throw new SvgGdiNotImplementedException("DrawText automatic rect");
 
-                        txt.Y.Value = txt.Y.Value + rect.Height;
+                        txt.Y.Value += rect.Height;
                         // This would solve the alignment as well, but it's not supported by Internet Explorer
                         //
                         // txt.Attributes["dominant-baseline"] = "text-after-edge";
                         var span = new SvgTspanElement(s) {
                             DY = new SvgLength(txt.Style.Get("font-size").ToString())
                         };
-                        span.DY.Value = span.DY.Value * ((1 - GetFontDescentPercentage(font)) - 1);
+                        span.DY.Value *= 1 - GetFontDescentPercentage(font) - 1;
                         txt.Text = null;
                         txt.AddChild(span);
                     }
@@ -2299,7 +2296,6 @@ namespace SvgNet.SvgGdi {
         /// </para>
         /// </summary>
         private class MatrixStack {
-
             public MatrixStack() {
                 _mx = new ArrayList();
 

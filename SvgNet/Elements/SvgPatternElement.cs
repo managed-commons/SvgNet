@@ -9,12 +9,10 @@
 using SvgNet.SvgTypes;
 
 namespace SvgNet.SvgElements {
-
     /// <summary>
     /// Represents an SVG pattern element, which defines a fill pattern by defining a viewport onto a subscene.
     /// </summary>
     public class SvgPatternElement : SvgStyledTransformedElement {
-
         public SvgPatternElement() {
         }
 

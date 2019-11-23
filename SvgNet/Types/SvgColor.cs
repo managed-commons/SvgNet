@@ -7,20 +7,17 @@
 */
 
 using System;
-using System.Collections;
 using System.Drawing;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace SvgNet.SvgTypes {
-
     /// <summary>
     /// A color, as found in CSS2 and used in SVG.  As well as a GDI Color object, SvgColor stores
     /// the string it was initialized from, so that when a color specified as 'black' is written out,
     /// it will be written 'black' rather than '#000000'
     /// </summary>
     public class SvgColor : ICloneable {
-
         public SvgColor(string s) => FromString(s);
 
         public SvgColor(Color c) => Color = c;
@@ -32,13 +29,9 @@ namespace SvgNet.SvgTypes {
 
         public Color Color { get; set; }
 
-        public static implicit operator SvgColor(Color c) {
-            return new SvgColor(c);
-        }
+        public static implicit operator SvgColor(Color c) => new SvgColor(c);
 
-        public static implicit operator SvgColor(string s) {
-            return new SvgColor(s);
-        }
+        public static implicit operator SvgColor(string s) => new SvgColor(s);
 
         public object Clone() => new SvgColor(Color, _original_string);
 
@@ -55,7 +48,7 @@ namespace SvgNet.SvgTypes {
                 return;
             }
 
-            var rg = new Regex(@"[rgbRGB]{3}");
+            var rg = new Regex("[rgbRGB]{3}");
             if (rg.Match(s).Success) {
                 FromRGBString(s);
                 return;
@@ -86,7 +79,6 @@ namespace SvgNet.SvgTypes {
             return s;
         }
 
-        private static readonly Hashtable _stdcols = new Hashtable();
         private string _original_string;
 
         private void FromHexString(string s) {

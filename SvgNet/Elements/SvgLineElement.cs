@@ -9,12 +9,10 @@
 using SvgNet.SvgTypes;
 
 namespace SvgNet.SvgElements {
-
     /// <summary>
     /// Represents a <c>line</c> element
     /// </summary>
     public class SvgLineElement : SvgStyledTransformedElement {
-
         public SvgLineElement() {
         }
 

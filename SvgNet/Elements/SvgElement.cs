@@ -13,7 +13,6 @@ using System.IO;
 using System.Xml;
 
 namespace SvgNet {
-
     /// <summary>
     /// The base class for SVG elements.  It represents some part of an SVG document, either an element (rect, circle etc) or a text item.  Duties include:
     /// <list type="bulleted">

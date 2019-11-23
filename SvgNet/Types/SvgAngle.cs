@@ -10,12 +10,10 @@ using System;
 using System.Globalization;
 
 namespace SvgNet.SvgTypes {
-
     /// <summary>
     /// An angle, as found here and there throughout the SVG spec
     /// </summary>
     public class SvgAngle : ICloneable {
-
         public SvgAngle(string s) => FromString(s);
 
         public SvgAngle(float num, SvgAngleType type) {

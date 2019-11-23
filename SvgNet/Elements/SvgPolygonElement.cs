@@ -10,12 +10,10 @@ using System.Drawing;
 using SvgNet.SvgTypes;
 
 namespace SvgNet.SvgElements {
-
     /// <summary>
     /// Represents a <c>polygon</c> element
     /// </summary>
     public class SvgPolygonElement : SvgStyledTransformedElement {
-
         public SvgPolygonElement(params PointF[] points) => Points = points;
 
         public SvgPolygonElement(SvgPoints points) => Points = points;

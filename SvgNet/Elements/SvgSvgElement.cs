@@ -9,12 +9,10 @@
 using SvgNet.SvgTypes;
 
 namespace SvgNet.SvgElements {
-
     /// <summary>
     /// Represents a <c>svg</c> element
     /// </summary>
     public class SvgSvgElement : SvgElement {
-
         public SvgSvgElement() {
         }
 

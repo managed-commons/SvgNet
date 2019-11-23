@@ -15,7 +15,6 @@ using System.Drawing.Text;
 //http://www.jbrowse.com/products/asmex
 
 namespace SvgNet.SvgGdi {
-
     /// <summary>
     /// An interface that contains exactly the same methods as the GDI+ Graphics object.  If your drawing routines draw to an <c>IGraphics</c> interface, then you can supply either
     /// a <c>GdiGraphics</c> object to render to the screen, or an <see cref="SvgGraphics" /> object to render to an SVG file.

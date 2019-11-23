@@ -9,12 +9,10 @@
 using SvgNet.SvgTypes;
 
 namespace SvgNet.SvgElements {
-
     /// <summary>
     /// Represents a <c>polyline</c> element
     /// </summary>
     public class SvgPolylineElement : SvgStyledTransformedElement {
-
         public SvgPolylineElement() {
         }
 

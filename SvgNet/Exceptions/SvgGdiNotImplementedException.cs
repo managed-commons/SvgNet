@@ -9,15 +9,19 @@
 using System;
 
 namespace SvgNet.SvgGdi {
-
     /// <summary>
     /// Exception thrown when a GDI+ operation is attempted on an IGraphics implementor that does not support the operation.
     /// For instance, <c>SvgGraphics</c> does not support any of the <c>MeasureString</c> methods.
     /// </summary>
     [Serializable]
-    public class SvgGdiNotImplementedException : Exception {
-
+    public sealed class SvgGdiNotImplementedException : NotImplementedException {
         public SvgGdiNotImplementedException(string method) => Method = method;
+
+        public SvgGdiNotImplementedException() => Method = "?";
+
+        public SvgGdiNotImplementedException(string message, Exception innerException) : base(message, innerException) => Method = "?";
+
+        public SvgGdiNotImplementedException(string method, string message, Exception innerException) : base(message, innerException) => Method = method;
 
         public string Method { get; }
     }

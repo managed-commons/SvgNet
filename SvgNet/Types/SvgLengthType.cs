@@ -7,7 +7,6 @@
 */
 
 namespace SvgNet.SvgTypes {
-
     /// <summary>
     /// The various units in which an SvgLength can be specified.
     /// </summary>

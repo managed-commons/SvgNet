@@ -7,7 +7,6 @@
 */
 
 namespace SvgNet.SvgTypes {
-
     /// <summary>
     /// The units in which an SvgAngle can be specified
     /// </summary>

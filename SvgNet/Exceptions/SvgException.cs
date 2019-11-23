@@ -9,34 +9,38 @@
 using System;
 
 namespace SvgNet {
-
     /// <summary>
     /// A general-purpose exception for problems that occur in SvgNet.
     /// </summary>
     [Serializable]
     public class SvgException : Exception {
-
-        public SvgException(string msg, string ctx) {
-            _msg = msg;
-            _ctx = ctx;
+        public SvgException(string msg, string ctx) : base(msg) {
+            Msg = msg;
+            Ctx = ctx;
         }
 
-        public SvgException(string msg) {
-            _msg = msg;
-            _ctx = "";
+        public SvgException(string msg) : this(msg, "") {
+        }
+
+        public SvgException() : this("", "") {
+        }
+
+        public SvgException(string msg, Exception innerException) : this(msg, "", innerException) {
+        }
+
+        public SvgException(string msg, string ctx, Exception innerException) : base(msg, innerException) {
+            Msg = msg;
+            Ctx = ctx;
         }
 
         /// <summary>
         /// A string intended to supply context information.
         /// </summary>
-        public string Ctx => _ctx;
+        public string Ctx { get; }
 
         /// <summary>
         /// A message describing the problem.
         /// </summary>
-        public string Msg => _msg;
-
-        private readonly string _ctx;
-        private readonly string _msg;
+        public string Msg { get; }
     }
 }

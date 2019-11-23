@@ -9,7 +9,6 @@
 using System;
 
 namespace SvgNet.SvgTypes {
-
     /// <summary>
     /// A segment in an Svg path.  This is not a real SVG type; it is not in the SVG spec.  It is provided for making paths
     /// easier to specify and parse.
@@ -24,7 +23,7 @@ namespace SvgNet.SvgTypes {
             _data = arr;
         }
 
-        public bool Abs { get; private set; }
+        public bool Abs { get; }
 
         public string Char => _type switch
         {

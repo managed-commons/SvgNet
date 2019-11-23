@@ -9,7 +9,6 @@
 using SvgNet.SvgTypes;
 
 namespace SvgNet {
-
     /// <summary>
     /// Interface for SvgElements that xlink to another element, e.g. <c>use</c>
     /// </summary>

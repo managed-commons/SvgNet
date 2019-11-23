@@ -9,12 +9,10 @@
 using SvgNet.SvgTypes;
 
 namespace SvgNet.SvgElements {
-
     /// <summary>
     /// Represents an SVG <c>image</c> element.
     /// </summary>
     public class SvgImageElement : SvgStyledTransformedElement, IElementWithXRef {
-
         public SvgImageElement() {
         }
 
@@ -76,7 +74,6 @@ namespace SvgNet.SvgElements {
     /// Represents an SVG <c>symbol</c> element.
     /// </summary>
     public class SvgSymbolElement : SvgElement {
-
         public SvgSymbolElement() {
         }
 
@@ -97,7 +94,6 @@ namespace SvgNet.SvgElements {
     /// Represents an SVG <c>use</c> element.
     /// </summary>
     public class SvgUseElement : SvgStyledTransformedElement, IElementWithXRef {
-
         public SvgUseElement() {
         }
 

@@ -9,14 +9,12 @@
 using System;
 
 namespace SvgNet.SvgTypes {
-
     /// <summary>
     /// Represents a URI reference within a style.  Local uri references are generally strings of the form
     /// <c>url(#elementID)</c>.   This class should not be confused with <see cref="SvgXRef"/> which represents
     /// the xlink:* properties of, for example, an <c>a</c> element.
     /// </summary>
     public class SvgUriReference : ICloneable {
-
         public SvgUriReference() {
         }
 
@@ -24,7 +22,7 @@ namespace SvgNet.SvgTypes {
 
         public SvgUriReference(SvgElement target) {
             Href = "#" + target.Id;
-            if (target.Id == "") {
+            if (target.Id?.Length == 0) {
                 throw new SvgException("Uri Reference cannot refer to an element with no id.", target.ToString());
             }
         }

@@ -11,12 +11,10 @@ using System.Collections;
 using System.Drawing.Drawing2D;
 
 namespace SvgNet.SvgTypes {
-
     /// <summary>
     /// Represents an SVG transform-list, as specified in section 7.6 of the SVG 1.1 standard.
     /// </summary>
     public class SvgTransformList : ICloneable {
-
         public SvgTransformList() {
         }
 
@@ -58,7 +56,7 @@ namespace SvgNet.SvgTypes {
         public void FromString(string s) {
             int start = -1;
 
-            do {
+            while (true) {
                 var end = s.IndexOf(")", start + 1);
 
                 if (end == -1) return;
@@ -69,7 +67,6 @@ namespace SvgNet.SvgTypes {
 
                 start = end;
             }
-            while (true);
         }
 
         public override string ToString() {

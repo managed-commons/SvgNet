@@ -10,12 +10,10 @@ using System;
 using System.Globalization;
 
 namespace SvgNet.SvgTypes {
-
     /// <summary>
     /// A number, as specified in the SVG standard.  It is stored as a float.
     /// </summary>
     public class SvgNumber : ICloneable {
-
         public SvgNumber(string s) => FromString(s);
 
         public SvgNumber(int n) => _num = n;

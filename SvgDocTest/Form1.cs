@@ -38,12 +38,7 @@ namespace SvgDocTest
         protected override void Dispose(bool disposing)
         {
             if (disposing)
-            {
-                if (components != null)
-                {
-                    components.Dispose();
-                }
-            }
+                components?.Dispose();
             base.Dispose(disposing);
         }
 
@@ -78,7 +73,7 @@ namespace SvgDocTest
 
         private void button1_Click(object sender, System.EventArgs e)
         {
-            OpenFileDialog dlg = new OpenFileDialog
+            using (var dlg = new OpenFileDialog
             {
                 AutoUpgradeEnabled = true,
                 CheckFileExists = true,
@@ -86,20 +81,20 @@ namespace SvgDocTest
                 Filter = "Scalable Vector Graphics|*.svg",
                 Multiselect = false,
                 Title = "Choose one Scalable Vector Graphics file"
-            };
-
-            if (dlg.ShowDialog() == DialogResult.OK)
+            })
             {
-                ProcessSvgFile(dlg.FileName);
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    ProcessSvgFile(dlg.FileName);
+                }
             }
         }
 
         private void button2_Click(object sender, System.EventArgs e)
         {
-            SvgSvgElement root = new SvgSvgElement("4in", "4in", "-10,-10 250,250");
+            var root = new SvgSvgElement("4in", "4in", "-10,-10 250,250");
 
             //adding multiple children
-
 
             root.AddChildren(
                 new SvgRectElement(5, 5, 5, 5),
@@ -117,14 +112,14 @@ namespace SvgDocTest
 
             //group and path
 
-            SvgGroupElement grp = new SvgGroupElement("green_group")
+            var grp = new SvgGroupElement("green_group")
             {
                 Style = "fill:green;stroke:black;"
             };
 
             grp.AddChild(new SvgRectElement(30, 30, 5, 20));
 
-            SvgEllipseElement ell = new SvgEllipseElement
+            var ell = new SvgEllipseElement
             {
                 CX = 50,
                 CY = 50,
@@ -132,7 +127,7 @@ namespace SvgDocTest
                 RY = 20
             };
 
-            SvgPathElement pathy = new SvgPathElement
+            var pathy = new SvgPathElement
             {
                 D = "M 20,80 C 20,90 30,80 70,100 C 70,100 40,60 50,60 z",
                 Style = ell.Style
@@ -146,7 +141,7 @@ namespace SvgDocTest
 
             grp.Style.Set("fill", "blue");
 
-            SvgGroupElement grp2 = (SvgGroupElement)SvgFactory.CloneElement(grp);
+            var grp2 = (SvgGroupElement)SvgFactory.CloneElement(grp);
 
             grp2.Id = "cloned_red_group";
 
@@ -166,11 +161,8 @@ namespace SvgDocTest
 
             string tempFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "foo.svg");
 
-            StreamWriter tw = new StreamWriter(tempFile, false);
-
-            tw.Write(s);
-
-            tw.Close();
+            using (var tw = new StreamWriter(tempFile, false))
+                tw.Write(s);
 
             svgOut.Navigate(new Uri(tempFile));
             svgOut.Refresh(WebBrowserRefreshOption.Completely);
@@ -226,7 +218,7 @@ namespace SvgDocTest
             button1.Size = new System.Drawing.Size(128, 32);
             button1.TabIndex = 0;
             button1.Text = "Test an SVG file";
-            button1.Click += new System.EventHandler(button1_Click);
+            button1.Click += button1_Click;
             //
             // tbOut
             //
@@ -255,7 +247,7 @@ namespace SvgDocTest
             button3.Size = new System.Drawing.Size(128, 32);
             button3.TabIndex = 4;
             button3.Text = "Run Type Tests";
-            button3.Click += new System.EventHandler(button3_Click);
+            button3.Click += button3_Click;
             //
             // label1
             //
@@ -280,7 +272,7 @@ namespace SvgDocTest
             button2.Size = new System.Drawing.Size(128, 32);
             button2.TabIndex = 9;
             button2.Text = "Run Composition Tests";
-            button2.Click += new System.EventHandler(button2_Click);
+            button2.Click += button2_Click;
             //
             // svgIn
             //
@@ -314,7 +306,7 @@ namespace SvgDocTest
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             Name = "Form1";
             Text = "SvgNet doc reading/writing test";
-            Load += new System.EventHandler(Form1_Load);
+            Load += Form1_Load;
             ResumeLayout(false);
             PerformLayout();
         }

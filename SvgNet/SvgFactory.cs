@@ -13,12 +13,10 @@ using System.Xml;
 using SvgNet.SvgElements;
 
 namespace SvgNet {
-
     /// <summary>
     /// Static methods to produce/write/copy Svg documents reside in this class.
     /// </summary>
     public static class SvgFactory {
-
         /// <summary>
         /// Used by LoadFromXML
         /// </summary>
@@ -172,7 +170,7 @@ namespace SvgNet {
                     string entname;
 
                     if (entities[val] == null) {
-                        idx += 1;
+                        idx++;
                         entname = "E" + idx.ToString();
                         entities[val] = entname;
 

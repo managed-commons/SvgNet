@@ -6,7 +6,7 @@
     <AssemblyName>SVG</AssemblyName>
     <PackageId>SvgNet</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>2.0.4</Version>
+    <Version>2.0.5</Version>
     <RootNamespace>SVG</RootNamespace>
     <DocumentationFile>svgnetdoc.xml</DocumentationFile>
     <NoWarn>CS1591</NoWarn>
@@ -25,7 +25,7 @@
     <Product>SvgNet</Product>
     <ProductVersion>8.0.30319</ProductVersion>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>package both for .NET Standard 2.0 and 2.1 - requires SDK 3.0.100 to build</PackageReleaseNotes>
+    <PackageReleaseNotes>Code cleanup</PackageReleaseNotes>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 

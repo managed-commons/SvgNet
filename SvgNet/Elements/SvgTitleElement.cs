@@ -7,13 +7,11 @@
 */
 
 namespace SvgNet.SvgElements {
-
     /// <summary>
     /// Represents an SVG <c>desc</c> element.  As with the SvgTextElement, the payload is in the enclosed text rather than in attributes and
     /// subelements, so we need to specially add text when serializing.
     /// </summary>
     public class SvgDescElement : SvgElement, IElementWithText {
-
         public SvgDescElement() {
             var tn = new TextNode("");
             AddChild(tn);
@@ -30,7 +28,6 @@ namespace SvgNet.SvgElements {
             get => ((TextNode)FirstChild).Text;
             set => ((TextNode)FirstChild).Text = value;
         }
-
     }
 
     /// <summary>
@@ -38,7 +35,6 @@ namespace SvgNet.SvgElements {
     /// subelements, so we need to specially add text when serializing.
     /// </summary>
     public class SvgTitleElement : SvgElement, IElementWithText {
-
         public SvgTitleElement() {
             var tn = new TextNode("");
             AddChild(tn);

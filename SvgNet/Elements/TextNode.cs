@@ -13,7 +13,6 @@ namespace SvgNet {
     /// Represents the text contained in a title, desc, text, or tspan element.  Maps to an XmlText object in an XML document.  It is inherited from
     /// </summary>
     public class TextNode : SvgElement {
-
         public TextNode() {
         }
 

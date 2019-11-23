@@ -35,14 +35,14 @@ namespace SvgNet
         {
             //GDI does not seem to draw arcs correctly except when the ellipse is a circle.
             //These arcs demonstrate the problem.  SVGGraphics calculates arcs correctly.
-            ig.DrawArc(new Pen(Color.Black, 2.7f), 120 + 5 * 3, 120, 110 * 3, 110, 0, 240);
-            ig.DrawArc(new Pen(Color.Black, 2.7f), 120 + 10 * 3, 125, 100 * 3, 100, 0, 210);
-            ig.DrawArc(new Pen(Color.Black, 2.7f), 120 + 15 * 3, 130, 90 * 3, 90, 0, 180);
-            ig.DrawArc(new Pen(Color.Black, 2.7f), 120 + 20 * 3, 135, 80 * 3, 80, 0, 150);
-            ig.DrawArc(new Pen(Color.Black, 2.7f), 120 + 25 * 3, 140, 70 * 3, 70, 0, 120);
-            ig.DrawArc(new Pen(Color.Black, 2.7f), 120 + 30 * 3, 145, 60 * 3, 60, 0, 90);
-            ig.DrawArc(new Pen(Color.Black, 2.7f), 120 + 35 * 3, 150, 50 * 3, 50, 0, 60);
-            ig.DrawArc(new Pen(Color.Black, 2.7f), 120 + 40 * 3, 155, 40 * 3, 40, 0, 270);
+            ig.DrawArc(new Pen(Color.Black, 2.7f), 120 + (5 * 3), 120, 110 * 3, 110, 0, 240);
+            ig.DrawArc(new Pen(Color.Black, 2.7f), 120 + (10 * 3), 125, 100 * 3, 100, 0, 210);
+            ig.DrawArc(new Pen(Color.Black, 2.7f), 120 + (15 * 3), 130, 90 * 3, 90, 0, 180);
+            ig.DrawArc(new Pen(Color.Black, 2.7f), 120 + (20 * 3), 135, 80 * 3, 80, 0, 150);
+            ig.DrawArc(new Pen(Color.Black, 2.7f), 120 + (25 * 3), 140, 70 * 3, 70, 0, 120);
+            ig.DrawArc(new Pen(Color.Black, 2.7f), 120 + (30 * 3), 145, 60 * 3, 60, 0, 90);
+            ig.DrawArc(new Pen(Color.Black, 2.7f), 120 + (35 * 3), 150, 50 * 3, 50, 0, 60);
+            ig.DrawArc(new Pen(Color.Black, 2.7f), 120 + (40 * 3), 155, 40 * 3, 40, 0, 270);
 
             ig.DrawPie(new Pen(Color.Pink, 2.7f), 110, 50, 100, 100, 315, 90);
             ig.DrawPie(new Pen(Color.Purple, 2.7f), 110, 50, 100, 100, 250, -90);
@@ -267,7 +267,7 @@ namespace SvgNet
                 arrowOutline.AddLines(new PointF[] {
                             new PointF(-(arrowWidth / 2), -arrowHeight),
                             new PointF(0, 0),
-                            new PointF((arrowWidth / 2), -arrowHeight),
+                            new PointF(arrowWidth / 2, -arrowHeight),
                             new PointF(-(arrowWidth / 2), -arrowHeight)
                         });
                 var generalizationArrow = new System.Drawing.Drawing2D.CustomLineCap(null, arrowOutline);

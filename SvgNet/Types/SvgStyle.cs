@@ -14,12 +14,10 @@ using System.Globalization;
 using System.Text;
 
 namespace SvgNet.SvgTypes {
-
     /// <summary>
     /// Represents a CSS2 style, as applied to an SVG element.
     /// </summary>
     public class SvgStyle : ICloneable {
-
         public SvgStyle() {
         }
 
@@ -65,7 +63,7 @@ namespace SvgNet.SvgTypes {
             }
 
             //converting between adobe and ms miter limits is very hard because adobe have never explained what the value means.
-            Set("stroke-miterlimit", pen.MiterLimit / 2 + 4f);
+            Set("stroke-miterlimit", (pen.MiterLimit / 2) + 4f);
 
             float[] dashes = null;
 
@@ -205,7 +203,7 @@ namespace SvgNet.SvgTypes {
         /// <param name="key"></param>
         /// <param name="val"></param>
         public void Set(string key, object val) {
-            if (val == null || val.ToString() == "") {
+            if (val == null || val.ToString()?.Length == 0) {
                 _styles.Remove(key);
                 return;
             }
@@ -226,12 +224,9 @@ namespace SvgNet.SvgTypes {
 
         private readonly Hashtable _styles = new Hashtable();
 
-        private static string InvariantCultureToString(object styleValue) {
-            if (styleValue is float)
-                return ((float)styleValue).ToString(CultureInfo.InvariantCulture);
-            if (styleValue is double)
-                return ((double)styleValue).ToString(CultureInfo.InvariantCulture);
-            return styleValue.ToString();
-        }
+        private static string InvariantCultureToString(object styleValue)
+            => styleValue is float styleAsFloat
+                ? styleAsFloat.ToString(CultureInfo.InvariantCulture)
+                : styleValue is double styleAsDouble ? styleAsDouble.ToString(CultureInfo.InvariantCulture) : styleValue.ToString();
     }
 }

@@ -10,9 +10,7 @@ using System;
 using SvgNet.SvgTypes;
 
 namespace SvgNet.SvgElements {
-
     public abstract class SvgBaseTextElement : SvgStyledTransformedElement {
-
         public SvgLength DX {
             get => (SvgLength)_atts["dx"];
             set => _atts["dx"] = value;
@@ -51,7 +49,6 @@ namespace SvgNet.SvgElements {
     /// to XML slightly differently.
     /// </summary>
     public class SvgTextElement : SvgBaseTextElement, IElementWithText {
-
         public SvgTextElement() {
         }
 
@@ -85,7 +82,6 @@ namespace SvgNet.SvgElements {
     /// </summary>
     [Obsolete]
     public class SvgTrefElement : SvgBaseTextElement, IElementWithXRef {
-
         public SvgTrefElement() {
         }
 
@@ -116,7 +112,6 @@ namespace SvgNet.SvgElements {
     /// to XML slightly differently.
     /// </summary>
     public class SvgTspanElement : SvgTextElement {
-
         public SvgTspanElement() {
         }
 

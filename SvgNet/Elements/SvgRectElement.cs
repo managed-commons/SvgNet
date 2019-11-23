@@ -9,12 +9,10 @@
 using SvgNet.SvgTypes;
 
 namespace SvgNet.SvgElements {
-
     /// <summary>
     /// Represents a <c>rect</c> element
     /// </summary>
     public class SvgRectElement : SvgStyledTransformedElement {
-
         public SvgRectElement() {
         }
 

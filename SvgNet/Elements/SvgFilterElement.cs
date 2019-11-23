@@ -9,12 +9,7 @@
 using SvgNet.SvgTypes;
 
 namespace SvgNet.SvgElements {
-
-    /// <summary>
-    ///
-    /// </summary>
     public class SvgFilterElement : SvgElement {
-
         public SvgFilterElement() {
         }
 
