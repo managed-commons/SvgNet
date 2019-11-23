@@ -1,12 +1,10 @@
 # SvgNet
 
-[![Join the chat at https://gitter.im/managed-commons/SvgNet](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/managed-commons/SvgNet?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 A fork of the SvgNet & SvgGdi bridge (http://www.codeproject.com/KB/cs/svgnet.aspx) to ressurrect it.
 
 __SvgNet is now available as a Nuget:__ [SvgNet](https://www.nuget.org/packages/SvgNet/).
 
-__Latest version 2.0.4 is .NET Standard 2.0 and 2.1 compatible and works with .NET Core 2.x and 3.0, but now requires .NET Framework 4.6.1 or higher__
+__Latest version 2.0.5 is .NET Standard 2.0 and 2.1 compatible and works with .NET Core 2.x and 3.0, but now requires .NET Framework 4.6.1 or higher__
 
 To build this version properly you need .NET Core 3.0.100 SDK installed as it is pinned (via global.json) 
 to that version...
