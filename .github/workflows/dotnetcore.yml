@@ -1,0 +1,21 @@
+name: .NET Core
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup .NET Core 3.0
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.0.100
+    - name: Create NuGet.Config.template
+      run: echo '<?xml version="1.0" encoding="utf-8"?><configuration><packageSources><add key="nuget.org" value="https://api.nuget.org/v3/index.json" protocolVersion="3" /><add key="GitHub" value="https://nuget.pkg.github.com/managed-commons/index.json" /></packageSources><packageSourceCredentials><GitHub><add key="Username" value="managed-commons" /><add key="ClearTextPassword" value="GH_TOKEN" /></GitHub></packageSourceCredentials></configuration>' > NuGet.Config.template
+    - name: Setup Nuget.Config
+      run: sed -e "s/GH_TOKEN/${{ secrets.RegistryToken }}/" NuGet.Config.template > NuGet.Config
+    - name: Test with dotnet
+      run: dotnet test --configuration Release -v:m | grep -v 'NAME_UNKNOWN:Package'
