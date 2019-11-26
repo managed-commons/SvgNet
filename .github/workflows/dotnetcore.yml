@@ -18,6 +18,6 @@ jobs:
     - name: Setup Nuget.Config
       run: sed -e "s/GH_TOKEN/${{ secrets.RegistryToken }}/" NuGet.Config.template > NuGet.Config
     - name: Test with dotnet
-      run: dotnet test --configuration Release -v:m
+      run: NONET461=true dotnet test --configuration Release -v:m | grep -v 'NAME_UNKNOWN:Package'
     - name: Push nuget
       run: dotnet nuget push `pwd`/.nugets/*.nupkg -s GitHub
