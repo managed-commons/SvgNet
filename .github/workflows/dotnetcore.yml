@@ -20,4 +20,4 @@ jobs:
     - name: Test with dotnet
       run: NONET461=true dotnet test --configuration Release -v:m | grep -v 'NAME_UNKNOWN:Package'
     - name: Push nuget
-      run: dotnet nuget push `pwd`/.nugets/*.nupkg -s GitHub
+      run: echo 'dotnet nuget push `pwd`/.nugets/*.nupkg -s GitHub'
