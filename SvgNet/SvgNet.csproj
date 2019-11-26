@@ -6,13 +6,12 @@
     <AssemblyName>SVG</AssemblyName>
     <PackageId>SvgNet</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>2.0.5</Version>
+    <PackageOutputPath>..\.nugets</PackageOutputPath>
+    <Version>2.1.0</Version>
     <RootNamespace>SVG</RootNamespace>
     <DocumentationFile>svgnetdoc.xml</DocumentationFile>
     <NoWarn>CS1591</NoWarn>
-  </PropertyGroup>
-
-  <PropertyGroup>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>C# framework for creating SVG images</Description>
     <Company>SvgNet and SvgGdi Bridge Project</Company>
     <Authors>Rafael Teixeira, Mojmír Němeček, Benjamin Peterson</Authors>
@@ -23,7 +22,6 @@
     <RepositoryUrl>https://github.com/managed-commons/SvgNet</RepositoryUrl>
     <PackageTags>SVG</PackageTags>
     <Product>SvgNet</Product>
-    <ProductVersion>8.0.30319</ProductVersion>
     <RepositoryType>git</RepositoryType>
     <PackageReleaseNotes>Code cleanup</PackageReleaseNotes>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
