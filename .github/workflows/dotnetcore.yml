@@ -12,7 +12,7 @@ jobs:
     - name: Setup .NET Core 3.0
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.0.100
+        dotnet-version: 3.0.101
     - name: Create NuGet.Config.template
       run: echo '<?xml version="1.0" encoding="utf-8"?><configuration><packageSources><add key="nuget.org" value="https://api.nuget.org/v3/index.json" protocolVersion="3" /><add key="GitHub" value="https://nuget.pkg.github.com/managed-commons/index.json" /></packageSources><packageSourceCredentials><GitHub><add key="Username" value="managed-commons" /><add key="ClearTextPassword" value="GH_TOKEN" /></GitHub></packageSourceCredentials></configuration>' > NuGet.Config.template
     - name: Setup Nuget.Config
