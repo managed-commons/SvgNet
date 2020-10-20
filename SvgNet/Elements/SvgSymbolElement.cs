@@ -42,7 +42,7 @@ namespace SvgNet.SvgElements {
             set => _atts["xlink:href"] = value;
         }
 
-        public override string Name => "use";
+        public override string Name => "image";
 
         public string PreserveAspectRatio {
             get => (string)_atts["preserveAspectRatio"];
