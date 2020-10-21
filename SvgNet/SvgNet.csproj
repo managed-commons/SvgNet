@@ -8,7 +8,7 @@
     <PackageId>SvgNet</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageOutputPath>..\.nugets</PackageOutputPath>
-    <Version>2.1.1</Version>
+    <Version>2.1.2</Version>
     <RootNamespace>SVG</RootNamespace>
     <DocumentationFile>svgnetdoc.xml</DocumentationFile>
     <NoWarn>CS1591</NoWarn>
@@ -24,10 +24,21 @@
     <PackageTags>SVG</PackageTags>
     <Product>SvgNet</Product>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Code cleanup</PackageReleaseNotes>
+    <PackageReleaseNotes>Reformat some source files - push package to github nuget registry (conditionally)</PackageReleaseNotes>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
+  <Target AfterTargets="Pack" Name="PushPackage" Condition="'$(OS)' == 'Windows_NT'" >
+    <PropertyGroup>
+      <LatestPackage>$(PackageOutputAbsolutePath)\$(PackageId).$(Version).nupkg</LatestPackage>
+      <PushCommand>dotnet nuget push $(LatestPackage) --force-english-output --source github-managed-commons --skip-duplicate</PushCommand>
+    </PropertyGroup>
+    <Exec ConsoleToMSBuild="true"  Command="$(PushCommand)" IgnoreExitCode="true" IgnoreStandardErrorWarningFormat="true" StandardErrorImportance="low" StandardOutputImportance="low">
+      <Output PropertyName="PushOutput" TaskParameter="ConsoleOutput"/>
+    </Exec>
+    <Message Importance="high" Text="Pushed $(LatestPackage)" Condition="!$([System.Text.RegularExpressions.Regex]::IsMatch('$(PushOutput)', 'already exists'))" />
+  </Target>
+  
   <ItemGroup>
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
     <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
