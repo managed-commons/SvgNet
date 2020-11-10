@@ -1,13 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net461;netstandard2.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>net461;netstandard2.0;netstandard2.1;net5.0</TargetFrameworks>
     <LangVersion>9.0</LangVersion>
     <AssemblyName>SVG</AssemblyName>
     <PackageId>SvgNet</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageOutputPath>..\.nugets</PackageOutputPath>
-    <Version>2.1.3</Version>
+    <Version>2.1.5</Version>
     <RootNamespace>SVG</RootNamespace>
     <DocumentationFile>svgnetdoc.xml</DocumentationFile>
     <NoWarn>CS1591</NoWarn>
@@ -16,14 +15,13 @@
     <Company>SvgNet and SvgGdi Bridge Project</Company>
     <Authors>Rafael Teixeira, Mojmír Němeček, Benjamin Peterson</Authors>
     <Copyright>2003, 2010, 2015-2020 RiskCare Ltd, SvgNet and SvgGdi Bridge Project, Rafael Teixeira, Mojmír Němeček</Copyright>
-    <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/managed-commons/SvgNet</PackageProjectUrl>
     <PackageIcon>svgnet.png</PackageIcon>
     <RepositoryUrl>https://github.com/managed-commons/SvgNet</RepositoryUrl>
     <PackageTags>SVG</PackageTags>
     <Product>SvgNet</Product>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Modernize... (conditionally)</PackageReleaseNotes>
+    <PackageReleaseNotes>.NET 5.0</PackageReleaseNotes>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
@@ -31,20 +29,21 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningsAsErrors>NU1605</WarningsAsErrors>
   </PropertyGroup>
-
+  
   <Target AfterTargets="Pack" Name="PushPackage" Condition="'$(OS)' == 'Windows_NT'">
     <PropertyGroup>
-      <LatestPackage>$(PackageOutputAbsolutePath)\$(PackageId).$(Version).nupkg</LatestPackage>
-      <PushCommand>dotnet nuget push $(LatestPackage) --force-english-output --source github-managed-commons --skip-duplicate</PushCommand>
+      <LatestPackage>$(PackageId).$(Version).nupkg</LatestPackage>
+      <PushCommand>dotnet nuget push $(PackageOutputAbsolutePath)$(LatestPackage) --force-english-output --source github-managed-commons --skip-duplicate</PushCommand>
     </PropertyGroup>
     <Exec ConsoleToMSBuild="true" Command="$(PushCommand)" IgnoreExitCode="true" IgnoreStandardErrorWarningFormat="true" StandardErrorImportance="low" StandardOutputImportance="low">
       <Output PropertyName="PushOutput" TaskParameter="ConsoleOutput" />
     </Exec>
-    <Message Importance="high" Text="Pushed $(LatestPackage)" Condition="!$([System.Text.RegularExpressions.Regex]::IsMatch('$(PushOutput)', 'already exists'))" />
+    <Message Importance="high" Text="Pushed $(LatestPackage) to GitHub" Condition="!$([System.Text.RegularExpressions.Regex]::IsMatch('$(PushOutput)', 'already exists'))" />
+    <Warning Code="NUGET" Text="Didn't push $(LatestPackage) to GitHub - Already there" Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(PushOutput)', 'already exists'))" />
   </Target>
   
   <ItemGroup>
-    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.0" />
     <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
   </ItemGroup>
 
