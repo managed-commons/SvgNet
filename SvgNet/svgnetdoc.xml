@@ -309,16 +309,6 @@
             For instance, <c>SvgGraphics</c> does not support any of the <c>MeasureString</c> methods.
             </summary>
         </member>
-        <member name="T:SvgNet.SvgGdi.IGraphics">
-            <summary>
-            An interface that contains exactly the same methods as the GDI+ Graphics object.  If your drawing routines draw to an <c>IGraphics</c> interface, then you can supply either
-            a <c>GdiGraphics</c> object to render to the screen, or an <see cref="T:SvgNet.SvgGdi.SvgGraphics" /> object to render to an SVG file.
-            <para>
-            It's a pity that <c>Graphics</c> is a sealed class.  Otherwise there'd be no need to have this interface or the <see cref="T:SvgNet.SvgGdi.GdiGraphics"/> class; we could simply
-            derive a class from <c>Graphics</c> to do SVG output.
-            </para>
-            </summary>
-        </member>
         <member name="T:SvgNet.SvgGdi.GdiGraphics">
             <summary>
             An IGraphics implementation that simply passes every call through to a GDI+ <c>Graphics</c> object.
@@ -1314,6 +1304,16 @@
             <para>
             This matrix stack caches it's 'result' (ie. the current transformation, the product of all matrices).  The result is
             recalculated when necessary.
+            </para>
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgGdi.IGraphics">
+            <summary>
+            An interface that contains exactly the same methods as the GDI+ Graphics object.  If your drawing routines draw to an <c>IGraphics</c> interface, then you can supply either
+            a <c>GdiGraphics</c> object to render to the screen, or an <see cref="T:SvgNet.SvgGdi.SvgGraphics" /> object to render to an SVG file.
+            <para>
+            It's a pity that <c>Graphics</c> is a sealed class.  Otherwise there'd be no need to have this interface or the <see cref="T:SvgNet.SvgGdi.GdiGraphics"/> class; we could simply
+            derive a class from <c>Graphics</c> to do SVG output.
             </para>
             </summary>
         </member>

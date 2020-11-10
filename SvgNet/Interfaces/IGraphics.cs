@@ -6,6 +6,7 @@
     Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
 
+using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -23,7 +24,7 @@ namespace SvgNet.SvgGdi {
     /// derive a class from <c>Graphics</c> to do SVG output.
     /// </para>
     /// </summary>
-    public interface IGraphics {
+    public interface IGraphics : IDisposable {
         Region Clip { get; set; }
 
         RectangleF ClipBounds { get; }

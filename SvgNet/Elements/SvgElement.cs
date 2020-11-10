@@ -162,10 +162,10 @@ namespace SvgNet {
         public virtual void WriteXmlElements(XmlDocument doc, XmlElement parent) {
             var me = doc.CreateElement("", Name, doc.NamespaceURI);
             foreach (string s in _atts.Keys) {
-                if (_atts[s] is float) {
-                    me.SetAttribute(s, doc.NamespaceURI, ((float)_atts[s]).ToString(CultureInfo.InvariantCulture));
-                } else if (_atts[s] is double) {
-                    me.SetAttribute(s, doc.NamespaceURI, ((double)_atts[s]).ToString(CultureInfo.InvariantCulture));
+                if (_atts[s] is float singleValue) {
+                    me.SetAttribute(s, doc.NamespaceURI, singleValue.ToString(CultureInfo.InvariantCulture));
+                } else if (_atts[s] is double doubleValue) {
+                    me.SetAttribute(s, doc.NamespaceURI, doubleValue.ToString(CultureInfo.InvariantCulture));
                 } else {
                     me.SetAttribute(s, doc.NamespaceURI, _atts[s].ToString());
                 }
@@ -192,14 +192,14 @@ namespace SvgNet {
             }
             var o = _atts[attributeName];
             //in case the property was set as a string, make a real object and save it.
-            return o == null ? SetNewAttributeValue(new T()) : (o is T) ? (T)o : SetNewAttributeValue(fromString(o));
+            return o == null ? SetNewAttributeValue(new T()) : (o is T t) ? t : SetNewAttributeValue(fromString(o));
         }
 
         private static int _idcounter;
 
         private static string ToXmlString(XmlDocument doc) => doc.OuterXml;
 
-        private string GenerateNewId() => _idcounter++.ToString();
+        private static string GenerateNewId() => _idcounter++.ToString();
 
         private class DummyXmlResolver : XmlResolver {
             public override System.Net.ICredentials Credentials { set { } }

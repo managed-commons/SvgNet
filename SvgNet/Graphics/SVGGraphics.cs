@@ -39,7 +39,7 @@ namespace SvgNet.SvgGdi {
     /// Some aspects of GDI that can be implemented in SVG are not.  The most important omission is that only solid brushes are supported.
     /// </para>
     /// </summary>
-    public class SvgGraphics : IGraphics {
+    public sealed class SvgGraphics : IGraphics {
         public SvgGraphics() : this(Color.FromName("Control")) {
         }
 
@@ -177,7 +177,6 @@ namespace SvgNet.SvgGdi {
 
         public Matrix Transform {
             get => _transforms.Result.Clone();
-
             set => _transforms.Top = value;
         }
 
@@ -223,6 +222,10 @@ namespace SvgNet.SvgGdi {
         public void Clear(Color color) {
             _cur.Children.Clear();
             _bg.Style.Set("fill", new SvgColor(color));
+        }
+
+        public void Dispose() {
+
         }
 
         /// <summary>
@@ -1398,17 +1401,11 @@ namespace SvgNet.SvgGdi {
 
         //a default graphics so that we can make a guess as to functions like MeasureString
         private static Graphics _g;
-
         private readonly SvgRectElement _bg;
-
         private readonly SvgDefsElement _defs;
-
         private readonly SvgSvgElement _root;
-
         private readonly SvgGroupElement _topgroup;
-
         private readonly MatrixStack _transforms;
-
         private SvgStyledTransformedElement _cur;
 
         private SmoothingMode _smoothingMode = SmoothingMode.Invalid;
@@ -1826,20 +1823,11 @@ namespace SvgNet.SvgGdi {
         /// <summary>
         /// Decides whether the pen's anchor type is simple enough to be drawn by a fast approximation using the DrawEndAnchor
         /// </summary>
-        private static bool IsEndAnchorSimple(LineCap lc) {
-            switch (lc) {
-                case LineCap.NoAnchor:
-                case LineCap.Flat:
-                case LineCap.ArrowAnchor:
-                case LineCap.DiamondAnchor:
-                case LineCap.RoundAnchor:
-                case LineCap.SquareAnchor:
-                    return true;
-
-                default:
-                    return false;
-            }
-        }
+        private static bool IsEndAnchorSimple(LineCap lc) => lc switch
+        {
+            LineCap.NoAnchor or LineCap.Flat or LineCap.ArrowAnchor or LineCap.DiamondAnchor or LineCap.RoundAnchor or LineCap.SquareAnchor => true,
+            _ => false,
+        };
 
         private static PointF[] Point2PointF(Point[] p) {
             var pf = new PointF[p.Length];
@@ -2228,7 +2216,7 @@ namespace SvgNet.SvgGdi {
             return new SvgStyle(new SolidBrush(Color.Salmon));
         }
 
-        private SvgPath HandleGraphicsPath(GraphicsPath path) {
+        private static SvgPath HandleGraphicsPath(GraphicsPath path) {
             var pathBuilder = new StringBuilder();
             using var subpaths = new GraphicsPathIterator(path);
             using var subpath = new GraphicsPath(path.FillMode);
@@ -2254,7 +2242,7 @@ namespace SvgNet.SvgGdi {
                     {
                         case PathPointType.Start:
                             //Move to start point
-                            if (pathBuilder.Length > 0) pathBuilder.Append(" ");
+                            if (pathBuilder.Length > 0) pathBuilder.Append(' ');
                             pathBuilder.AppendFormat(CultureInfo.InvariantCulture, "M {0},{1}", point.X, point.Y);
                             break;
 

@@ -12,11 +12,13 @@ using System.Drawing.Imaging;
 using System.Drawing.Text;
 
 namespace SvgNet.SvgGdi {
+
     /// <summary>
     /// An IGraphics implementation that simply passes every call through to a GDI+ <c>Graphics</c> object.
     /// </summary>
-    public class GdiGraphics : IGraphics {
-        public GdiGraphics(Graphics g) => _g = g;
+    public sealed class GdiGraphics : IGraphics {
+
+        public GdiGraphics(Graphics g) => _g = g ?? throw new System.ArgumentNullException(nameof(g));
 
         public Region Clip { get => _g.Clip; set => _g.Clip = value; }
         public RectangleF ClipBounds => _g.ClipBounds;
@@ -46,6 +48,8 @@ namespace SvgNet.SvgGdi {
         public GraphicsContainer BeginContainer(Rectangle dstrect, Rectangle srcrect, GraphicsUnit unit) => _g.BeginContainer(dstrect, srcrect, unit);
 
         public void Clear(Color color) => _g.Clear(color);
+
+        public void Dispose() => _g.Dispose();
 
         public void DrawArc(Pen pen, float x, float y, float width, float height, float startAngle, float sweepAngle) => _g.DrawArc(pen, x, y, width, height, startAngle, sweepAngle);
 
