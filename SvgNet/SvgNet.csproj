@@ -1,13 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net461;netstandard2.0;netstandard2.1;net5.0;net5.0-windows</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net5.0</TargetFrameworks>
+    <TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">$(TargetFrameworks);net461;net5.0-windows</TargetFrameworks>
     <UseWindowsForms Condition="'$(TargetFramework)' == 'net5.0-windows'">true</UseWindowsForms>
     <LangVersion>9.0</LangVersion>
     <AssemblyName>SVG</AssemblyName>
     <PackageId>SvgNet</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>2.1.5</Version>
+    <Version>2.1.6</Version>
     <RootNamespace>SVG</RootNamespace>
     <DocumentationFile>svgnetdoc.xml</DocumentationFile>
     <NoWarn>CS1591</NoWarn>
@@ -22,7 +23,7 @@
     <PackageTags>SVG</PackageTags>
     <Product>SvgNet</Product>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>.NET 5.0</PackageReleaseNotes>
+    <PackageReleaseNotes>.NET 5.0 also for net5.0-windows target</PackageReleaseNotes>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
