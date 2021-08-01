@@ -1898,15 +1898,27 @@ namespace SvgNet.SvgGdi {
             }
 
             for (int line = 0; line < b.Height; ++line) {
+                // Only draws the last 'set' of pixels when a new color is encountered or it's the last pixel in the line.
+                Color currentColor = b.GetPixel(0, line);
+                int consecutive = 1;
                 for (int col = 0; col < b.Width; ++col) {
-                    //This is SO slow, but better than making the whole library 'unsafe'
-                    Color c = b.GetPixel(col, line);
+                    Color? nextColor = null;
+                    // This is SO slow, but better than making the whole library 'unsafe'
+                    if (col != b.Width - 1) nextColor = b.GetPixel(col + 1, line);
 
-                    if (!scale) {
-                        if (col <= w && line <= h)
-                            DrawImagePixel(g, c, x + col, y + line, 1, 1);
+                    if (nextColor == currentColor) {
+                        consecutive++;
                     } else {
-                        DrawImagePixel(g, c, x + (col * scalex), y + (line * scaley), scalex, scaley);
+                        // New Color encountered or Last pixel in the line; Draw.
+                        if (!scale) {
+                            if (col <= w && line <= h)
+                                DrawImagePixel(g, currentColor, x + col - (consecutive - 1), y + line, consecutive, 1);
+                        } else {
+                            DrawImagePixel(g, currentColor, x + ((col - (consecutive - 1)) * scalex), y + (line * scaley), (consecutive * scalex), scaley);
+                        }
+
+                        currentColor = nextColor ?? Color.Transparent; // Only null on last column so assigned color is never used.
+                        consecutive = 1;
                     }
                 }
             }
