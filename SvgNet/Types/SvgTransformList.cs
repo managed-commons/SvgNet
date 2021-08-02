@@ -80,6 +80,6 @@ namespace SvgNet.SvgTypes {
             return result;
         }
 
-        private readonly ArrayList _t = new ArrayList();
+        private readonly ArrayList _t = new();
     }
 }

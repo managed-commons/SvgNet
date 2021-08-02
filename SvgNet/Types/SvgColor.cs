@@ -29,9 +29,9 @@ namespace SvgNet.SvgTypes {
 
         public Color Color { get; set; }
 
-        public static implicit operator SvgColor(Color c) => new SvgColor(c);
+        public static implicit operator SvgColor(Color c) => new(c);
 
-        public static implicit operator SvgColor(string s) => new SvgColor(s);
+        public static implicit operator SvgColor(string s) => new(s);
 
         public object Clone() => new SvgColor(Color, _original_string);
 
@@ -104,7 +104,6 @@ namespace SvgNet.SvgTypes {
         }
 
         private void FromRGBString(string s) {
-#pragma warning disable CC0021 // Use nameof
             int r, g, b;
             var rg = new Regex(@"[rgbRGB ]+\( *(?<r>\d+)[, ]+(?<g>\d+)[, ]+(?<b>\d+) *\)");
             var m = rg.Match(s);
@@ -127,7 +126,6 @@ namespace SvgNet.SvgTypes {
                 Color = Color.FromArgb(r, g, b);
                 return;
             }
-#pragma warning restore CC0021 // Use nameof
 
             throw new SvgException("Invalid SvgColor", s);
         }

@@ -222,7 +222,7 @@ namespace SvgNet.SvgTypes {
             return result.ToString();
         }
 
-        private readonly Hashtable _styles = new Hashtable();
+        private readonly Hashtable _styles = new();
 
         private static string InvariantCultureToString(object styleValue)
             => styleValue is float styleAsFloat

@@ -8,7 +8,7 @@
     <AssemblyName>SVG</AssemblyName>
     <PackageId>SvgNet</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>2.1.6</Version>
+    <Version>2.1.7</Version>
     <RootNamespace>SVG</RootNamespace>
     <DocumentationFile>svgnetdoc.xml</DocumentationFile>
     <NoWarn>CS1591</NoWarn>
@@ -23,7 +23,9 @@
     <PackageTags>SVG</PackageTags>
     <Product>SvgNet</Product>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>.NET 5.0 also for net5.0-windows target</PackageReleaseNotes>
+    <PackageReleaseNotes>
+      Added simple compression to DrawBitmapData. PR #46 by Thomas T1G0FF
+    </PackageReleaseNotes>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 

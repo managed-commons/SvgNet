@@ -75,8 +75,9 @@ namespace SvgNet {
                         WriteTransform(doc, me, attribute);
                     } else {
                         // xlink qualified attributes are an special case because they need an special namespace
-                        if (s.StartsWith("xlink:")) {
-                            var localName = s.Substring("xlink:".Length);
+                        const string prefix = "xlink:";
+                        if (s.StartsWith(prefix)) {
+                            var localName = s.Substring(prefix.Length);
                             me.SetAttribute(localName, xlinkNamespaceURI, _atts[s].ToString());
                         } else {
                             me.SetAttribute(s, doc.NamespaceURI, _atts[s].ToString());

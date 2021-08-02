@@ -85,7 +85,7 @@ namespace SvgNet.SvgGdi {
             /// </summary>
             public class EmfReader : IDisposable {
                 public EmfReader(Stream stream) {
-                    this._stream = stream;
+                    _stream = stream;
                     _reader = new BinaryReader(stream);
                 }
 
@@ -102,7 +102,7 @@ namespace SvgNet.SvgGdi {
                     long begin = _reader.BaseStream.Position;
 
                     var rt = (EmfPlusRecordType)_reader.ReadUInt32();
-                    var recordSize = _reader.ReadUInt32();
+                    uint recordSize = _reader.ReadUInt32();
 
                     EmfBinaryRecord record = new EmfUnknownRecord {
                         RecordType = rt,
@@ -132,15 +132,11 @@ namespace SvgNet.SvgGdi {
                 }
 
                 public override void Read(BinaryReader reader) {
-                    var length = (int)base.RecordSize - sizeof(uint) - sizeof(uint);
-                    if (length > 0) {
-                        Data = reader.ReadBytes(length);
-                    } else {
-                        Data = _emptyData;
-                    }
+                    int length = (int)base.RecordSize - sizeof(uint) - sizeof(uint);
+                    Data = length > 0 ? reader.ReadBytes(length) : _emptyData;
                 }
 
-                private static readonly byte[] _emptyData = new byte[0];
+                private static readonly byte[] _emptyData = Array.Empty<byte>();
             }
         }
 
@@ -300,14 +296,14 @@ namespace SvgNet.SvgGdi {
                 if (_lineBuffer.IsEmpty)
                     return;
 
-                var linePoints = _lineBuffer.GetPoints();
+                PointF[] linePoints = _lineBuffer.GetPoints();
 
                 _lineBuffer.Clear();
 
                 if (linePoints == null)
                     return;
 
-                for (var i = 0; i < linePoints.Length; i++) {
+                for (int i = 0; i < linePoints.Length; i++) {
                     linePoints[i].X += _zero.X;
                     linePoints[i].Y += _zero.Y;
                 }
@@ -326,7 +322,7 @@ namespace SvgNet.SvgGdi {
                 if (linePoints == null || fillBrush == null)
                     return;
 
-                for (var i = 0; i < linePoints.Length; i++) {
+                for (int i = 0; i < linePoints.Length; i++) {
                     linePoints[i].X += _zero.X;
                     linePoints[i].Y += _zero.Y;
                 }
@@ -336,15 +332,15 @@ namespace SvgNet.SvgGdi {
             private void InternalProcessPolyline16(uint numberOfPolygons, uint totalNumberOfPoints, int[] numberOfPoints, BinaryReader reader) {
                 var points = new PointF[totalNumberOfPoints];
 
-                for (var j = 0; j < points.Length; j++) {
+                for (int j = 0; j < points.Length; j++) {
                     points[j].X = reader.ReadInt16();
                     points[j].Y = reader.ReadInt16();
                 }
 
                 _transform.TransformPoints(points);
 
-                var offset = 0;
-                for (var i = 0; i < numberOfPolygons; i++) {
+                int offset = 0;
+                for (int i = 0; i < numberOfPolygons; i++) {
                     DrawLine(points, offset, numberOfPoints[i]);
                     offset += numberOfPoints[i];
                 }
@@ -430,16 +426,16 @@ namespace SvgNet.SvgGdi {
                     _ms = new MemoryStream(recordData);
                     _br = new BinaryReader(_ms);
 
-                    var ihBrush = _br.ReadUInt32();
+                    uint ihBrush = _br.ReadUInt32();
 
                     // https://msdn.microsoft.com/en-us/library/cc230581.aspx
                     var brushStyle = (EmfBrushStyle)_br.ReadUInt32();
-                    var r = _br.ReadByte();
-                    var g = _br.ReadByte();
-                    var b = _br.ReadByte();
-                    var reserved = _br.ReadByte();
+                    byte r = _br.ReadByte();
+                    byte g = _br.ReadByte();
+                    byte b = _br.ReadByte();
+                    byte reserved = _br.ReadByte();
                     var brushColor = Color.FromArgb(r, g, b);
-                    var brushHatch = _br.ReadUInt32();
+                    uint brushHatch = _br.ReadUInt32();
 
                     _objects.Remove(ihBrush);
 
@@ -473,12 +469,12 @@ namespace SvgNet.SvgGdi {
                     _ms = new MemoryStream(recordData);
                     _br = new BinaryReader(_ms);
 
-                    var eM11 = _br.ReadSingle();
-                    var eM12 = _br.ReadSingle();
-                    var eM21 = _br.ReadSingle();
-                    var eM22 = _br.ReadSingle();
-                    var eDx = _br.ReadSingle();
-                    var eDy = _br.ReadSingle();
+                    float eM11 = _br.ReadSingle();
+                    float eM12 = _br.ReadSingle();
+                    float eM21 = _br.ReadSingle();
+                    float eM22 = _br.ReadSingle();
+                    float eDx = _br.ReadSingle();
+                    float eDy = _br.ReadSingle();
                     var iMode = (EmfTransformMode)_br.ReadInt32();
 
                     using (var matrix = new Matrix(eM11, eM12, eM21, eM22, eDx, eDy)) {
@@ -537,18 +533,18 @@ namespace SvgNet.SvgGdi {
 
                     _br.ReadBytes(16 /* Bounds */);
 
-                    var totalNumberOfPoints = _br.ReadUInt32();
+                    uint totalNumberOfPoints = _br.ReadUInt32();
 
                     var originalPoints = new PointF[totalNumberOfPoints];
 
-                    for (var j = 0; j < originalPoints.Length; j++) {
+                    for (int j = 0; j < originalPoints.Length; j++) {
                         originalPoints[j].X = _br.ReadInt16();
                         originalPoints[j].Y = _br.ReadInt16();
                     }
 
                     const int PointsPerCurve = 3;
 
-                    var numberOfCurves = totalNumberOfPoints / PointsPerCurve;
+                    uint numberOfCurves = totalNumberOfPoints / PointsPerCurve;
 
                     var points = new PointF[1 + numberOfCurves];
 
@@ -556,7 +552,7 @@ namespace SvgNet.SvgGdi {
                     points[0].X = _moveTo.X;
                     points[0].Y = _moveTo.Y;
 
-                    for (var j = 1; j < points.Length; j++) {
+                    for (int j = 1; j < points.Length; j++) {
                         // Every curve is defined by 3 points. The first two are the Bezier curve's control points.
                         // The 3rd is the endpoint. This is the point we'll use (only)
                         points[j] = originalPoints[((j - 1) * PointsPerCurve) + (PointsPerCurve - 1)];
@@ -585,9 +581,9 @@ namespace SvgNet.SvgGdi {
 
                     _br.ReadBytes(16 /* Bounds */);
 
-                    var totalNumberOfPoints = _br.ReadUInt32();
+                    uint totalNumberOfPoints = _br.ReadUInt32();
 
-                    var numberOfPoints = new int[1];
+                    int[] numberOfPoints = new int[1];
                     numberOfPoints[0] = (int)totalNumberOfPoints;
 
                     InternalProcessPolyline16(1, totalNumberOfPoints, numberOfPoints, _br);
@@ -609,9 +605,9 @@ namespace SvgNet.SvgGdi {
                     _br.ReadBytes(16 /* Bounds */);
 
                     const uint numberOfPolygons = 1u;
-                    var totalNumberOfPoints = _br.ReadUInt32();
+                    uint totalNumberOfPoints = _br.ReadUInt32();
 
-                    var numberOfPoints = new int[numberOfPolygons];
+                    int[] numberOfPoints = new int[numberOfPolygons];
                     numberOfPoints[0] = (int)totalNumberOfPoints;
 
                     InternalProcessPolyline16(numberOfPolygons, totalNumberOfPoints, numberOfPoints, _br);
@@ -632,7 +628,7 @@ namespace SvgNet.SvgGdi {
 
                     _br.ReadBytes(16 /* Bounds */);
 
-                    var totalNumberOfPoints = _br.ReadUInt32();
+                    uint totalNumberOfPoints = _br.ReadUInt32();
 
                     var points = new PointF[1 + totalNumberOfPoints];
 
@@ -640,7 +636,7 @@ namespace SvgNet.SvgGdi {
                     points[0].X = _moveTo.X;
                     points[0].Y = _moveTo.Y;
 
-                    for (var j = 1; j < points.Length; j++) {
+                    for (int j = 1; j < points.Length; j++) {
                         points[j].X = _br.ReadInt16();
                         points[j].Y = _br.ReadInt16();
                     }
@@ -668,12 +664,12 @@ namespace SvgNet.SvgGdi {
 
                     _br.ReadBytes(16 /* Bounds */);
 
-                    var numberOfPolygons = _br.ReadUInt32();
-                    var totalNumberOfPoints = _br.ReadUInt32();
+                    uint numberOfPolygons = _br.ReadUInt32();
+                    uint totalNumberOfPoints = _br.ReadUInt32();
 
-                    var numberOfPoints = new int[numberOfPolygons];
+                    int[] numberOfPoints = new int[numberOfPolygons];
 
-                    for (var i = 0; i < numberOfPolygons; i++)
+                    for (int i = 0; i < numberOfPolygons; i++)
                         numberOfPoints[i] = (int)_br.ReadUInt32();
 
                     InternalProcessPolyline16(numberOfPolygons, totalNumberOfPoints, numberOfPoints, _br);
@@ -692,7 +688,7 @@ namespace SvgNet.SvgGdi {
                     _ms = new MemoryStream(recordData);
                     _br = new BinaryReader(_ms);
 
-                    var ihObject = _br.ReadUInt32();
+                    uint ihObject = _br.ReadUInt32();
 
                     if (ihObject >= _stockObjectMinCode && ihObject <= _stockObjectMaxCode) {
                         var stockObject = (EmfStockObject)(ihObject - _stockObjectMinCode + (int)EmfStockObject.MinValue);
@@ -745,7 +741,7 @@ namespace SvgNet.SvgGdi {
                 public void Add(PointF[] points, int offset, int count) {
                     if (IsEmpty) {
                         MakeRoom(count);
-                        for (var i = 0; i < count; i++)
+                        for (int i = 0; i < count; i++)
                             _points.Add(Add(points[offset + i]));
                     } else {
                         if (!IsVisuallyIdentical(GetLastPoint(), points[offset]))
@@ -755,20 +751,12 @@ namespace SvgNet.SvgGdi {
 
                         Add(points[offset]);
 
-                        for (var i = 1; i < count; i++)
+                        for (int i = 1; i < count; i++)
                             _points.Add(Add(points[offset + i]));
                     }
                 }
 
-                public bool CanAdd(PointF[] points, int offset) {
-                    if (IsEmpty)
-                        return true;
-
-                    if (IsVisuallyIdentical(GetLastPoint(), points[offset]))
-                        return true;
-
-                    return false;
-                }
+                public bool CanAdd(PointF[] points, int offset) => IsEmpty || IsVisuallyIdentical(GetLastPoint(), points[offset]);
 
                 public void Clear() => _points.Clear();
 
@@ -776,7 +764,7 @@ namespace SvgNet.SvgGdi {
                     var points = new List<NormalizedPoint> {
                         _points[0]
                     };
-                    for (var i = 1; i < _points.Count; i++) {
+                    for (int i = 1; i < _points.Count; i++) {
                         if (!IsVisuallyIdentical(points[points.Count - 1], _points[i])) {
                             points.Add(_points[i]);
                         }
@@ -787,8 +775,8 @@ namespace SvgNet.SvgGdi {
 
                     var result = new List<PointF>();
 
-                    for (var i = 0; i < points.Count; i++) {
-                        var visualPoint = _visualPoints[points[i].VisualIndex];
+                    for (int i = 0; i < points.Count; i++) {
+                        VisualPoint visualPoint = _visualPoints[points[i].VisualIndex];
                         if (!visualPoint.IsLocked) {
                             // Calculate the visual point's appearance as "the middle" of all points
                             double sumX = 0;
@@ -822,7 +810,7 @@ namespace SvgNet.SvgGdi {
                     NormalizedPoint result;
                     VisualPoint visualPoint;
 
-                    for (var i = _normalizedPoints.Count - 1; i >= 0; i--) {
+                    for (int i = _normalizedPoints.Count - 1; i >= 0; i--) {
                         if (IsVisuallyIdentical(_normalizedPoints[i].Point, point)) {
                             visualPoint = _visualPoints[_normalizedPoints[i].VisualIndex];
                             visualPoint.Weight++;
@@ -844,14 +832,14 @@ namespace SvgNet.SvgGdi {
 
                 // TODO: TUNE: what's the correct value? Shoud it be based on the matafile's DPI?
                 private bool IsVisuallyIdentical(NormalizedPoint a, PointF b) {
-                    for (var i = _normalizedPoints.Count - 1; i >= 0; i--)
+                    for (int i = _normalizedPoints.Count - 1; i >= 0; i--)
                         if (_normalizedPoints[i].VisualIndex == a.VisualIndex && IsVisuallyIdentical(_normalizedPoints[i].Point, b)) return true;
                     return false;
                 }
 
                 private bool IsVisuallyIdentical(PointF a, PointF b) {
-                    var dx = a.X - b.X;
-                    var dy = a.Y - b.Y;
+                    float dx = a.X - b.X;
+                    float dy = a.Y - b.Y;
                     return ((dx * dx) + (dy * dy)) <= _epsilonSquare;
                 }
 

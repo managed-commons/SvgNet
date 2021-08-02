@@ -60,7 +60,7 @@ namespace SvgNet.SvgElements {
         }
 
         public SvgXRef XRef {
-            get => new SvgXRef(this);
+            get => new(this);
             set => value.WriteToElement(this);
         }
 
@@ -136,7 +136,7 @@ namespace SvgNet.SvgElements {
         }
 
         public SvgXRef XRef {
-            get => new SvgXRef(this);
+            get => new(this);
             set => value.WriteToElement(this);
         }
 

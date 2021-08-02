@@ -70,11 +70,11 @@ namespace SvgNet.SvgTypes {
         public override string ToString() {
             var builder = new System.Text.StringBuilder();
             foreach (float f in _pts) {
-                builder.Append(f.ToString("F", CultureInfo.InvariantCulture)).Append(" ");
+                builder.Append(f.ToString("F", CultureInfo.InvariantCulture)).Append(' ');
             }
             return builder.ToString();
         }
 
-        private readonly ArrayList _pts = new ArrayList();
+        private readonly ArrayList _pts = new();
     }
 }

@@ -182,7 +182,7 @@ namespace SvgNet {
             }
         }
 
-        protected Hashtable _atts = new Hashtable();
+        protected Hashtable _atts = new();
         protected object FirstChild => Children[0];
 
         protected T GetTypedAttribute<T>(string attributeName, Func<object, T> fromString) where T : new() {

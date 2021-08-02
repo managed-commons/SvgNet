@@ -136,10 +136,10 @@ namespace SvgNet.SvgTypes {
                 if (prev == null
                     || (prev.Type != seg.Type && !(prev.Type == SvgPathSegType.SVG_SEGTYPE_MOVETO && seg.Type == SvgPathSegType.SVG_SEGTYPE_LINETO))
                     || prev.Abs != seg.Abs) {
-                    builder.Append(seg.Char).Append(" ");
+                    builder.Append(seg.Char).Append(' ');
                 }
                 foreach (float d in seg.Data) {
-                    builder.Append(d.ToString(CultureInfo.InvariantCulture)).Append(" ");
+                    builder.Append(d.ToString(CultureInfo.InvariantCulture)).Append(' ');
                 }
                 prev = seg;
             }

@@ -26,10 +26,10 @@ namespace SvgNet {
             var ta = asm.GetExportedTypes();
             foreach (Type t in ta) {
                 if (t.IsSubclassOf(typeof(SvgElement)) && !t.IsAbstract) {
-                    var ci = t.GetConstructor(new Type[0]);
+                    var ci = t.GetConstructor(Array.Empty<Type>());
                     if (ci == null)
                         throw new InvalidOperationException($"Type {t.Name} doesn't have the mandatory public parameterless constructor");
-                    var e = (SvgElement)ci.Invoke(new object[0]);
+                    var e = (SvgElement)ci.Invoke(Array.Empty<object>());
                     if (e.Name != "?" /* default name of abstract SvgElements */) {
                         dict[e.Name] = e.GetType();
                     }
@@ -46,7 +46,7 @@ namespace SvgNet {
         /// <param name="el"></param>
         /// <returns></returns>
         public static SvgElement CloneElement(SvgElement el) {
-            var clone = (SvgElement)el.GetType().GetConstructor(new Type[0]).Invoke(new object[0]);
+            var clone = (SvgElement)el.GetType().GetConstructor(Array.Empty<Type>()).Invoke(Array.Empty<object>());
 
             foreach (string key in el.Attributes.Keys) {
                 clone[key] = el[key].CloneIfPossible();
@@ -89,7 +89,7 @@ namespace SvgNet {
 
             var t = (Type)_elementNameDictionary[el.Name];
 
-            var e = (SvgElement)t.GetConstructor(new Type[0]).Invoke(new object[0]);
+            var e = (SvgElement)t.GetConstructor(Array.Empty<Type>()).Invoke(Array.Empty<object>());
 
             RecLoadFromXML(e, doc, el);
 
@@ -130,7 +130,7 @@ namespace SvgNet {
             var ents = new System.Text.StringBuilder();
 
             if (entities.Count > 0) {
-                ents.Append("\n");
+                ents.Append('\n');
 
                 foreach (string key in entities.Keys) {
                     ents.Append("<!ENTITY ");
@@ -140,7 +140,7 @@ namespace SvgNet {
                     ents.Append("'>");
                 }
 
-                ents.Append("\n");
+                ents.Append('\n');
             }
 
             return ents.ToString();
@@ -208,14 +208,10 @@ namespace SvgNet {
 
                     var t = (Type)_elementNameDictionary[childXml.Name];
 
-                    SvgElement childSvg = null;
-
-                    if (t == null) {
-                        childSvg = new SvgGenericElement(childXml.Name);
-                    } else {
-                        childSvg = (SvgElement)t.GetConstructor(new Type[0]).Invoke(new object[0]);
-                    }
-
+                    SvgElement childSvg = t switch {
+                        null => new SvgGenericElement(childXml.Name),
+                        _ => (SvgElement)t.GetConstructor(Array.Empty<Type>()).Invoke(Array.Empty<object>()),
+                    };
                     e.AddChild(childSvg);
 
                     RecLoadFromXML(childSvg, doc, childXml);
