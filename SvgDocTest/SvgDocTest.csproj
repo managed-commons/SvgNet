@@ -92,13 +92,16 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Assert.cs" />
-    <Compile Include="Form1.cs">
+    <Compile Include="DocForm.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DocForm.Designer.cs">
+      <DependentUpon>DocForm.cs</DependentUpon>
     </Compile>
     <Compile Include="StringExtensions.cs" />
     <Content Include="App.ico" />
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="DocForm.resx">
+      <DependentUpon>DocForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -9,15 +9,12 @@
 using System.IO;
 using System.Xml;
 
-namespace SvgDocTest
-{
-    public static class StringExtensions
-    {
+namespace SvgDocTest {
+    public static class StringExtensions {
         public static string LoadText(this string svgFileName) => File.ReadAllText(svgFileName);
 
-        public static XmlDocument LoadXml(this string svgFileName)
-        {
-            XmlDocument doc = new XmlDocument();
+        public static XmlDocument LoadXml(this string svgFileName) {
+            var doc = new XmlDocument();
             doc.Load(svgFileName);
             return doc;
         }

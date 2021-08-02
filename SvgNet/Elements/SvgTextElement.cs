@@ -80,7 +80,7 @@ namespace SvgNet.SvgElements {
     /// <summary>
     /// Represents a <c>tref</c> element.
     /// </summary>
-    [Obsolete]
+    [Obsolete("Don't use it anymore")]
     public class SvgTrefElement : SvgBaseTextElement, IElementWithXRef {
         public SvgTrefElement() {
         }

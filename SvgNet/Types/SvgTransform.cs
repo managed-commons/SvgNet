@@ -32,25 +32,15 @@ namespace SvgNet.SvgTypes {
         public void FromString(string s) {
             Matrix = new Matrix();
 
-            string name, args;
-
-            int idx = s.IndexOf("(");
-
-            if (idx != -1) {
-                name = s.Substring(0, idx).Trim();
-
-                int idx2 = s.IndexOf(")");
-
-                if (idx2 != -1) {
-                    args = s.Substring(idx + 1, idx2 - idx - 1);
-                    float[] points = SvgNumList.String2Floats(args);
-
-                    if (name.IndexOf("matrix") != -1) {
+            if (s.TryParseTransformation(out string name, out float[] points))
+                switch (name) {
+                    case "matrix":
                         if (points.Length == 6) {
                             Matrix = new Matrix(points[0], points[1], points[2], points[3], points[4], points[5]);
                             return;
                         }
-                    } else if (name.IndexOf("translate") != -1) {
+                        break;
+                    case "translate":
                         if (points.Length == 1) {
                             Matrix.Translate(points[0], 0);
                             return;
@@ -59,7 +49,8 @@ namespace SvgNet.SvgTypes {
                             Matrix.Translate(points[0], points[1]);
                             return;
                         }
-                    } else if (name.IndexOf("scale") != -1) {
+                        break;
+                    case "scale":
                         if (points.Length == 1) {
                             Matrix.Scale(points[0], 0);
                             return;
@@ -68,30 +59,35 @@ namespace SvgNet.SvgTypes {
                             Matrix.Scale(points[0], points[1]);
                             return;
                         }
-                    } else if (name.IndexOf("rotate") != -1) {
+                        break;
+                    case "rotate":
                         if (points.Length == 1) {
                             Matrix.Rotate(points[0]);
                             return;
-                        } else if (points.Length == 3) {
+                        }
+                        if (points.Length == 3) {
                             Matrix.Translate(points[1], points[2]);
                             Matrix.Rotate(points[0]);
                             Matrix.Translate(points[1] * -1, points[2] * -1);
                             return;
                         }
-                    } else if (name.IndexOf("skewX") != -1) {
+                        break;
+                    case "skewX":
                         if (points.Length == 1) {
                             Matrix.Shear(points[0], 0);
                             return;
                         }
-                    } else if (name.IndexOf("skewY") != -1) {
+                        break;
+                    case "skewY":
                         if (points.Length == 1) {
                             Matrix.Shear(0, points[0]);
                             return;
                         }
-                    }
-                }
-            }
+                        break;
+                    default:
+                        throw new SvgException($"Invalid SvgTransformation: unrecognized name '{name}'", s);
 
+                }
             throw new SvgException("Invalid SvgTransformation", s);
         }
 

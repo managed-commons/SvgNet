@@ -92,10 +92,11 @@ namespace SvgNet.SvgGdi {
                 public bool IsEndOfFile => _stream.Length == _stream.Position;
 
                 public void Dispose() {
-                    if (_reader != null) {
+                    if (_reader is not null) {
                         _reader.Close();
                         _reader = null;
                     }
+                    GC.SuppressFinalize(this);
                 }
 
                 public IBinaryRecord Read() {
@@ -336,6 +337,7 @@ namespace SvgNet.SvgGdi {
                     points[j].X = reader.ReadInt16();
                     points[j].Y = reader.ReadInt16();
                 }
+
 
                 _transform.TransformPoints(points);
 
@@ -690,7 +692,7 @@ namespace SvgNet.SvgGdi {
 
                     uint ihObject = _br.ReadUInt32();
 
-                    if (ihObject >= _stockObjectMinCode && ihObject <= _stockObjectMaxCode) {
+                    if (ihObject is >= _stockObjectMinCode and <= _stockObjectMaxCode) {
                         var stockObject = (EmfStockObject)(ihObject - _stockObjectMinCode + (int)EmfStockObject.MinValue);
                         InternalSelectObject(stockObject);
                     } else {
@@ -745,7 +747,7 @@ namespace SvgNet.SvgGdi {
                             _points.Add(Add(points[offset + i]));
                     } else {
                         if (!IsVisuallyIdentical(GetLastPoint(), points[offset]))
-                            throw new ArgumentOutOfRangeException();
+                            throw new ArgumentOutOfRangeException(nameof(offset));
 
                         MakeRoom(count - 1);
 

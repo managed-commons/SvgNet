@@ -32,22 +32,17 @@ namespace SvgNet.SvgTypes {
             set => _t[idx] = value;
         }
 
-        public static implicit operator SvgTransformList(string s) {
-            return new SvgTransformList(s);
-        }
+        public static implicit operator SvgTransformList(string s) => new(s);
 
-        public static implicit operator SvgTransformList(Matrix m) {
-            return new SvgTransformList(m);
-        }
+        public static implicit operator SvgTransformList(Matrix m) => new(m);
 
         public void Add(string trans) => _t.Add(new SvgTransform(trans));
 
         public void Add(Matrix m) => _t.Add(new SvgTransform(m));
 
-        public object Clone() {
+        public object Clone() =>
             //use to/from string as a shortcut
-            return new SvgTransformList(ToString());
-        }
+            new SvgTransformList(ToString());
 
         /// <summary>
         /// Parse a string containing a whitespace-separated list of transformations as per the SVG
@@ -57,7 +52,7 @@ namespace SvgNet.SvgTypes {
             int start = -1;
 
             while (true) {
-                var end = s.IndexOf(")", start + 1);
+                int end = s.IndexOf(")", start + 1, StringComparison.Ordinal);
 
                 if (end == -1) return;
 

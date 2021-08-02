@@ -6,15 +6,12 @@
     Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
 
-using SvgNet.SvgGdi;
 using System.Drawing;
+using SvgNet.SvgGdi;
 
-namespace SvgGdiTest
-{
-    public static class RectAlignedTextTest
-    {
-        public static void RenderRectAlignedText(IGraphics ig, float width, float height, Font baseFont)
-        {
+namespace SvgGdiTest {
+    public static class RectAlignedTextTest {
+        public static void RenderRectAlignedText(IGraphics ig, float width, float height, Font baseFont) {
             ig.Clear(Color.White);
             ig.ScaleTransform(width / _canvasSize, height / _canvasSize);
             DrawTest(ig, baseFont);
@@ -25,10 +22,8 @@ namespace SvgGdiTest
         private const int _rectGap = 20;
         private const int _rectSize = 150;
 
-        private static void DrawRect(IGraphics canvas, string id, Rectangle rect, StringAlignment horizontalAlignment, StringAlignment verticalAlignment, Font baseFont)
-        {
-            var format = new StringFormat
-            {
+        private static void DrawRect(IGraphics canvas, string id, Rectangle rect, StringAlignment horizontalAlignment, StringAlignment verticalAlignment, Font baseFont) {
+            var format = new StringFormat {
                 Alignment = horizontalAlignment,
                 LineAlignment = verticalAlignment,
                 FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.NoClip
@@ -41,8 +36,7 @@ namespace SvgGdiTest
 
             {
                 // Draw label
-                var labelFormat = new StringFormat
-                {
+                var labelFormat = new StringFormat {
                     Alignment = StringAlignment.Near,
                     LineAlignment = StringAlignment.Center,
                     FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.NoClip
@@ -55,18 +49,16 @@ namespace SvgGdiTest
             canvas.DrawString("Helloy", font, new SolidBrush(Color.Blue), rect, format);
         }
 
-        private static void DrawTest(IGraphics canvas, Font baseFont)
-        {
+        private static void DrawTest(IGraphics canvas, Font baseFont) {
             canvas.FillRectangle(new SolidBrush(Color.White), new Rectangle(0, 0, _canvasSize, _canvasSize));
 
             var alignments = new StringAlignment[] { StringAlignment.Near, StringAlignment.Center, StringAlignment.Far };
 
-            var id = 1;
-            foreach (var verticalAlignment in alignments)
-                foreach (var horizontalAlignment in alignments)
-                {
-                    var x = _rectGap + ((int)horizontalAlignment * (_rectSize + _rectGap));
-                    var y = _rectGap + ((int)verticalAlignment * (_rectSize + _rectGap));
+            int id = 1;
+            foreach (StringAlignment verticalAlignment in alignments)
+                foreach (StringAlignment horizontalAlignment in alignments) {
+                    int x = _rectGap + ((int)horizontalAlignment * (_rectSize + _rectGap));
+                    int y = _rectGap + ((int)verticalAlignment * (_rectSize + _rectGap));
                     var rect = new Rectangle(x, y, _rectSize, _rectSize);
                     DrawRect(canvas, id.ToString(), rect, horizontalAlignment, verticalAlignment, baseFont);
                     id++;

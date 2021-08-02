@@ -23,10 +23,10 @@ namespace SvgNet {
         public static Hashtable BuildElementNameDictionary() {
             var dict = new Hashtable();
             var asm = Assembly.GetExecutingAssembly();
-            var ta = asm.GetExportedTypes();
+            Type[] ta = asm.GetExportedTypes();
             foreach (Type t in ta) {
                 if (t.IsSubclassOf(typeof(SvgElement)) && !t.IsAbstract) {
-                    var ci = t.GetConstructor(Array.Empty<Type>());
+                    ConstructorInfo ci = t.GetConstructor(Array.Empty<Type>());
                     if (ci == null)
                         throw new InvalidOperationException($"Type {t.Name} doesn't have the mandatory public parameterless constructor");
                     var e = (SvgElement)ci.Invoke(Array.Empty<object>());
@@ -115,12 +115,12 @@ namespace SvgNet {
             // "Uncompress" attribute values with only one reference as it would actually
             // make the resulting XML bigger
             foreach (DictionaryEntry pair in singletons) {
-                var attributeValue = (string)pair.Key;
+                string attributeValue = (string)pair.Key;
                 var singleton = (EntitySingleton)pair.Value;
 
                 // This is an inverse behavior of what RecCompXML did
                 singleton.Element.RemoveAttribute(singleton.AttributeName);
-                var attr = doc.CreateAttribute(singleton.AttributeName);
+                XmlAttribute attr = doc.CreateAttribute(singleton.AttributeName);
                 attr.Value = attributeValue;
                 singleton.Element.SetAttributeNode(attr);
 
@@ -164,7 +164,7 @@ namespace SvgNet {
             }
 
             foreach (string s in keys) {
-                var val = el.Attributes[s].Value;
+                string val = el.Attributes[s].Value;
 
                 if (val.Length > 30) {
                     string entname;
@@ -181,7 +181,7 @@ namespace SvgNet {
                         singletons.Remove(val);
                     }
 
-                    var attr = doc.CreateAttribute(s);
+                    XmlAttribute attr = doc.CreateAttribute(s);
                     attr.AppendChild(doc.CreateEntityReference(entname));
                     el.SetAttributeNode(attr);
                 }

@@ -35,6 +35,8 @@ namespace SvgNet.SvgTypes {
 
         public object Clone() => new SvgColor(Color, _original_string);
 
+        private static readonly Regex rg = new("[rR][gG][bB]");
+
         /// <summary>
         /// As well as parsing the four types of CSS color descriptor (rgb, #xxxxxx, color name, and system color name),
         /// the FromString of this type stores the original string
@@ -43,12 +45,11 @@ namespace SvgNet.SvgTypes {
         public void FromString(string s) {
             _original_string = s;
 
-            if (s.StartsWith("#")) {
+            if (s.StartsWith("#", StringComparison.Ordinal)) {
                 FromHexString(s);
                 return;
             }
 
-            var rg = new Regex("[rgbRGB]{3}");
             if (rg.Match(s).Success) {
                 FromRGBString(s);
                 return;
@@ -68,7 +69,7 @@ namespace SvgNet.SvgTypes {
             if (_original_string != null)
                 return _original_string;
 
-            var s = "rgb(";
+            string s = "rgb(";
             s += Color.R.ToString();
             s += ",";
             s += Color.G.ToString();
@@ -83,30 +84,30 @@ namespace SvgNet.SvgTypes {
 
         private void FromHexString(string s) {
             int r, g, b;
-            s = s.Substring(1);
-
-            if (s.Length == 3) {
-                r = int.Parse(s.Substring(0, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-                g = int.Parse(s.Substring(1, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-                b = int.Parse(s.Substring(2, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+            if (s.Length == 4) {
+                r = s.ParseHex(1, 1);
+                g = s.ParseHex(2, 1);
+                b = s.ParseHex(3, 1);
                 r += r * 16;
                 g += g * 16;
                 b += b * 16;
                 Color = Color.FromArgb(r, g, b);
-            } else if (s.Length == 6) {
-                r = int.Parse(s.Substring(0, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-                g = int.Parse(s.Substring(2, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-                b = int.Parse(s.Substring(4, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+            } else if (s.Length == 7) {
+                r = s.ParseHex(1, 2);
+                g = s.ParseHex(3, 2);
+                b = s.ParseHex(5, 2);
                 Color = Color.FromArgb(r, g, b);
             } else {
                 throw new SvgException("Invalid SvgColor", s);
             }
         }
 
+
+
         private void FromRGBString(string s) {
             int r, g, b;
             var rg = new Regex(@"[rgbRGB ]+\( *(?<r>\d+)[, ]+(?<g>\d+)[, ]+(?<b>\d+) *\)");
-            var m = rg.Match(s);
+            Match m = rg.Match(s);
             if (m.Success) {
                 r = int.Parse(m.Groups["r"].Captures[0].Value, CultureInfo.InvariantCulture);
                 g = int.Parse(m.Groups["g"].Captures[0].Value, CultureInfo.InvariantCulture);

@@ -30,42 +30,35 @@ namespace SvgNet.SvgTypes {
 
         public float Value { get; set; }
 
-        public static implicit operator SvgLength(string s) {
-            return new SvgLength(s);
-        }
+        public static implicit operator SvgLength(string s) => new(s);
 
-        public static implicit operator SvgLength(float s) {
-            return new SvgLength(s);
-        }
+        public static implicit operator SvgLength(float s) => new(s);
 
         public object Clone() => new SvgLength(Value, Type);
 
         public void FromString(string s) {
-            var i = s.LastIndexOfAny(new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' });
-            if (i == -1)
-                return;
+            if (s.TrySplitNumberAndSuffix(out string number, out string suffix)) {
+                Value = float.Parse(number, CultureInfo.InvariantCulture);
 
-            Value = float.Parse(s.Substring(0, i + 1), CultureInfo.InvariantCulture);
-
-            Type = (s.Substring(i + 1)) switch
-            {
-                "%" => SvgLengthType.SVG_LENGTHTYPE_PERCENTAGE,
-                "em" => SvgLengthType.SVG_LENGTHTYPE_EMS,
-                "ex" => SvgLengthType.SVG_LENGTHTYPE_EXS,
-                "px" => SvgLengthType.SVG_LENGTHTYPE_PX,
-                "cm" => SvgLengthType.SVG_LENGTHTYPE_CM,
-                "mm" => SvgLengthType.SVG_LENGTHTYPE_MM,
-                "in" => SvgLengthType.SVG_LENGTHTYPE_IN,
-                "pt" => SvgLengthType.SVG_LENGTHTYPE_PT,
-                "pc" => SvgLengthType.SVG_LENGTHTYPE_PC,
-                "" => SvgLengthType.SVG_LENGTHTYPE_UNKNOWN,
-
-                _ => throw new SvgException("Invalid SvgLength", s),
-            };
+                Type = suffix switch {
+                    "%" => SvgLengthType.SVG_LENGTHTYPE_PERCENTAGE,
+                    "em" => SvgLengthType.SVG_LENGTHTYPE_EMS,
+                    "ex" => SvgLengthType.SVG_LENGTHTYPE_EXS,
+                    "px" => SvgLengthType.SVG_LENGTHTYPE_PX,
+                    "cm" => SvgLengthType.SVG_LENGTHTYPE_CM,
+                    "mm" => SvgLengthType.SVG_LENGTHTYPE_MM,
+                    "in" => SvgLengthType.SVG_LENGTHTYPE_IN,
+                    "pt" => SvgLengthType.SVG_LENGTHTYPE_PT,
+                    "pc" => SvgLengthType.SVG_LENGTHTYPE_PC,
+                    "" => SvgLengthType.SVG_LENGTHTYPE_UNKNOWN,
+                    _ => throw new SvgException("Invalid SvgLength", s),
+                };
+            }
         }
 
+
         public override string ToString() {
-            var s = Value.ToString("F", CultureInfo.InvariantCulture);
+            string s = Value.ToString("F", CultureInfo.InvariantCulture);
             switch (Type) {
                 case SvgLengthType.SVG_LENGTHTYPE_PERCENTAGE:
                     s += "%";

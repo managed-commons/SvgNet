@@ -25,18 +25,17 @@ namespace SvgNet.SvgTypes {
 
         public bool Abs { get; }
 
-        public string Char => _type switch
-        {
-            SvgPathSegType.SVG_SEGTYPE_MOVETO => (Abs ? "M" : "m"),
+        public string Char => _type switch {
+            SvgPathSegType.SVG_SEGTYPE_MOVETO => Abs ? "M" : "m",
             SvgPathSegType.SVG_SEGTYPE_CLOSEPATH => "z",
-            SvgPathSegType.SVG_SEGTYPE_LINETO => (Abs ? "L" : "l"),
-            SvgPathSegType.SVG_SEGTYPE_HLINETO => (Abs ? "H" : "h"),
-            SvgPathSegType.SVG_SEGTYPE_VLINETO => (Abs ? "V" : "v"),
-            SvgPathSegType.SVG_SEGTYPE_CURVETO => (Abs ? "C" : "c"),
-            SvgPathSegType.SVG_SEGTYPE_SMOOTHCURVETO => (Abs ? "S" : "s"),
-            SvgPathSegType.SVG_SEGTYPE_BEZIERTO => (Abs ? "Q" : "q"),
-            SvgPathSegType.SVG_SEGTYPE_SMOOTHBEZIERTO => (Abs ? "T" : "t"),
-            SvgPathSegType.SVG_SEGTYPE_ARCTO => (Abs ? "A" : "a"),
+            SvgPathSegType.SVG_SEGTYPE_LINETO => Abs ? "L" : "l",
+            SvgPathSegType.SVG_SEGTYPE_HLINETO => Abs ? "H" : "h",
+            SvgPathSegType.SVG_SEGTYPE_VLINETO => Abs ? "V" : "v",
+            SvgPathSegType.SVG_SEGTYPE_CURVETO => Abs ? "C" : "c",
+            SvgPathSegType.SVG_SEGTYPE_SMOOTHCURVETO => Abs ? "S" : "s",
+            SvgPathSegType.SVG_SEGTYPE_BEZIERTO => Abs ? "Q" : "q",
+            SvgPathSegType.SVG_SEGTYPE_SMOOTHBEZIERTO => Abs ? "T" : "t",
+            SvgPathSegType.SVG_SEGTYPE_ARCTO => Abs ? "A" : "a",
 
             _ => throw new SvgException("Invalid PathSeg type", _type.ToString()),
         };

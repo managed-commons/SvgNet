@@ -24,27 +24,24 @@ namespace SvgNet.SvgTypes {
             set => _path[idx] = value;
         }
 
-        public static implicit operator SvgPath(string s) {
-            return new SvgPath(s);
-        }
+        public static implicit operator SvgPath(string s) => new(s);
 
-        public object Clone() {
+        public object Clone() =>
             //we resort to using to/from string rather than writing an efficient clone, for the moment.
-            return new SvgPath(ToString());
-        }
+            new SvgPath(ToString());
 
         /// <summary>
         /// The parsing of the path is not completely perfect yet.  You can only have one space between path elements.
         /// </summary>
         /// <param name="s"></param>
         public void FromString(string s) {
-            var sa = s.Split(new char[] { ' ', ',', '\t', '\r', '\n' });
+            string[] sa = s.Split(new char[] { ' ', ',', '\t', '\r', '\n' });
 
             PathSeg ps;
-            var datasize = 0;
-            var pt = SvgPathSegType.SVG_SEGTYPE_UNKNOWN;
-            var abs = false;
-            var i = 0;
+            int datasize = 0;
+            SvgPathSegType pt = SvgPathSegType.SVG_SEGTYPE_UNKNOWN;
+            bool abs = false;
+            int i = 0;
             char segTypeChar;
             _path = new ArrayList();
 
@@ -59,51 +56,72 @@ namespace SvgNet.SvgTypes {
                 if (char.IsLetter(sa[i][0])) {
                     segTypeChar = sa[i][0];
 
-                    if (segTypeChar == 'M' || segTypeChar == 'm') {
-                        pt = SvgPathSegType.SVG_SEGTYPE_MOVETO;
-                        abs = (segTypeChar == 'M');
-                        datasize = 2;
-                    } else if (segTypeChar == 'Z' || segTypeChar == 'z') {
-                        pt = SvgPathSegType.SVG_SEGTYPE_CLOSEPATH;
-                        datasize = 0;
-                    } else if (segTypeChar == 'L' || segTypeChar == 'l') {
-                        pt = SvgPathSegType.SVG_SEGTYPE_LINETO;
-                        abs = (segTypeChar == 'L');
-                        datasize = 2;
-                    } else if (segTypeChar == 'H' || segTypeChar == 'h') {
-                        pt = SvgPathSegType.SVG_SEGTYPE_HLINETO;
-                        abs = (segTypeChar == 'H');
-                        datasize = 1;
-                    } else if (segTypeChar == 'V' || segTypeChar == 'v') {
-                        pt = SvgPathSegType.SVG_SEGTYPE_VLINETO;
-                        abs = (segTypeChar == 'V');
-                        datasize = 1;
-                    } else if (segTypeChar == 'C' || segTypeChar == 'c') {
-                        pt = SvgPathSegType.SVG_SEGTYPE_CURVETO;
-                        abs = (segTypeChar == 'C');
-                        datasize = 6;
-                    } else if (segTypeChar == 'S' || segTypeChar == 's') {
-                        pt = SvgPathSegType.SVG_SEGTYPE_SMOOTHCURVETO;
-                        abs = (segTypeChar == 'S');
-                        datasize = 4;
-                    } else if (segTypeChar == 'Q' || segTypeChar == 'q') {
-                        pt = SvgPathSegType.SVG_SEGTYPE_BEZIERTO;
-                        abs = (segTypeChar == 'Q');
-                        datasize = 4;
-                    } else if (segTypeChar == 'T' || segTypeChar == 't') {
-                        pt = SvgPathSegType.SVG_SEGTYPE_SMOOTHBEZIERTO;
-                        abs = (segTypeChar == 'T');
-                        datasize = 2;
-                    } else if (segTypeChar == 'A' || segTypeChar == 'a') {
-                        pt = SvgPathSegType.SVG_SEGTYPE_ARCTO;
-                        abs = (segTypeChar == 'A');
-                        datasize = 7;
-                    } else {
-                        throw new SvgException("Invalid SvgPath", s);
+                    switch (segTypeChar) {
+                        case 'M':
+                        case 'm':
+                            pt = SvgPathSegType.SVG_SEGTYPE_MOVETO;
+                            abs = segTypeChar == 'M';
+                            datasize = 2;
+                            break;
+                        case 'Z':
+                        case 'z':
+                            pt = SvgPathSegType.SVG_SEGTYPE_CLOSEPATH;
+                            datasize = 0;
+                            break;
+                        case 'L':
+                        case 'l':
+                            pt = SvgPathSegType.SVG_SEGTYPE_LINETO;
+                            abs = segTypeChar == 'L';
+                            datasize = 2;
+                            break;
+                        case 'H':
+                        case 'h':
+                            pt = SvgPathSegType.SVG_SEGTYPE_HLINETO;
+                            abs = segTypeChar == 'H';
+                            datasize = 1;
+                            break;
+                        case 'V':
+                        case 'v':
+                            pt = SvgPathSegType.SVG_SEGTYPE_VLINETO;
+                            abs = segTypeChar == 'V';
+                            datasize = 1;
+                            break;
+                        case 'C':
+                        case 'c':
+                            pt = SvgPathSegType.SVG_SEGTYPE_CURVETO;
+                            abs = segTypeChar == 'C';
+                            datasize = 6;
+                            break;
+                        case 'S':
+                        case 's':
+                            pt = SvgPathSegType.SVG_SEGTYPE_SMOOTHCURVETO;
+                            abs = segTypeChar == 'S';
+                            datasize = 4;
+                            break;
+                        case 'Q':
+                        case 'q':
+                            pt = SvgPathSegType.SVG_SEGTYPE_BEZIERTO;
+                            abs = segTypeChar == 'Q';
+                            datasize = 4;
+                            break;
+                        case 'T':
+                        case 't':
+                            pt = SvgPathSegType.SVG_SEGTYPE_SMOOTHBEZIERTO;
+                            abs = segTypeChar == 'T';
+                            datasize = 2;
+                            break;
+                        case 'A':
+                        case 'a':
+                            pt = SvgPathSegType.SVG_SEGTYPE_ARCTO;
+                            abs = segTypeChar == 'A';
+                            datasize = 7;
+                            break;
+                        default:
+                            throw new SvgException("Invalid SvgPath", s);
                     }
 
                     //strip off type character
-                    sa[i] = sa[i].Substring(1);
+                    sa[i] = sa[i].SkipFirst();
 
                     if (sa[i]?.Length == 0)
                         i++;
@@ -115,7 +133,7 @@ namespace SvgNet.SvgTypes {
                 if (pt == SvgPathSegType.SVG_SEGTYPE_UNKNOWN)
                     throw new SvgException("Invalid SvgPath", s);
 
-                var arr = new float[datasize];
+                float[] arr = new float[datasize];
 
                 for (int j = 0; j < datasize; ++j) {
                     arr[j] = float.Parse(sa[i + j], CultureInfo.InvariantCulture);

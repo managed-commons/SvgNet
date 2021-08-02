@@ -8,22 +8,16 @@
 
 using System;
 
-namespace SvgDocTest
-{
-    public static class Assert
-    {
-        public static void Equals(float a, float b)
-        {
-            if (a != b)
-            {
+namespace SvgDocTest {
+    public static class Assert {
+        public static void Equals(float a, float b) {
+            if (a != b) {
                 throw new Exception("Assert.Equals");
             }
         }
 
-        public static void Equals(bool a, bool b)
-        {
-            if (a != b)
-            {
+        public static void Equals(bool a, bool b) {
+            if (a != b) {
                 throw new Exception("Assert.Equals");
             }
         }

@@ -25,32 +25,27 @@ namespace SvgNet.SvgTypes {
 
         public float Value { get; set; }
 
-        public static implicit operator SvgAngle(string s) {
-            return new SvgAngle(s);
-        }
+        public static implicit operator SvgAngle(string s) => new(s);
 
         public object Clone() => new SvgAngle(Value, Type);
 
         public void FromString(string s) {
-            var i = s.LastIndexOfAny(new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' });
-            if (i == -1)
-                return;
+            if (s.TrySplitNumberAndSuffix(out string number, out string suffix)) {
+                Value = int.Parse(number, CultureInfo.InvariantCulture);
 
-            Value = int.Parse(s.Substring(0, i + 1), CultureInfo.InvariantCulture);
+                Type = suffix switch {
+                    "grad" => SvgAngleType.SVG_ANGLETYPE_GRAD,
+                    "rad" => SvgAngleType.SVG_ANGLETYPE_RAD,
+                    "deg" => SvgAngleType.SVG_ANGLETYPE_DEG,
+                    "" => SvgAngleType.SVG_ANGLETYPE_UNSPECIFIED,
 
-            Type = (s.Substring(i + 1)) switch
-            {
-                "grad" => SvgAngleType.SVG_ANGLETYPE_GRAD,
-                "rad" => SvgAngleType.SVG_ANGLETYPE_RAD,
-                "deg" => SvgAngleType.SVG_ANGLETYPE_DEG,
-                "" => SvgAngleType.SVG_ANGLETYPE_UNSPECIFIED,
-
-                _ => throw new SvgException("Invalid SvgAngle", s),
-            };
+                    _ => throw new SvgException("Invalid SvgAngle", s),
+                };
+            }
         }
 
         public override string ToString() {
-            var s = Value.ToString("F", CultureInfo.InvariantCulture);
+            string s = Value.ToString("F", CultureInfo.InvariantCulture);
             switch (Type) {
                 case SvgAngleType.SVG_ANGLETYPE_DEG:
                 case SvgAngleType.SVG_ANGLETYPE_UNSPECIFIED:

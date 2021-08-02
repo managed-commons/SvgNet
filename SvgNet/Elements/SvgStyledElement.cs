@@ -6,7 +6,6 @@
     Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
 
-using System;
 using System.Xml;
 using SvgNet.SvgTypes;
 
@@ -65,9 +64,9 @@ namespace SvgNet {
         /// <param name="doc"></param>
         /// <param name="parent"></param>
         public override void WriteXmlElements(XmlDocument doc, XmlElement parent) {
-            var me = doc.CreateElement("", Name, doc.NamespaceURI);
+            XmlElement me = doc.CreateElement("", Name, doc.NamespaceURI);
             foreach (string s in _atts.Keys) {
-                var attribute = _atts[s];
+                object attribute = _atts[s];
                 if (attribute != null) {
                     if (s == "style") {
                         WriteStyle(doc, me, attribute);
@@ -75,9 +74,8 @@ namespace SvgNet {
                         WriteTransform(doc, me, attribute);
                     } else {
                         // xlink qualified attributes are an special case because they need an special namespace
-                        const string prefix = "xlink:";
-                        if (s.StartsWith(prefix)) {
-                            var localName = s.Substring(prefix.Length);
+                        (bool isPrefixed, string localName) = s.IsPrefixedBy("xlink:");
+                        if (isPrefixed) {
                             me.SetAttribute(localName, xlinkNamespaceURI, _atts[s].ToString());
                         } else {
                             me.SetAttribute(s, doc.NamespaceURI, _atts[s].ToString());
@@ -116,11 +114,9 @@ namespace SvgNet {
             doc.CreateEntityReference("pingu");
         }
 
-        private static void WriteTransform(XmlDocument doc, XmlElement me, object o) {
+        private static void WriteTransform(XmlDocument doc, XmlElement me, object o) =>
             //if (o.GetType() != typeof(SvgTransformList))
             //{
-            me.SetAttribute("transform", doc.NamespaceURI, o.ToString());
-            //}
-        }
+            me.SetAttribute("transform", doc.NamespaceURI, o.ToString());//}
     }
 }

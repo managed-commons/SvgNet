@@ -144,9 +144,7 @@ namespace SvgNet.SvgTypes {
             set => _styles[attname] = value;
         }
 
-        public static implicit operator SvgStyle(string s) {
-            return new SvgStyle(s);
-        }
+        public static implicit operator SvgStyle(string s) => new(s);
 
         /// <summary>
         /// Adds two SvgStyles together, resulting in a new object that contains all the attributes of both styles.

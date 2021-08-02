@@ -39,10 +39,8 @@ namespace SvgNet {
         /// </summary>
         /// <param name="doc"></param>
         /// <param name="el"></param>
-        public override void ReadXmlElement(XmlDocument doc, XmlElement el) {
-            throw new SvgException("TextNode::ReadXmlElement should not be called; " +
+        public override void ReadXmlElement(XmlDocument doc, XmlElement el) => throw new SvgException("TextNode::ReadXmlElement should not be called; " +
                 "the value should be filled in with a string when the XML doc is being read.", "");
-        }
 
         /// <summary>
         /// Overridden to simply create an XML text node below the parent.

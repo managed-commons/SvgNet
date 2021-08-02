@@ -38,13 +38,9 @@ namespace SvgNet.SvgTypes {
             }
         }
 
-        public static implicit operator SvgPoints(string s) {
-            return new SvgPoints(s);
-        }
+        public static implicit operator SvgPoints(string s) => new(s);
 
-        public static implicit operator SvgPoints(PointF[] pts) {
-            return new SvgPoints(pts);
-        }
+        public static implicit operator SvgPoints(PointF[] pts) => new(pts);
 
         public object Clone() => new SvgPoints((PointF[])_pts.ToArray(typeof(PointF)));
 
@@ -55,7 +51,7 @@ namespace SvgNet.SvgTypes {
         /// <param name="s"></param>
         public void FromString(string s) {
             try {
-                var fa = SvgNumList.String2Floats(s);
+                float[] fa = SvgNumList.String2Floats(s);
                 foreach (float f in fa) {
                     _pts.Add(f);
                 }

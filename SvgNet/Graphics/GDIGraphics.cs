@@ -294,7 +294,7 @@ namespace SvgNet.SvgGdi {
         public Region[] MeasureCharacterRanges(string text, Font font, RectangleF layoutRect, StringFormat stringFormat) => _g.MeasureCharacterRanges(text, font, layoutRect, stringFormat);
 
         public SizeF MeasureString(string text, Font font, SizeF layoutArea, StringFormat stringFormat, out int charactersFitted, out int linesFilled) {
-            var siz = _g.MeasureString(text, font, layoutArea, stringFormat, out var a, out var b); charactersFitted = a; linesFilled = b; return siz;
+            SizeF siz = _g.MeasureString(text, font, layoutArea, stringFormat, out int a, out int b); charactersFitted = a; linesFilled = b; return siz;
         }
 
         public SizeF MeasureString(string text, Font font, PointF origin, StringFormat stringFormat) => _g.MeasureString(text, font, origin, stringFormat);

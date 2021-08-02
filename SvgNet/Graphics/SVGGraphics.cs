@@ -659,12 +659,12 @@ namespace SvgNet.SvgGdi {
             // engineer the GDI metafile drawing and convert it to corresponding SVG commands
 
             // Calculate the bounding rectangle
-            var minX = points[0].X;
-            var maxX = points[0].X;
-            var minY = points[0].Y;
-            var maxY = points[0].Y;
-            for (var i = 1; i < points.Length; i++) {
-                var point = points[i];
+            float minX = points[0].X;
+            float maxX = points[0].X;
+            float minY = points[0].Y;
+            float maxY = points[0].Y;
+            for (int i = 1; i < points.Length; i++) {
+                PointF point = points[i];
                 minX = Math.Min(minX, point.X);
                 maxX = Math.Max(maxX, point.X);
                 minY = Math.Min(minY, point.Y);
@@ -673,11 +673,11 @@ namespace SvgNet.SvgGdi {
             var bounds = new RectangleF(minX, minY, maxX - minX + 1, maxY - minY + 1);
 
             // Make the rectangle 0-based where "zero" represents the original shift
-            var zero = bounds.Location;
+            PointF zero = bounds.Location;
             bounds.Offset(-zero.X, -zero.Y);
 
             // Make the original point-path "zero"-based
-            for (var i = 0; i < points.Length; i++) {
+            for (int i = 0; i < points.Length; i++) {
                 points[i].X -= zero.X;
                 points[i].Y -= zero.Y;
             }
@@ -693,7 +693,7 @@ namespace SvgNet.SvgGdi {
 
                 using (var temporaryBitmap = new Bitmap(1, 1)) {
                     using var temporaryCanvas = Graphics.FromImage(temporaryBitmap);
-                    var hdc = temporaryCanvas.GetHdc();
+                    IntPtr hdc = temporaryCanvas.GetHdc();
                     metafile = new Metafile(
                         metafileBuffer,
                         hdc,
@@ -712,7 +712,7 @@ namespace SvgNet.SvgGdi {
 
             metafileBuffer.Position = 0;
 
-            var metafileIsEmpty = true;
+            bool metafileIsEmpty = true;
             var parser = new MetafileTools.MetafileParser();
             parser.EnumerateMetafile(metafileBuffer, pen.Width, zero, (PointF[] linePoints) => {
                 metafileIsEmpty = false;
@@ -739,7 +739,7 @@ namespace SvgNet.SvgGdi {
                 // full of "TODO". In this case we should take a graceful fallback approach
 
                 // Restore points array to the original values they had when entered the function
-                for (var i = 0; i < points.Length; i++) {
+                for (int i = 0; i < points.Length; i++) {
                     points[i].X += zero.X;
                     points[i].Y += zero.Y;
                 }
@@ -1776,8 +1776,8 @@ namespace SvgNet.SvgGdi {
             var end = new PointF();
             var center = new PointF(x + (width / 2f), y + (height / 2f));
 
-            startAngle = (startAngle / 360f) * 2f * (float)Math.PI;
-            sweepAngle = (sweepAngle / 360f) * 2f * (float)Math.PI;
+            startAngle = startAngle / 360f * 2f * (float)Math.PI;
+            sweepAngle = sweepAngle / 360f * 2f * (float)Math.PI;
 
             sweepAngle += startAngle;
 
@@ -1823,8 +1823,7 @@ namespace SvgNet.SvgGdi {
         /// <summary>
         /// Decides whether the pen's anchor type is simple enough to be drawn by a fast approximation using the DrawEndAnchor
         /// </summary>
-        private static bool IsEndAnchorSimple(LineCap lc) => lc switch
-        {
+        private static bool IsEndAnchorSimple(LineCap lc) => lc switch {
             LineCap.NoAnchor or LineCap.Flat or LineCap.ArrowAnchor or LineCap.DiamondAnchor or LineCap.RoundAnchor or LineCap.SquareAnchor => true,
             _ => false,
         };
@@ -1914,7 +1913,7 @@ namespace SvgNet.SvgGdi {
                             if (col <= w && line <= h)
                                 DrawImagePixel(g, currentColor, x + col - (consecutive - 1), y + line, consecutive, 1);
                         } else {
-                            DrawImagePixel(g, currentColor, x + ((col - (consecutive - 1)) * scalex), y + (line * scaley), (consecutive * scalex), scaley);
+                            DrawImagePixel(g, currentColor, x + ((col - (consecutive - 1)) * scalex), y + (line * scaley), consecutive * scalex, scaley);
                         }
 
                         currentColor = nextColor ?? Color.Transparent; // Only null on last column so assigned color is never used.
@@ -1962,7 +1961,7 @@ namespace SvgNet.SvgGdi {
                     break;
 
                 case LineCap.SquareAnchor:
-                    float ww = (w / 3) * 2;
+                    float ww = w / 3 * 2;
                     anchor = new SvgRectElement(0 - ww, 0 - ww, ww * 2, ww * 2);
                     break;
 
@@ -1987,7 +1986,7 @@ namespace SvgNet.SvgGdi {
             anchor.Style.Set("stroke", "none");
 
             var rotation = new Matrix();
-            rotation.Rotate((angle / (float)Math.PI) * 180);
+            rotation.Rotate(angle / (float)Math.PI * 180);
             var translation = new Matrix();
             translation.Translate(pt.X, pt.Y);
 
@@ -2019,7 +2018,7 @@ namespace SvgNet.SvgGdi {
         }
 
         private void DrawText(string s, Font font, Brush brush, RectangleF rect, StringFormat fmt, bool ignoreRect) {
-            if (s?.Contains("\n") == true)
+            if (s?.Contains('\n') == true)
                 throw new SvgGdiNotImplementedException("DrawText multiline text");
 
             var txt = new SvgTextElement(s, rect.X, rect.Y) {
@@ -2085,7 +2084,7 @@ namespace SvgNet.SvgGdi {
                         if (ignoreRect)
                             throw new SvgGdiNotImplementedException("DrawText automatic rect");
 
-                        txt.Y.Value += (rect.Height / 2);
+                        txt.Y.Value += rect.Height / 2;
                         var span = new SvgTspanElement(s) {
                             DY = new SvgLength(txt.Style.Get("font-size").ToString())
                         };
@@ -2237,7 +2236,7 @@ namespace SvgNet.SvgGdi {
             //Iterate through all the subpaths in the path. Each subpath will contain either
             //lines or Bezier curves
             for (int s = 0; s < subpaths.SubpathCount; s++) {
-                if (subpaths.NextSubpath(subpath, out var isClosed) == 0) {
+                if (subpaths.NextSubpath(subpath, out bool isClosed) == 0) {
                     continue; //go to next subpath if this one has zero points.
                 }
 

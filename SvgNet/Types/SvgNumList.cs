@@ -31,17 +31,13 @@ namespace SvgNet.SvgTypes {
             set => _pts[idx] = value;
         }
 
-        public static implicit operator SvgNumList(string s) {
-            return new SvgNumList(s);
-        }
+        public static implicit operator SvgNumList(string s) => new(s);
 
-        public static implicit operator SvgNumList(float[] f) {
-            return new SvgNumList(f);
-        }
+        public static implicit operator SvgNumList(float[] f) => new(f);
 
         public static float[] String2Floats(string s) {
             try {
-                var sa = s.Split(new char[] { ',', ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] sa = s.Split(new char[] { ',', ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
                 var arr = new ArrayList();
                 foreach (string str in sa) {
                     if (!string.IsNullOrWhiteSpace(str)) {
@@ -58,7 +54,7 @@ namespace SvgNet.SvgTypes {
 
         public void FromString(string s) {
             try {
-                var fa = String2Floats(s);
+                float[] fa = String2Floats(s);
 
                 foreach (float f in fa) {
                     _pts.Add(f);

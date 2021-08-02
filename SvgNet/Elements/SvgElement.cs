@@ -110,7 +110,7 @@ namespace SvgNet {
                 // TODO: after namespaced attributes are supported in the writer code (WriteXmlElements) re-enable
                 // their reading.
                 // For now we'll skip namespaced attributes
-                if (att.Name == "xmlns" || att.Name.Contains(":"))
+                if (att.Name == "xmlns" || att.Name.Contains(':'))
                     continue;
 
                 this[att.Name] = att.Value;
@@ -132,7 +132,7 @@ namespace SvgNet {
         public string WriteSVGString(bool compressAttributes) {
             var doc = new XmlDocument();
 
-            var declaration = doc.CreateXmlDeclaration("1.0", null, "yes");
+            XmlDeclaration declaration = doc.CreateXmlDeclaration("1.0", null, "yes");
             doc.AppendChild(declaration);
 
             //write out our SVG tree to the new XmlDocument
@@ -141,7 +141,7 @@ namespace SvgNet {
             doc.DocumentElement.SetAttribute("xmlns", svgNamespaceURI);
             doc.DocumentElement.SetAttribute("xmlns:xlink", xlinkNamespaceURI);
 
-            var ents = string.Empty;
+            string ents = string.Empty;
             if (compressAttributes)
                 ents = SvgFactory.CompressXML(doc, doc.DocumentElement);
 
@@ -160,7 +160,7 @@ namespace SvgNet {
         /// <param name="doc">A document</param>
         /// <param name="parent">A node, or null if this element is to be the root element</param>
         public virtual void WriteXmlElements(XmlDocument doc, XmlElement parent) {
-            var me = doc.CreateElement("", Name, doc.NamespaceURI);
+            XmlElement me = doc.CreateElement("", Name, doc.NamespaceURI);
             foreach (string s in _atts.Keys) {
                 if (_atts[s] is float singleValue) {
                     me.SetAttribute(s, doc.NamespaceURI, singleValue.ToString(CultureInfo.InvariantCulture));
@@ -190,7 +190,7 @@ namespace SvgNet {
                 _atts[attributeName] = st;
                 return st;
             }
-            var o = _atts[attributeName];
+            object o = _atts[attributeName];
             //in case the property was set as a string, make a real object and save it.
             return o == null ? SetNewAttributeValue(new T()) : (o is T t) ? t : SetNewAttributeValue(fromString(o));
         }

@@ -20,17 +20,11 @@ namespace SvgNet.SvgTypes {
 
         public SvgNumber(float n) => _num = n;
 
-        public static implicit operator SvgNumber(string s) {
-            return new SvgNumber(s);
-        }
+        public static implicit operator SvgNumber(string s) => new(s);
 
-        public static implicit operator SvgNumber(int n) {
-            return new SvgNumber(n);
-        }
+        public static implicit operator SvgNumber(int n) => new(n);
 
-        public static implicit operator SvgNumber(float n) {
-            return new SvgNumber(n);
-        }
+        public static implicit operator SvgNumber(float n) => new(n);
 
         public object Clone() => new SvgNumber(_num);
 

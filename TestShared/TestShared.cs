@@ -6,18 +6,15 @@
     Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
 
-using SvgNet.SvgGdi;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using SvgNet.SvgGdi;
 
-namespace SvgNet
-{
-    public static class TestShared
-    {
-        public static Dictionary<string, Action<IGraphics>> Renderers { get; } = new Dictionary<string, Action<IGraphics>>()
-        {
+namespace SvgNet {
+    public static class TestShared {
+        public static Dictionary<string, Action<IGraphics>> Renderers { get; } = new Dictionary<string, Action<IGraphics>>() {
             ["Clipping"] = RenderClipping,
             ["Transforms"] = RenderTransforms,
             ["Lines"] = RenderLines,
@@ -31,8 +28,7 @@ namespace SvgNet
             ["Path (Slow)"] = RenderPath2Slow
         };
 
-        private static void RenderArcsPies(IGraphics ig)
-        {
+        private static void RenderArcsPies(IGraphics ig) {
             //GDI does not seem to draw arcs correctly except when the ellipse is a circle.
             //These arcs demonstrate the problem.  SVGGraphics calculates arcs correctly.
             ig.DrawArc(new Pen(Color.Black, 2.7f), 120 + (5 * 3), 120, 110 * 3, 110, 0, 240);
@@ -50,8 +46,7 @@ namespace SvgNet
             ig.DrawPie(new Pen(Color.Red, 2.7f), 120, 60, 80, 80, 45, -270);
         }
 
-        private static void RenderClipping(IGraphics ig)
-        {
+        private static void RenderClipping(IGraphics ig) {
             var pn = new Pen(Color.LightGray, 5.6f);
             var pn2 = new Pen(Color.Yellow, 1.2f);
 
@@ -78,8 +73,7 @@ namespace SvgNet
             ig.DrawRectangle(pn2, 75, 10, 40, 160);
         }
 
-        private static void RenderCurves(IGraphics ig)
-        {
+        private static void RenderCurves(IGraphics ig) {
             var bezzie = new PointF[]
         {
                 new PointF(20, 150),
@@ -97,8 +91,7 @@ namespace SvgNet
                 new PointF(190, 210)
         };
 
-            var bpn = new Pen(Color.MediumSeaGreen, 2.3f)
-            {
+            var bpn = new Pen(Color.MediumSeaGreen, 2.3f) {
                 DashStyle = DashStyle.Custom,
                 DashPattern = new float[] { 6, 1, 5, 2, 4, 3, 3, 4, 2, 5, 6, 1 }
             };
@@ -146,12 +139,10 @@ namespace SvgNet
             ig.FillClosedCurve(new SolidBrush(Color.Aquamarine), fcc, FillMode.Alternate, .2f);
         }
 
-        private static void RenderFills(IGraphics ig)
-        {
+        private static void RenderFills(IGraphics ig) {
             var gbr1 = new LinearGradientBrush(new Point(0, 0), new Point(30, 20), Color.Blue, Color.Plum);
 
-            var blend = new ColorBlend(3)
-            {
+            var blend = new ColorBlend(3) {
                 Colors = new Color[] { Color.Red, Color.Yellow, Color.MediumSlateBlue },
                 Positions = new float[] { 0, .3f, 1f }
             };
@@ -166,8 +157,7 @@ namespace SvgNet
             };
             ig.FillPolygon(gbr1, sp);
 
-            var gbr2 = new LinearGradientBrush(new Point(0, 0), new Point(10, 20), Color.WhiteSmoke, Color.CornflowerBlue)
-            {
+            var gbr2 = new LinearGradientBrush(new Point(0, 0), new Point(10, 20), Color.WhiteSmoke, Color.CornflowerBlue) {
                 WrapMode = WrapMode.TileFlipXY
             };
             var sp2 = new Point[]
@@ -205,12 +195,10 @@ namespace SvgNet
             ig.FillRectangle(new HatchBrush(HatchStyle.Percent90, Color.CornflowerBlue, Color.LemonChiffon), 220, 30, 20, 20);
         }
 
-        private static void RenderLines(IGraphics ig)
-        {
+        private static void RenderLines(IGraphics ig) {
             ig.SmoothingMode = SmoothingMode.AntiAlias;
 
-            var ow = new Pen(Color.Purple, 12.6f)
-            {
+            var ow = new Pen(Color.Purple, 12.6f) {
                 EndCap = LineCap.Round,
                 StartCap = LineCap.Round,
                 MiterLimit = 6f,
@@ -219,8 +207,7 @@ namespace SvgNet
 
             ig.SmoothingMode = SmoothingMode.None;
 
-            var tp = new Pen(Color.Red, 2.7f)
-            {
+            var tp = new Pen(Color.Red, 2.7f) {
                 DashStyle = DashStyle.DashDot
             };
 
@@ -263,14 +250,14 @@ namespace SvgNet
                 arr.StartCap = System.Drawing.Drawing2D.LineCap.ArrowAnchor;
                 const float arrowWidth = 11.0f; // TUNE:
                 const float arrowHeight = 14f; // TUNE:
-                var arrowOutline = new System.Drawing.Drawing2D.GraphicsPath();
+                var arrowOutline = new GraphicsPath();
                 arrowOutline.AddLines(new PointF[] {
                             new PointF(-(arrowWidth / 2), -arrowHeight),
                             new PointF(0, 0),
                             new PointF(arrowWidth / 2, -arrowHeight),
                             new PointF(-(arrowWidth / 2), -arrowHeight)
                         });
-                var generalizationArrow = new System.Drawing.Drawing2D.CustomLineCap(null, arrowOutline);
+                var generalizationArrow = new CustomLineCap(null, arrowOutline);
                 generalizationArrow.SetStrokeCaps(System.Drawing.Drawing2D.LineCap.Round, System.Drawing.Drawing2D.LineCap.Round);
                 generalizationArrow.BaseInset = arrowHeight;
                 arr.CustomEndCap = generalizationArrow;
@@ -307,8 +294,7 @@ namespace SvgNet
             ig.DrawLines(arr, al);
         }
 
-        private static void RenderPath(IGraphics ig)
-        {
+        private static void RenderPath(IGraphics ig) {
             /* The following example GraphicsPath code comes from the MSDN docs on the GraphicsPathIterator class
              * https://msdn.microsoft.com/en-us/library/79k451ts.aspx
              *
@@ -327,8 +313,7 @@ namespace SvgNet
             myPath.SetMarkers();
             myPath.AddEllipse(220, 220, 100, 100);
             ig.DrawPath(new Pen(Color.Black, 1.7f), myPath);
-            var gbr2 = new LinearGradientBrush(new Point(0, 0), new Point(10, 20), Color.WhiteSmoke, Color.CornflowerBlue)
-            {
+            var gbr2 = new LinearGradientBrush(new Point(0, 0), new Point(10, 20), Color.WhiteSmoke, Color.CornflowerBlue) {
                 WrapMode = WrapMode.TileFlipXY
             };
             ig.FillPath(gbr2, myPath);
@@ -340,8 +325,7 @@ namespace SvgNet
             ig.DrawPath(new Pen(Color.Blue, 1.7f), myPath2);
         }
 
-        private static void RenderPath2Slow(IGraphics ig)
-        {
+        private static void RenderPath2Slow(IGraphics ig) {
             var mySolidBrush = new SolidBrush(Color.Aqua);
             var myGraphicsPath = new GraphicsPath();
 
@@ -363,8 +347,7 @@ namespace SvgNet
             ig.DrawPath(new Pen(Color.Green, 1.7f), myGraphicsPath);
         }
 
-        private static void RenderPathPolygon(IGraphics ig)
-        {
+        private static void RenderPathPolygon(IGraphics ig) {
             var myPath = new GraphicsPath();
             ig.SmoothingMode = SmoothingMode.AntiAlias;
 
@@ -388,15 +371,13 @@ namespace SvgNet
             ig.DrawPath(new Pen(Color.Black, 5f), myPath);
         }
 
-        private static void RenderText(IGraphics ig)
-        {
+        private static void RenderText(IGraphics ig) {
             var fnt1 = new Font("Helvetica", 12, FontStyle.Italic | FontStyle.Bold);
             var fnt2 = new Font(FontFamily.GenericMonospace, 16, FontStyle.Bold);
             var fnt3 = new Font("", 40, FontStyle.Underline);
 
             var rc1 = new Rectangle(30, 30, 220, 20);
-            var fmt1 = new StringFormat
-            {
+            var fmt1 = new StringFormat {
                 Alignment = StringAlignment.Near
             };
 
@@ -404,8 +385,7 @@ namespace SvgNet
             ig.DrawString("Text...1", fnt1, new SolidBrush(Color.DarkGreen), rc1, fmt1);
 
             var rc2 = new Rectangle(0, 0, 120, 20);
-            var fmt2 = new StringFormat
-            {
+            var fmt2 = new StringFormat {
                 Alignment = StringAlignment.Center
             };
 
@@ -418,8 +398,7 @@ namespace SvgNet
             ig.ResetTransform();
 
             var rc3 = new Rectangle(30, 90, 300, 30);
-            var fmt3 = new StringFormat
-            {
+            var fmt3 = new StringFormat {
                 Alignment = StringAlignment.Far
             };
 
@@ -436,8 +415,7 @@ namespace SvgNet
             ig.DrawRectangle(new Pen(Color.Yellow), 20, 200, siz.Width, siz.Height);
         }
 
-        private static void RenderTransforms(IGraphics ig)
-        {
+        private static void RenderTransforms(IGraphics ig) {
             ig.Clear(Color.Black);
 
             ig.RotateTransform(15);
@@ -496,8 +474,7 @@ namespace SvgNet
             ig.DrawRectangle(new Pen(Color.White, 2), 270, 30, 50, 40);
         }
 
-        private static void RenderTransparency(IGraphics ig)
-        {
+        private static void RenderTransparency(IGraphics ig) {
             var fillpoly = new Point[]
             {
                     new Point(20, 130),

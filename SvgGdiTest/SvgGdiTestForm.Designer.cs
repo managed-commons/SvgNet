@@ -108,7 +108,7 @@ namespace SvgGdiTest
             this.cbWhat.Name = "cbWhat";
             this.cbWhat.Size = new System.Drawing.Size(372, 21);
             this.cbWhat.TabIndex = 5;
-            this.cbWhat.SelectedIndexChanged += new System.EventHandler(this.cbWhat_SelectedIndexChanged);
+            this.cbWhat.SelectedIndexChanged += new System.EventHandler(this.ComboWhat_SelectedIndexChanged);
             // 
             // label1
             // 
