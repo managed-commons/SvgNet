@@ -53,10 +53,10 @@ jobs:
     # ✏️ If the Autobuild fails above, remove it and uncomment the following three lines
     #    and modify them (or add more) to build your code if your project
     #    uses a compiled language
-    - name: Setup .NET Core 5.0
-      uses: actions/setup-dotnet@v1.7.2
+    - name: Setup .NET 6.0
+      uses: actions/setup-dotnet@v1.8.2
       with:
-        dotnet-version: 5.0.202
+        dotnet-version: 6.0.100
 
     - name: Build and Test with dotnet
       run: NONET461=true dotnet test --configuration Release -v:m | grep -v 'NAME_UNKNOWN:Package'
