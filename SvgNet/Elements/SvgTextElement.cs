@@ -57,7 +57,15 @@ namespace SvgNet.SvgElements {
             AddChild(tn);
         }
 
+                [Obsolete()]
         public SvgTextElement(string s, float x, float y) {
+            var tn = new TextNode(s);
+            AddChild(tn);
+            X = x;
+            Y = y;
+        }
+
+        public SvgTextElement(string s, SvgLength x, SvgLength y) {
             var tn = new TextNode(s);
             AddChild(tn);
             X = x;
