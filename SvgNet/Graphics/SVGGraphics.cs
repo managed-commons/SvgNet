@@ -15,6 +15,7 @@ using System.Drawing.Text;
 using System.Globalization;
 using System.IO;
 using System.Text;
+
 using SvgNet.SvgElements;
 using SvgNet.SvgTypes;
 
@@ -2021,7 +2022,7 @@ namespace SvgNet.SvgGdi {
             if (s?.Contains('\n') == true)
                 throw new SvgGdiNotImplementedException("DrawText multiline text");
 
-            var txt = new SvgTextElement(s, rect.X, rect.Y) {
+            var txt = new SvgTextElement(s, new SvgLength(rect.X, SvgLengthType.SVG_LENGTHTYPE_PX), new SvgLength(rect.Y, SvgLengthType.SVG_LENGTHTYPE_PX)) {
                 //GDI takes x and y as the upper left corner; svg takes them as the lower left.
                 //We must therefore move the text one line down, but SVG does not understand about lines,
                 //so we do as best we can, applying a downward translation before the current GDI translation.

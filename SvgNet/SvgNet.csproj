@@ -8,7 +8,7 @@
     <AssemblyName>SVG</AssemblyName>
     <PackageId>SvgNet</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>2.2.0</Version>
+    <Version>2.2.2</Version>
     <RootNamespace>SVG</RootNamespace>
     <DocumentationFile>svgnetdoc.xml</DocumentationFile>
     <NoWarn>CS1591</NoWarn>
@@ -24,7 +24,7 @@
     <Product>SvgNet</Product>
     <RepositoryType>git</RepositoryType>
     <PackageReleaseNotes>
-      Support .Net 6.0
+      Obsoleting some imprecise constructors, providing better overrides
     </PackageReleaseNotes>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
@@ -34,7 +34,7 @@
     <WarningsAsErrors>NU1605</WarningsAsErrors>
   </PropertyGroup>
   
-  <Target AfterTargets="Pack" Name="PushPackage" Condition="'$(OS)' == 'Windows_NT'">
+  <Target AfterTargets="Pack" Name="PushPackage" Condition="'$(OS)' == 'Windows_NT' and '$(Configuration)'=='Release'">
     <PropertyGroup>
       <LatestPackage>$(PackageId).$(Version).nupkg</LatestPackage>
       <PushCommand>dotnet nuget push $(PackageOutputAbsolutePath)$(LatestPackage) --force-english-output --source github-managed-commons --skip-duplicate</PushCommand>

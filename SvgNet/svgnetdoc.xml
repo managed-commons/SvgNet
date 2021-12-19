@@ -4,93 +4,6 @@
         <name>SVG</name>
     </assembly>
     <members>
-        <member name="T:SvgNet.SvgElement">
-            <summary>
-            The base class for SVG elements.  It represents some part of an SVG document, either an element (rect, circle etc) or a text item.  Duties include:
-            <list type="bulleted">
-            <item>
-            <description>
-            Maintains a list of child elements and a list of attributes.
-            </description>
-            </item>
-            <item>
-            <description>
-            Writes itself and its children to an Xml document.
-            </description>
-            </item>
-            <item>
-            <description>
-            Reads itself and its children from an Xml document.
-            </description>
-            </item>
-            </list>
-            </summary>
-        </member>
-        <member name="P:SvgNet.SvgElement.Attributes">
-            <summary>
-            A hashtable containing this element's attributes.  Keys are strings but values can be any type; they will only be
-            reduced to strings when this element needs to convert itself to XML.
-            </summary>
-        </member>
-        <member name="P:SvgNet.SvgElement.Children">
-            <summary>
-            An ArrayList containing this element's children
-            </summary>
-        </member>
-        <member name="P:SvgNet.SvgElement.Name">
-            <summary>
-            The name of the XML element that this SVG element represents.
-            </summary>
-        </member>
-        <member name="P:SvgNet.SvgElement.Item(System.String)">
-            <summary>
-            The element whose child this element is; can be null, because SvgElements may only be inserted into a full SVG tree
-            long after they are created.
-            </summary>
-            <summary>
-            A quick way to get and set attributes.
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgElement.AddChild(SvgNet.SvgElement)">
-            <summary>
-            Adds a child, and sets the child's parent to this element.
-            </summary>
-            <param name="ch"></param>
-        </member>
-        <member name="M:SvgNet.SvgElement.AddChildren(SvgNet.SvgElement[])">
-            <summary>
-            Adds a variable number of children
-            </summary>
-            <param name="ch"></param>
-        </member>
-        <member name="M:SvgNet.SvgElement.ReadXmlElement(System.Xml.XmlDocument,System.Xml.XmlElement)">
-            <summary>
-            Given a document and a current node, read this element from the node.
-            </summary>
-            <param name="doc"></param>
-            <param name="el"></param>
-        </member>
-        <member name="M:SvgNet.SvgElement.ToString">
-            <summary>
-            A simple ToString() for use in debugging.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:SvgNet.SvgElement.WriteSVGString(System.Boolean)">
-            <summary>
-            Get a string that contains a complete SVG document.  XML version, DOCTYPE etc are included.
-            </summary>
-            <returns></returns>
-            <param name="compressAttributes">Should usually be set true.  Causes the XML output to be optimized so that
-            long attributes like styles and transformations are represented with entities.</param>
-        </member>
-        <member name="M:SvgNet.SvgElement.WriteXmlElements(System.Xml.XmlDocument,System.Xml.XmlElement)">
-            <summary>
-            Given an XML document and a parent node, write out this node and its descendants as XmlElements.
-            </summary>
-            <param name="doc">A document</param>
-            <param name="parent">A node, or null if this element is to be the root element</param>
-        </member>
         <member name="T:SvgNet.SvgElements.SvgEllipseElement">
             <summary>
             Represents an <c>ellipse</c> element.
@@ -199,6 +112,18 @@
             to XML slightly differently.
             </summary>
         </member>
+        <member name="T:SvgNet.SvgElements.SvgDescElement">
+            <summary>
+            Represents an SVG <c>desc</c> element.  As with the SvgTextElement, the payload is in the enclosed text rather than in attributes and
+            subelements, so we need to specially add text when serializing.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgTitleElement">
+            <summary>
+            Represents an SVG <c>desc</c> element.  As with the SvgTextElement, the payload is in the enclosed text rather than in attributes and
+            subelements, so we need to specially add text when serializing.
+            </summary>
+        </member>
         <member name="T:SvgNet.SvgElements.SvgTrefElement">
             <summary>
             Represents a <c>tref</c> element.
@@ -211,17 +136,92 @@
             to XML slightly differently.
             </summary>
         </member>
-        <member name="T:SvgNet.SvgElements.SvgDescElement">
+        <member name="T:SvgNet.SvgElement">
             <summary>
-            Represents an SVG <c>desc</c> element.  As with the SvgTextElement, the payload is in the enclosed text rather than in attributes and
-            subelements, so we need to specially add text when serializing.
+            The base class for SVG elements.  It represents some part of an SVG document, either an element (rect, circle etc) or a text item.  Duties include:
+            <list type="bulleted">
+            <item>
+            <description>
+            Maintains a list of child elements and a list of attributes.
+            </description>
+            </item>
+            <item>
+            <description>
+            Writes itself and its children to an Xml document.
+            </description>
+            </item>
+            <item>
+            <description>
+            Reads itself and its children from an Xml document.
+            </description>
+            </item>
+            </list>
             </summary>
         </member>
-        <member name="T:SvgNet.SvgElements.SvgTitleElement">
+        <member name="P:SvgNet.SvgElement.Attributes">
             <summary>
-            Represents an SVG <c>desc</c> element.  As with the SvgTextElement, the payload is in the enclosed text rather than in attributes and
-            subelements, so we need to specially add text when serializing.
+            A hashtable containing this element's attributes.  Keys are strings but values can be any type; they will only be
+            reduced to strings when this element needs to convert itself to XML.
             </summary>
+        </member>
+        <member name="P:SvgNet.SvgElement.Children">
+            <summary>
+            An ArrayList containing this element's children
+            </summary>
+        </member>
+        <member name="P:SvgNet.SvgElement.Name">
+            <summary>
+            The name of the XML element that this SVG element represents.
+            </summary>
+        </member>
+        <member name="P:SvgNet.SvgElement.Item(System.String)">
+            <summary>
+            The element whose child this element is; can be null, because SvgElements may only be inserted into a full SVG tree
+            long after they are created.
+            </summary>
+            <summary>
+            A quick way to get and set attributes.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgElement.AddChild(SvgNet.SvgElement)">
+            <summary>
+            Adds a child, and sets the child's parent to this element.
+            </summary>
+            <param name="ch"></param>
+        </member>
+        <member name="M:SvgNet.SvgElement.AddChildren(SvgNet.SvgElement[])">
+            <summary>
+            Adds a variable number of children
+            </summary>
+            <param name="ch"></param>
+        </member>
+        <member name="M:SvgNet.SvgElement.ReadXmlElement(System.Xml.XmlDocument,System.Xml.XmlElement)">
+            <summary>
+            Given a document and a current node, read this element from the node.
+            </summary>
+            <param name="doc"></param>
+            <param name="el"></param>
+        </member>
+        <member name="M:SvgNet.SvgElement.ToString">
+            <summary>
+            A simple ToString() for use in debugging.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SvgNet.SvgElement.WriteSVGString(System.Boolean)">
+            <summary>
+            Get a string that contains a complete SVG document.  XML version, DOCTYPE etc are included.
+            </summary>
+            <returns></returns>
+            <param name="compressAttributes">Should usually be set true.  Causes the XML output to be optimized so that
+            long attributes like styles and transformations are represented with entities.</param>
+        </member>
+        <member name="M:SvgNet.SvgElement.WriteXmlElements(System.Xml.XmlDocument,System.Xml.XmlElement)">
+            <summary>
+            Given an XML document and a parent node, write out this node and its descendants as XmlElements.
+            </summary>
+            <param name="doc">A document</param>
+            <param name="parent">A node, or null if this element is to be the root element</param>
         </member>
         <member name="T:SvgNet.SvgStyledTransformedElement">
             <summary>

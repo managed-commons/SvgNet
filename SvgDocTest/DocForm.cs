@@ -50,7 +50,7 @@ namespace SvgDocTest {
                 },
 
                 new SvgAElement("https://github.com/managed-commons/SvgNet").AddChildren(
-                    new SvgTextElement("Textastic!", 30, 20) {
+                    new SvgTextElement("Textastic!", "30px", "20px") {
                         Style = "fill:midnightblue;stroke:navy;stroke-width:1px;font-size:30px;font-family:Calibri"
                     })
                 );
