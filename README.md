@@ -14,7 +14,7 @@ Copyright &copy; 2003 RiskCare Ltd.  All rights reserved.
 
 Copyright &copy; 2010 SvgNet & SvgGdi Bridge Project. All rights reserved.
 
-Copyright &copy; 2015-2021 Rafael Teixeira, Mojmír Němeček, Benjamin Peterson and Other Contributors
+Copyright &copy; 2015-2022 Rafael Teixeira, Mojmír Němeček, Benjamin Peterson and Other Contributors
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions
