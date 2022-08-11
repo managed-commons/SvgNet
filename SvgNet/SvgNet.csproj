@@ -9,14 +9,14 @@
 		<PackageId>SvgNet</PackageId>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Version>2.2.2</Version>
-		<RootNamespace>SVG</RootNamespace>
+		<RootNamespace>SvgNet</RootNamespace>
 		<DocumentationFile>svgnetdoc.xml</DocumentationFile>
 		<NoWarn>CS1591</NoWarn>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Description>C# framework for creating SVG images</Description>
 		<Company>SvgNet and SvgGdi Bridge Project</Company>
 		<Authors>Rafael Teixeira, Mojmír Němeček, Benjamin Peterson</Authors>
-		<Copyright>2003, 2010, 2015-2021 RiskCare Ltd, SvgNet and SvgGdi Bridge Project, Rafael Teixeira, Mojmír Němeček</Copyright>
+		<Copyright>2003, 2010, 2015-2022 RiskCare Ltd, SvgNet and SvgGdi Bridge Project, Rafael Teixeira, Mojmír Němeček</Copyright>
 		<PackageProjectUrl>https://github.com/managed-commons/SvgNet</PackageProjectUrl>
 		<PackageIcon>svgnet.png</PackageIcon>
 		<RepositoryUrl>https://github.com/managed-commons/SvgNet</RepositoryUrl>
@@ -27,7 +27,15 @@
 			Good-bye .NET 5.0, Welcome C# 10
 		</PackageReleaseNotes>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<ImplicitUsings>true</ImplicitUsings>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<Using Remove="System.Net.Http"/>
+
+		<Using Include="System.Globalization"/>
+		<Using Include="SvgNet.Exceptions"/>		
+	</ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
 		<DefineConstants>DEBUG;TRACE</DefineConstants>

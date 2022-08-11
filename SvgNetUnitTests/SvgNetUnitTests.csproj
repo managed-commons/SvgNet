@@ -1,22 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net5.0-windows</TargetFrameworks>
-    <RootNamespace>SvgNet</RootNamespace>
-  </PropertyGroup>
+	<PropertyGroup>
+		<LangVersion>10</LangVersion>
+		<TargetFrameworks>net6.0-windows</TargetFrameworks>
+		<RootNamespace>SvgNet</RootNamespace>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Include="..\TestShared\TestShared.cs" Link="TestShared.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Include="..\TestShared\TestShared.cs" Link="TestShared.cs" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.0" />
-    <packagereference Include="NUnit3TestAdapter" Version="4.2.1"></packagereference>
-    <packagereference Include="NUnit" Version="3.13.3"></packagereference>
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.0" />
+		<packagereference Include="NUnit3TestAdapter" Version="4.2.1"></packagereference>
+		<packagereference Include="NUnit" Version="3.13.3"></packagereference>
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\SvgNet\SvgNet.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\SvgNet\SvgNet.csproj" />
+	</ItemGroup>
 
 </Project>

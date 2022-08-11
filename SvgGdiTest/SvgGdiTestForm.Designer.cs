@@ -1,18 +1,15 @@
 ﻿/*
     Copyright © 2003 RiskCare Ltd. All rights reserved.
     Copyright © 2010 SvgNet & SvgGdi Bridge Project. All rights reserved.
-    Copyright © 2015-2019 Rafael Teixeira, Mojmír Němeček, Benjamin Peterson and Other Contributors
+    Copyright © 2015-2022 Rafael Teixeira, Mojmír Němeček, Benjamin Peterson and Other Contributors
 
     Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
 
-using System.Text;
-using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace SvgGdiTest
-{
+namespace SvgGdiTest {
     public partial class SvgGdiTestForm
     {
         public SvgGdiTestForm()
@@ -69,21 +66,21 @@ namespace SvgGdiTest
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Location = new System.Drawing.Point(8, 43);
+            this.panel1.Location = new System.Drawing.Point(8, 46);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(426, 312);
+            this.panel1.Size = new System.Drawing.Size(426, 300);
             this.panel1.TabIndex = 2;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.PanelPaint);
             // 
             // tbSVG
             // 
             this.tbSVG.BackColor = System.Drawing.SystemColors.Info;
-            this.tbSVG.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbSVG.Location = new System.Drawing.Point(440, 43);
+            this.tbSVG.Font = new System.Drawing.Font("Cascadia Code", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbSVG.Location = new System.Drawing.Point(440, 46);
             this.tbSVG.Multiline = true;
             this.tbSVG.Name = "tbSVG";
             this.tbSVG.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbSVG.Size = new System.Drawing.Size(748, 643);
+            this.tbSVG.Size = new System.Drawing.Size(664, 643);
             this.tbSVG.TabIndex = 3;
             // 
             // cbWhat
@@ -103,49 +100,50 @@ namespace SvgGdiTest
             "Path",
             "Path Polygon",
             "Path 2 (Slow)"});
-            this.cbWhat.Location = new System.Drawing.Point(816, 12);
+            this.cbWhat.Location = new System.Drawing.Point(732, 12);
             this.cbWhat.MaxDropDownItems = 30;
             this.cbWhat.Name = "cbWhat";
-            this.cbWhat.Size = new System.Drawing.Size(372, 21);
+            this.cbWhat.Size = new System.Drawing.Size(372, 22);
             this.cbWhat.TabIndex = 5;
             this.cbWhat.SelectedIndexChanged += new System.EventHandler(this.ComboWhat_SelectedIndexChanged);
             // 
             // label1
             // 
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(8, 24);
+            this.label1.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(8, 26);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(72, 16);
+            this.label1.Size = new System.Drawing.Size(72, 17);
             this.label1.TabIndex = 6;
             this.label1.Text = "GDI:";
             // 
             // label2
             // 
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(8, 355);
+            this.label2.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(8, 365);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(72, 19);
+            this.label2.Size = new System.Drawing.Size(72, 21);
             this.label2.TabIndex = 7;
             this.label2.Text = "SVG:";
             // 
             // svgCtl
             // 
-            this.svgCtl.Location = new System.Drawing.Point(8, 374);
+            this.svgCtl.Location = new System.Drawing.Point(8, 389);
             this.svgCtl.MinimumSize = new System.Drawing.Size(20, 20);
             this.svgCtl.Name = "svgCtl";
-            this.svgCtl.Size = new System.Drawing.Size(426, 312);
+            this.svgCtl.Size = new System.Drawing.Size(426, 300);
             this.svgCtl.TabIndex = 8;
             // 
             // SvgGdiTestForm
             // 
-            this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-            this.ClientSize = new System.Drawing.Size(1200, 697);
+            this.AutoScaleBaseSize = new System.Drawing.Size(5, 15);
+            this.ClientSize = new System.Drawing.Size(1116, 697);
             this.Controls.Add(this.svgCtl);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.cbWhat);
             this.Controls.Add(this.tbSVG);
             this.Controls.Add(this.panel1);
+            this.Font = new System.Drawing.Font("Calibri", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "SvgGdiTestForm";
