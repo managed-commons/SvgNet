@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("RiskCare Ltd, SvgNet and SvgGdi Bridge Project, Rafael Teixeira, Mojmír Němeček, Benjamin Peterson")]
 [assembly: AssemblyProduct("SvgNet")]
-[assembly: AssemblyCopyright("Copyright 2003, 2010, 2015-2019 RiskCare Ltd, SvgNet and SvgGdi Bridge Project, Rafael Teixeira, Mojmír Němeček, Benjamin Peterson")]
+[assembly: AssemblyCopyright("Copyright 2003, 2010, 2015-2022 RiskCare Ltd, SvgNet and SvgGdi Bridge Project, Rafael Teixeira, Mojmír Němeček, Benjamin Peterson")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyVersion("1.0.0")]

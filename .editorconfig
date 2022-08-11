@@ -13,6 +13,7 @@ indent_style = space
 [*.cs]
 indent_style = space
 indent_size = 4
+tab_width = 4
 trim_trailing_whitespace=true
 dotnet_sort_system_directives_first=true
 csharp_new_line_before_else=false
@@ -29,8 +30,6 @@ csharp_style_expression_bodied_indexers= true:suggestion
 csharp_style_expression_bodied_properties= true:suggestion
 csharp_style_var_when_type_is_apparent= true:suggestion
 csharp_style_deconstructed_variable_declaration= true:suggestion
-
-# IDE0056: Use index operator
 csharp_style_prefer_index_operator = false:suggestion
 csharp_style_namespace_declarations= file_scoped:warning
 csharp_style_prefer_pattern_matching= true:suggestion
@@ -68,11 +67,8 @@ dotnet_diagnostic.CA1001.severity = warning
 dotnet_diagnostic.CA1309.severity = suggestion
 dotnet_diagnostic.CA1805.severity = suggestion
 
-[*.{cs,vb}]
 #### Naming styles ####
-
 # Naming rules
-
 dotnet_naming_rule.interface_should_be_begins_with_i.severity = suggestion
 dotnet_naming_rule.interface_should_be_begins_with_i.symbols = interface
 dotnet_naming_rule.interface_should_be_begins_with_i.style = begins_with_i
@@ -86,7 +82,6 @@ dotnet_naming_rule.non_field_members_should_be_pascal_case.symbols = non_field_m
 dotnet_naming_rule.non_field_members_should_be_pascal_case.style = pascal_case
 
 # Symbol specifications
-
 dotnet_naming_symbols.interface.applicable_kinds = interface
 dotnet_naming_symbols.interface.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
 dotnet_naming_symbols.interface.required_modifiers = 
@@ -100,7 +95,6 @@ dotnet_naming_symbols.non_field_members.applicable_accessibilities = public, int
 dotnet_naming_symbols.non_field_members.required_modifiers = 
 
 # Naming styles
-
 dotnet_naming_style.begins_with_i.required_prefix = I
 dotnet_naming_style.begins_with_i.required_suffix = 
 dotnet_naming_style.begins_with_i.word_separator = 
@@ -115,9 +109,8 @@ dotnet_naming_style.pascal_case.required_prefix =
 dotnet_naming_style.pascal_case.required_suffix = 
 dotnet_naming_style.pascal_case.word_separator = 
 dotnet_naming_style.pascal_case.capitalization = pascal_case
+
 dotnet_style_operator_placement_when_wrapping = beginning_of_line
-tab_width = 4
-indent_size = 4
 dotnet_style_coalesce_expression = true:suggestion
 dotnet_style_null_propagation = true:suggestion
 dotnet_style_prefer_is_null_check_over_reference_equality_method = true:suggestion

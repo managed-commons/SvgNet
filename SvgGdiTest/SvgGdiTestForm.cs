@@ -16,7 +16,6 @@ using System.Threading;
 using System.Windows.Forms;
 
 using SvgNet;
-using SvgNet.GraphicsImplementations;
 using SvgNet.Interfaces;
 
 namespace SvgGdiTest;

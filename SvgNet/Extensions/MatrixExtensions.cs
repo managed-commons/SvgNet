@@ -6,14 +6,15 @@
     Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
 
-namespace SvgNet.Types;
-/// <summary>
-/// The units in which an SvgAngle can be specified
-/// </summary>
-public enum SvgAngleType {
-    SVG_ANGLETYPE_UNKNOWN = 0,
-    SVG_ANGLETYPE_UNSPECIFIED = 1,
-    SVG_ANGLETYPE_DEG = 2,
-    SVG_ANGLETYPE_RAD = 3,
-    SVG_ANGLETYPE_GRAD = 4,
+namespace System.Drawing.Drawing2D;
+
+public static class MatrixExtensions {
+
+    public static Matrix MultiplyAll(this List<Matrix> stack, Matrix result = null) {
+        result ??= new Matrix();
+        foreach (Matrix mat in stack)
+            if (!mat.IsIdentity)
+                result.Multiply(mat);
+        return result;
+    }
 }

@@ -4,7 +4,7 @@
     <ProjectType>Local</ProjectType>
     <ProductVersion>8.0.30319</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-	  <LangVersion>10</LangVersion>
+    <LangVersion>10</LangVersion>
     <ProjectGuid>{0C963EB6-C1B4-453D-B694-E81EC26D3AB9}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>

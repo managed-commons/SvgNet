@@ -1,7 +1,7 @@
 ﻿/*
 	Copyright © 2003 RiskCare Ltd. All rights reserved.
 	Copyright © 2010 SvgNet & SvgGdi Bridge Project. All rights reserved.
-	Copyright © 2015-2019 Rafael Teixeira, Mojmír Němeček, Benjamin Peterson and Other Contributors
+	Copyright © 2015-2022 Rafael Teixeira, Mojmír Němeček, Benjamin Peterson and Other Contributors
 
 	Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("RiskCare Ltd, SvgNet and SvgGdi Bridge Project, Rafael Teixeira, Mojmír Němeček")]
 [assembly: AssemblyProduct("SvgNet")]
-[assembly: AssemblyCopyright("Copyright 2003, 2010, 2015-2019 RiskCare Ltd, SvgNet and SvgGdi Bridge Project, Rafael Teixeira, Mojmír Němeček, Benjamin Peterson")]
+[assembly: AssemblyCopyright("Copyright 2003, 2010, 2015-2022 RiskCare Ltd, SvgNet and SvgGdi Bridge Project, Rafael Teixeira, Mojmír Němeček, Benjamin Peterson")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyVersion("1.0.0")]

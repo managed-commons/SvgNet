@@ -1,16 +1,16 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
+
 using SvgNet;
-using SvgNet.SvgElements;
-using SvgNet.SvgTypes;
+using SvgNet.Elements;
+using SvgNet.Types;
 
 namespace SvgDocTest {
     public partial class DocForm : Form {
         public DocForm() => InitializeComponent();
 
         private static readonly string _tempFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "foo.svg");
-
 
         /// <summary>
         /// The main entry point for the application.
@@ -43,7 +43,7 @@ namespace SvgDocTest {
 
             //adding multiple children
 
-            root.AddChildren(
+            _ = root.AddChildren(
                 new SvgRectElement(5, 5, 5, 5),
                 new SvgEllipseElement(20, 20, 8, 12) {
                     Style = "fill:yellow;stroke:red"
@@ -79,7 +79,7 @@ namespace SvgDocTest {
 
             //cloning and style arithmetic
 
-            grp.AddChildren(ell, pathy);
+            _ = grp.AddChildren(ell, pathy);
 
             grp.Style.Set("fill", "blue");
 
@@ -128,7 +128,7 @@ namespace SvgDocTest {
             Assert.Equals(f[1].Abs, true);
             Assert.Equals(f[2].Data[3], 10f);
 
-            MessageBox.Show("Tests completed Ok");
+            _ = MessageBox.Show("Tests completed Ok");
         }
         private void ProcessSvgFile(string svgFileName) {
             tbIn.Text = svgFileName.LoadText();
@@ -137,6 +137,5 @@ namespace SvgDocTest {
             File.WriteAllText(_tempFileName, tbOut.Text);
             RefreshBrowserFrom(svgOut, _tempFileName);
         }
-
     }
 }

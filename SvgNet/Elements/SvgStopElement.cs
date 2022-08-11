@@ -1,32 +1,31 @@
 ﻿/*
 	Copyright © 2003 RiskCare Ltd. All rights reserved.
 	Copyright © 2010 SvgNet & SvgGdi Bridge Project. All rights reserved.
-	Copyright © 2015-2019 Rafael Teixeira, Mojmír Němeček, Benjamin Peterson and Other Contributors
+	Copyright © 2015-2022 Rafael Teixeira, Mojmír Němeček, Benjamin Peterson and Other Contributors
 
 	Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
 
-using SvgNet.SvgTypes;
+using SvgNet.Types;
 
-namespace SvgNet.SvgElements {
-    /// <summary>
-    /// Represents an SVG stop element, which specifies one color in a gradient.
-    /// </summary>
-    public class SvgStopElement : SvgStyledTransformedElement {
-        public SvgStopElement() {
-        }
+namespace SvgNet.Elements;
+/// <summary>
+/// Represents an SVG stop element, which specifies one color in a gradient.
+/// </summary>
+public class SvgStopElement : SvgStyledTransformedElement {
+    public SvgStopElement() {
+    }
 
-        public SvgStopElement(SvgLength num, SvgColor col) {
-            Offset = num;
+    public SvgStopElement(SvgLength num, SvgColor col) {
+        Offset = num;
 
-            Style.Set("stop-color", col);
-        }
+        Style.Set("stop-color", col);
+    }
 
-        public override string Name => "stop";
+    public override string Name => "stop";
 
-        public SvgLength Offset {
-            get => (SvgLength)_atts["offset"];
-            set => _atts["offset"] = value;
-        }
+    public SvgLength Offset {
+        get => (SvgLength)_atts["offset"];
+        set => _atts["offset"] = value;
     }
 }
