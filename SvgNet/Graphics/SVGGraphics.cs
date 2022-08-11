@@ -1783,9 +1783,7 @@ namespace SvgNet.SvgGdi {
             sweepAngle += startAngle;
 
             if (sweepAngle > startAngle) {
-                float tmp = startAngle;
-                startAngle = sweepAngle;
-                sweepAngle = tmp;
+                (sweepAngle, startAngle) = (startAngle, sweepAngle);
             }
 
             if (sweepAngle - startAngle > Math.PI || startAngle - sweepAngle > Math.PI) {

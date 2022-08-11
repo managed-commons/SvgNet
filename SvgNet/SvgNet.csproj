@@ -1,65 +1,69 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard2.1;net5.0;net6.0</TargetFrameworks>
-    <TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">$(TargetFrameworks);net461;net5.0-windows;net6.0-windows</TargetFrameworks>
-    <UseWindowsForms Condition="'$(TargetFramework)' == 'net5.0-windows' or '$(TargetFramework)' == 'net6.0-windows'">true</UseWindowsForms>
-    <LangVersion>9.0</LangVersion>
-    <AssemblyName>SVG</AssemblyName>
-    <PackageId>SvgNet</PackageId>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>2.2.2</Version>
-    <RootNamespace>SVG</RootNamespace>
-    <DocumentationFile>svgnetdoc.xml</DocumentationFile>
-    <NoWarn>CS1591</NoWarn>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Description>C# framework for creating SVG images</Description>
-    <Company>SvgNet and SvgGdi Bridge Project</Company>
-    <Authors>Rafael Teixeira, Mojmír Němeček, Benjamin Peterson</Authors>
-    <Copyright>2003, 2010, 2015-2021 RiskCare Ltd, SvgNet and SvgGdi Bridge Project, Rafael Teixeira, Mojmír Němeček</Copyright>
-    <PackageProjectUrl>https://github.com/managed-commons/SvgNet</PackageProjectUrl>
-    <PackageIcon>svgnet.png</PackageIcon>
-    <RepositoryUrl>https://github.com/managed-commons/SvgNet</RepositoryUrl>
-    <PackageTags>SVG</PackageTags>
-    <Product>SvgNet</Product>
-    <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>
-      Obsoleting some imprecise constructors, providing better overrides
-    </PackageReleaseNotes>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;netstandard2.1;net6.0</TargetFrameworks>
+		<TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">$(TargetFrameworks);net461;net5.0-windows;net6.0-windows</TargetFrameworks>
+		<UseWindowsForms Condition="'$(TargetFramework)' == 'net5.0-windows' or '$(TargetFramework)' == 'net6.0-windows'">true</UseWindowsForms>
+		<LangVersion>10.0</LangVersion>
+		<AssemblyName>SVG</AssemblyName>
+		<PackageId>SvgNet</PackageId>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Version>2.2.2</Version>
+		<RootNamespace>SVG</RootNamespace>
+		<DocumentationFile>svgnetdoc.xml</DocumentationFile>
+		<NoWarn>CS1591</NoWarn>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Description>C# framework for creating SVG images</Description>
+		<Company>SvgNet and SvgGdi Bridge Project</Company>
+		<Authors>Rafael Teixeira, Mojmír Němeček, Benjamin Peterson</Authors>
+		<Copyright>2003, 2010, 2015-2021 RiskCare Ltd, SvgNet and SvgGdi Bridge Project, Rafael Teixeira, Mojmír Němeček</Copyright>
+		<PackageProjectUrl>https://github.com/managed-commons/SvgNet</PackageProjectUrl>
+		<PackageIcon>svgnet.png</PackageIcon>
+		<RepositoryUrl>https://github.com/managed-commons/SvgNet</RepositoryUrl>
+		<PackageTags>SVG</PackageTags>
+		<Product>SvgNet</Product>
+		<RepositoryType>git</RepositoryType>
+		<PackageReleaseNotes>
+			Good-bye .NET 5.0, Welcome C# 10
+		</PackageReleaseNotes>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <WarningsAsErrors>NU1605</WarningsAsErrors>
-  </PropertyGroup>
-  
-  <Target AfterTargets="Pack" Name="PushPackage" Condition="'$(OS)' == 'Windows_NT' and '$(Configuration)'=='Release'">
-    <PropertyGroup>
-      <LatestPackage>$(PackageId).$(Version).nupkg</LatestPackage>
-      <PushCommand>dotnet nuget push $(PackageOutputAbsolutePath)$(LatestPackage) --force-english-output --source github-managed-commons --skip-duplicate</PushCommand>
-    </PropertyGroup>
-    <Exec ConsoleToMSBuild="true" Command="$(PushCommand)" IgnoreExitCode="true" IgnoreStandardErrorWarningFormat="true" StandardErrorImportance="low" StandardOutputImportance="low">
-      <Output PropertyName="PushOutput" TaskParameter="ConsoleOutput" />
-    </Exec>
-    <Message Importance="high" Text="Pushed $(LatestPackage) to GitHub" Condition="!$([System.Text.RegularExpressions.Regex]::IsMatch('$(PushOutput)', 'already exists'))" />
-    <Warning Code="NUGET" Text="Didn't push $(LatestPackage) to GitHub - Already there" Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(PushOutput)', 'already exists'))" />
-  </Target>
-  
-  <ItemGroup>
-    <PackageReference Include="System.Drawing.Common" Version="6.0.0" Condition="'$(TargetFramework)' != 'net461' And '$(TargetFramework)' != 'net5.0-windows' And '$(TargetFramework)' != 'net6.0-windows'" />
-  </ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<DefineConstants>DEBUG;TRACE</DefineConstants>
+		<WarningsAsErrors>NU1605</WarningsAsErrors>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="svgnetdoc.xml" />
-    <None Include="..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-    <None Include="svgnet.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
+	<Target AfterTargets="Pack" Name="PushPackage" Condition="'$(OS)' == 'Windows_NT' and '$(Configuration)'=='Release'">
+		<PropertyGroup>
+			<LatestPackage>$(PackageId).$(Version).nupkg</LatestPackage>
+			<PushCommand>dotnet nuget push $(PackageOutputAbsolutePath)$(LatestPackage) --skip-duplicate --force-english-output --source nuget.org</PushCommand>
+		</PropertyGroup>
+		<Exec ConsoleToMSBuild="true" Command="$(PushCommand)" IgnoreExitCode="true" IgnoreStandardErrorWarningFormat="true" StandardErrorImportance="low" StandardOutputImportance="low">
+			<Output PropertyName="PushOutput" TaskParameter="ConsoleOutput" />
+		</Exec>
+		<PropertyGroup>
+			<VersionAlreadyPushed>$([System.Text.RegularExpressions.Regex]::IsMatch('$(PushOutput)', 'already exists'))</VersionAlreadyPushed>
+		</PropertyGroup>
+		<Message Importance="high" Text="Pushed $(LatestPackage) to Nuget" Condition="!$(VersionAlreadyPushed)" />
+		<Message Importance="high" Text="Didn't push $(LatestPackage) to Nuget - Already there" Condition="$(VersionAlreadyPushed)" />
+	</Target>
+
+	<ItemGroup>
+		<PackageReference Include="System.Drawing.Common" Version="6.0.0" Condition="'$(TargetFramework)' != 'net461' And '$(TargetFramework)' != 'net5.0-windows' And '$(TargetFramework)' != 'net6.0-windows'" />
+		<PackageReference Include="System.ValueTuple" Version="4.5.0" Condition="'$(TargetFramework)' == 'net461'" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Remove="svgnetdoc.xml" />
+		<None Include="..\LICENSE">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+		<None Include="svgnet.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
 
 </Project>

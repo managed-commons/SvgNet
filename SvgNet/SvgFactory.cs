@@ -10,6 +10,7 @@ using System;
 using System.Collections;
 using System.Reflection;
 using System.Xml;
+
 using SvgNet.SvgElements;
 
 namespace SvgNet {
@@ -83,9 +84,7 @@ namespace SvgNet {
             if (el == null)
                 return null;
 
-            if (_elementNameDictionary == null) {
-                _elementNameDictionary = BuildElementNameDictionary();
-            }
+            _elementNameDictionary ??= BuildElementNameDictionary();
 
             var t = (Type)_elementNameDictionary[el.Name];
 
