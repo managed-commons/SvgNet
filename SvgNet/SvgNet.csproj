@@ -7,7 +7,6 @@
 		<LangVersion>10.0</LangVersion>
 		<AssemblyName>SVG</AssemblyName>
 		<PackageId>SvgNet</PackageId>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Version>3.0.0</Version>
 		<RootNamespace>SvgNet</RootNamespace>
 		<DocumentationFile>svgnetdoc.xml</DocumentationFile>
