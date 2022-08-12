@@ -31,7 +31,7 @@ namespace SvgNet;
 /// Some aspects of GDI that can be implemented in SVG are not.  The most important omission is that only solid brushes are supported.
 /// </para>
 /// </summary>
-public sealed class SvgGraphics : IGraphics {
+public sealed partial class SvgGraphics : IGraphics {
     public SvgGraphics() : this(Color.FromName("Control")) {
     }
 
@@ -1849,40 +1849,15 @@ public sealed class SvgGraphics : IGraphics {
     }
 
     private void DrawBitmapData(Bitmap b, float x, float y, float w, float h, bool scale) {
-        var g = new SvgGroupElement("bitmap_at_" + x.ToString("F", CultureInfo.InvariantCulture) + "_" + y.ToString("F", CultureInfo.InvariantCulture));
-
-        float scalex = 1, scaley = 1;
-
-        if (scale) {
-            scalex = w / b.Width;
-            scaley = h / b.Height;
-        }
-
-        for (int line = 0; line < b.Height; ++line) {
-            // Only draws the last 'set' of pixels when a new color is encountered or it's the last pixel in the line.
-            Color currentColor = b.GetPixel(0, line);
-            int consecutive = 1;
-            for (int col = 0; col < b.Width; ++col) {
-                Color? nextColor = null;
-                // This is SO slow, but better than making the whole library 'unsafe'
-                if (col != b.Width - 1) nextColor = b.GetPixel(col + 1, line);
-
-                if (nextColor == currentColor) consecutive++;
-                else {
-                    // New Color encountered or Last pixel in the line; Draw.
-                    if (!scale) if (col <= w && line <= h)
-                            DrawImagePixel(g, currentColor, x + col - (consecutive - 1), y + line, consecutive, 1);
-                        else DrawImagePixel(g, currentColor, x + ((col - (consecutive - 1)) * scalex), y + (line * scaley), consecutive * scalex, scaley);
-
-                    currentColor = nextColor ?? Color.Transparent; // Only null on last column so assigned color is never used.
-                    consecutive = 1;
-                }
-            }
-        }
-
+        SvgGroupElement groupElement = new BitmapDrawer(
+            new SvgGroupElement("bitmap_at_" + x.ToString("F", CultureInfo.InvariantCulture) + "_" + y.ToString("F", CultureInfo.InvariantCulture)),
+            x,
+            y,
+            scale ? (w / b.Width, h / b.Height) : (1, 1))
+            .DrawBitmapData(b);
         if (!_transforms.Result.IsIdentity)
-            g.Transform = _transforms.Result.Clone();
-        _cur.AddChild(g);
+            groupElement.Transform = _transforms.Result.Clone();
+        _cur.AddChild(groupElement);
     }
 
     private void DrawBitmapImage(Image image, float x, float y, float width, float height) {
@@ -2282,3 +2257,4 @@ public sealed class SvgGraphics : IGraphics {
         private Matrix _result;
     }
 }
+

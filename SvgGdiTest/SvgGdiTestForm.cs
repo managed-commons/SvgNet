@@ -67,12 +67,12 @@ public partial class SvgGdiTestForm : Form {
     private void RenderImages(IGraphics ig) {
         var ike = new Icon(GetType(), "App.ico");
         ig.DrawIcon(ike, 10, 10);
-        //ig.DrawIcon(ike, new Rectangle(270, 400, 30, 40));
+        ig.DrawIcon(ike, new Rectangle(50, 10, ike.Width * 2, ike.Height * 3));
 
         var bmp = new Bitmap(GetType(), "test.bmp");
         ig.DrawImage(bmp, 100f, 150f);
         GraphicsContainer cnt = ig.BeginContainer();
-        ig.RotateTransform(5);
+        ig.RotateTransform(7.5f);
         ig.DrawImage(bmp, 160f, 50f, 120f, 70f);
         ig.EndContainer(cnt);
         //ig.DrawImageUnscaled(bmp, 270, 450, 20, 20);
