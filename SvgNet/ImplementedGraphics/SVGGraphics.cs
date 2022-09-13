@@ -1753,7 +1753,11 @@ public sealed partial class SvgGraphics : IGraphics {
 
         sweepAngle += startAngle;
 
-        if (sweepAngle > startAngle) (sweepAngle, startAngle) = (startAngle, sweepAngle);
+        if (sweepAngle > startAngle) {
+            var temp = startAngle;
+            startAngle = sweepAngle;
+            sweepAngle = temp;
+        }
 
         if (sweepAngle - startAngle > Math.PI || startAngle - sweepAngle > Math.PI) longArc = 1;
 
@@ -1853,7 +1857,8 @@ public sealed partial class SvgGraphics : IGraphics {
             new SvgGroupElement("bitmap_at_" + x.ToString("F", CultureInfo.InvariantCulture) + "_" + y.ToString("F", CultureInfo.InvariantCulture)),
             x,
             y,
-            scale ? (w / b.Width, h / b.Height) : (1, 1))
+            scaleX: scale ? w / b.Width : 1,
+            scaleY: scale ? h / b.Height : 1)
             .DrawBitmapData(b);
         if (!_transforms.Result.IsIdentity)
             groupElement.Transform = _transforms.Result.Clone();

@@ -12,11 +12,12 @@ namespace SvgNet;
 
 public sealed partial class SvgGraphics {
     private class BitmapDrawer {
-        public BitmapDrawer(SvgGroupElement g, float x, float y, (float X, float Y) scaling) {
+        public BitmapDrawer(SvgGroupElement g, float x, float y, float scaleX, float scaleY) {
             _groupElement = g;
             _x = x;
             _y = y;
-            (_scaleX, _scaleY) = scaling;
+            _scaleX = scaleX;
+            _scaleY = scaleY;
         }
 
         private readonly SvgGroupElement _groupElement;
