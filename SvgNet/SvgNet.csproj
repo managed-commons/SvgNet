@@ -7,7 +7,7 @@
 		<LangVersion>10.0</LangVersion>
 		<AssemblyName>SVG</AssemblyName>
 		<PackageId>SvgNet</PackageId>
-		<Version>3.0.0</Version>
+		<Version>3.0.1</Version>
 		<RootNamespace>SvgNet</RootNamespace>
 		<DocumentationFile>svgnetdoc.xml</DocumentationFile>
 		<NoWarn>CS1591</NoWarn>
@@ -23,7 +23,7 @@
 		<Product>SvgNet</Product>
 		<RepositoryType>git</RepositoryType>
 		<PackageReleaseNotes>
-			Good-bye .NET 5.0, Welcome C# 10, Namespaces reshuffling (breaking changes)
+			Dropping tuples dependency
 		</PackageReleaseNotes>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<ImplicitUsings>true</ImplicitUsings>
