@@ -32,7 +32,7 @@ public class Main {
         System.Action<IGraphics> value = TestShared.Renderers[key];
         using var ig = new SvgGraphics(Color.WhiteSmoke);
         value(ig);
-        string svgBody = ig.WriteSVGString();
+        string svgBody = ig.WriteSVGString(640, 480);
         key = key.Replace("/", "."); // Arcs/Pies is not file friendly
         string dstPath = System.IO.Path.Combine(TestContext.CurrentContext.TestDirectory, $"{TestContext.CurrentContext.Test.ID}.{key}.svg");
         System.IO.File.WriteAllText(dstPath, svgBody);

@@ -11,7 +11,7 @@ public static class Program {
             using var ig = new SvgGraphics(Color.WhiteSmoke);
             Console.WriteLine($"=== Renderer {pair.Key}");
             pair.Value(ig);
-            Console.WriteLine(ig.WriteSVGString());
+            Console.WriteLine(ig.WriteSVGString(640, 480));
         }
     }
 }

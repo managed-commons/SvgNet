@@ -121,7 +121,17 @@ public class SvgElement {
     /// <returns></returns>
     /// <param name="compressAttributes">Should usually be set true.  Causes the XML output to be optimized so that
     /// long attributes like styles and transformations are represented with entities.</param>
-    public string WriteSVGString(bool compressAttributes) {
+    public string WriteSVGString(bool compressAttributes) =>
+        WriteSVGString(compressAttributes, null);
+
+    /// <summary>
+    /// Get a string that contains a complete SVG document.  XML version, DOCTYPE etc are included.
+    /// </summary>
+    /// <returns></returns>
+    /// <param name="compressAttributes">Should usually be set true.  Causes the XML output to be optimized so that
+    /// long attributes like styles and transformations are represented with entities.</param>
+    /// <param name="bounds">Width/Height values to add as attributes to the svg element</param>
+    public string WriteSVGString(bool compressAttributes, SizeF? bounds) {
         var doc = new XmlDocument();
 
         XmlDeclaration declaration = doc.CreateXmlDeclaration("1.0", null, "yes");
@@ -132,17 +142,18 @@ public class SvgElement {
 
         doc.DocumentElement.SetAttribute("xmlns", svgNamespaceURI);
         doc.DocumentElement.SetAttribute("xmlns:xlink", xlinkNamespaceURI);
-
         string ents = string.Empty;
         if (compressAttributes)
             ents = SvgFactory.CompressXML(doc, doc.DocumentElement);
-
+        if (bounds != null) {
+            doc.DocumentElement.SetAttribute("width", bounds.Value.Width.ToInvariantString());
+            doc.DocumentElement.SetAttribute("height", bounds.Value.Height.ToInvariantString());
+        }
         doc.XmlResolver = new DummyXmlResolver();
         _ = doc.InsertAfter(
             doc.CreateDocumentType("svg", "-//W3C//DTD SVG 1.1//EN", "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd", ents),
             declaration
         );
-
         return ToXmlString(doc);
     }
 

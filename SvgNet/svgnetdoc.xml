@@ -84,6 +84,15 @@
             <param name="compressAttributes">Should usually be set true.  Causes the XML output to be optimized so that
             long attributes like styles and transformations are represented with entities.</param>
         </member>
+        <member name="M:SvgNet.Elements.SvgElement.WriteSVGString(System.Boolean,System.Nullable{System.Drawing.SizeF})">
+            <summary>
+            Get a string that contains a complete SVG document.  XML version, DOCTYPE etc are included.
+            </summary>
+            <returns></returns>
+            <param name="compressAttributes">Should usually be set true.  Causes the XML output to be optimized so that
+            long attributes like styles and transformations are represented with entities.</param>
+            <param name="bounds">Width/Height values to add as attributes to the svg element</param>
+        </member>
         <member name="M:SvgNet.Elements.SvgElement.WriteXmlElements(System.Xml.XmlDocument,System.Xml.XmlElement)">
             <summary>
             Given an XML document and a parent node, write out this node and its descendants as XmlElements.
@@ -335,6 +344,27 @@
             Some aspects of GDI that can be implemented in SVG are not.  The most important omission is that only solid brushes are supported.
             </para>
             </summary>
+        </member>
+        <member name="M:SvgNet.SvgGraphics.WriteSVGString">
+            <summary>
+            Get a string containing an SVG document.  The very heart of SvgGdi.  It calls <c>WriteSVGString</c> on the <see cref="T:SvgNet.Elements.SvgElement"/>
+            at the root of this <c>SvgGraphics</c> and returns the resulting string.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgGraphics.WriteSVGString(System.Drawing.SizeF)">
+            <summary>
+            Get a string containing an SVG document.  The very heart of SvgGdi.  It calls <c>WriteSVGString</c> on the <see cref="T:SvgNet.Elements.SvgElement"/>
+            at the root of this <c>SvgGraphics</c> and returns the resulting string.
+            </summary>
+            <param name="bounds">Width/Height values to add as attributes to the svg element</param>
+        </member>
+        <member name="M:SvgNet.SvgGraphics.WriteSVGString(System.Single,System.Single)">
+            <summary>
+            Get a string containing an SVG document.  The very heart of SvgGdi.  It calls <c>WriteSVGString</c> on the <see cref="T:SvgNet.Elements.SvgElement"/>
+            at the root of this <c>SvgGraphics</c> and returns the resulting string.
+            </summary>
+            <param name="width">Width value to add as attribute to the svg element</param>
+            <param name="height">Height value to add as attribute to the svg element</param>
         </member>
         <member name="P:SvgNet.SvgGraphics.Clip">
             <summary>
@@ -1226,12 +1256,6 @@
         <member name="M:SvgNet.SvgGraphics.TranslateTransform(System.Single,System.Single,System.Drawing.Drawing2D.MatrixOrder)">
             <summary>
             Implemented, but ignores <c>order</c>
-            </summary>
-        </member>
-        <member name="M:SvgNet.SvgGraphics.WriteSVGString">
-            <summary>
-            Get a string containing an SVG document.  The very heart of SvgGdi.  It calls <c>WriteSVGString</c> on the <see cref="T:SvgNet.Elements.SvgElement"/>
-            at the root of this <c>SvgGraphics</c> and returns the resulting string.
             </summary>
         </member>
         <member name="M:SvgNet.SvgGraphics.IsEndAnchorSimple(System.Drawing.Drawing2D.LineCap)">

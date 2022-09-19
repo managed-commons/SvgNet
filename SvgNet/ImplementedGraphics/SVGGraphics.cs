@@ -54,6 +54,27 @@ public sealed partial class SvgGraphics : IGraphics {
     }
 
     /// <summary>
+    /// Get a string containing an SVG document.  The very heart of SvgGdi.  It calls <c>WriteSVGString</c> on the <see cref="SvgElement"/>
+    /// at the root of this <c>SvgGraphics</c> and returns the resulting string.
+    /// </summary>
+    public string WriteSVGString() => _root.WriteSVGString(true);
+
+    /// <summary>
+    /// Get a string containing an SVG document.  The very heart of SvgGdi.  It calls <c>WriteSVGString</c> on the <see cref="SvgElement"/>
+    /// at the root of this <c>SvgGraphics</c> and returns the resulting string.
+    /// </summary>
+    /// <param name="bounds">Width/Height values to add as attributes to the svg element</param>
+    public string WriteSVGString(SizeF bounds) => _root.WriteSVGString(true, bounds);
+
+    /// <summary>
+    /// Get a string containing an SVG document.  The very heart of SvgGdi.  It calls <c>WriteSVGString</c> on the <see cref="SvgElement"/>
+    /// at the root of this <c>SvgGraphics</c> and returns the resulting string.
+    /// </summary>
+    /// <param name="width">Width value to add as attribute to the svg element</param>
+    /// <param name="height">Height value to add as attribute to the svg element</param>
+    public string WriteSVGString(float width, float height) => _root.WriteSVGString(true, new SizeF(width, height));
+
+    /// <summary>
     /// Not implemented.
     /// </summary>
     public Region Clip { get => throw new SvgGdiNotImplementedException("Clip"); set => throw new SvgGdiNotImplementedException("Clip"); }
@@ -1365,12 +1386,6 @@ public sealed partial class SvgGraphics : IGraphics {
     /// </summary>
     public void TranslateTransform(float dx, float dy, MatrixOrder order) => _transforms.Top.Translate(dx, dy, order);
 
-    /// <summary>
-    /// Get a string containing an SVG document.  The very heart of SvgGdi.  It calls <c>WriteSVGString</c> on the <see cref="SvgElement"/>
-    /// at the root of this <c>SvgGraphics</c> and returns the resulting string.
-    /// </summary>
-    public string WriteSVGString() => _root.WriteSVGString(true);
-
     //a default graphics so that we can make a guess as to functions like MeasureString
     private static Graphics _g;
     private readonly SvgRectElement _bg;
@@ -1753,11 +1768,13 @@ public sealed partial class SvgGraphics : IGraphics {
 
         sweepAngle += startAngle;
 
+#pragma warning disable IDE0180
         if (sweepAngle > startAngle) {
-            var temp = startAngle;
+            float temp = startAngle;
             startAngle = sweepAngle;
             sweepAngle = temp;
         }
+#pragma warning restore IDE0180
 
         if (sweepAngle - startAngle > Math.PI || startAngle - sweepAngle > Math.PI) longArc = 1;
 
