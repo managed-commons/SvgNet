@@ -9,3 +9,4 @@ obj/
 test-results/
 /packages/
 /.vs
+/InternalTrace.*.log
