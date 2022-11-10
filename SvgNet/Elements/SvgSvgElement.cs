@@ -6,8 +6,6 @@
     Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
 
-using SvgNet.Types;
-
 namespace SvgNet.Elements;
 /// <summary>
 /// Represents a <c>svg</c> element

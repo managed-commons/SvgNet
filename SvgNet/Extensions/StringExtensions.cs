@@ -6,8 +6,6 @@
     Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
 
-using SvgNet.Types;
-
 namespace System;
 public static class StringExtensions {
     public static int ParseHex(this string s, int startIndex, int length = 1)

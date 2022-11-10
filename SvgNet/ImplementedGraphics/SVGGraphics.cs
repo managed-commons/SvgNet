@@ -7,7 +7,6 @@
 */
 
 using SvgNet.Elements;
-using SvgNet.Types;
 
 namespace SvgNet;
 

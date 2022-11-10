@@ -6,10 +6,10 @@
     Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
 
-using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 
 namespace SvgNet.Types;
+
 /// <summary>
 /// A color, as found in CSS2 and used in SVG.  As well as a GDI Color object, SvgColor stores
 /// the string it was initialized from, so that when a color specified as 'black' is written out,
@@ -37,20 +37,7 @@ public partial class SvgColor : ICloneable {
     /// If the SvgColor was constructed from a string, use that string; otherwise use rgb() form
     /// </summary>
     /// <returns></returns>
-    public override string ToString() {
-        if (_original_string != null)
-            return _original_string;
-
-        string s = "rgb(";
-        s += Color.R.ToString();
-        s += ",";
-        s += Color.G.ToString();
-        s += ",";
-        s += Color.B.ToString();
-        s += ")";
-
-        return s;
-    }
+    public override string ToString() => _original_string ?? $"rgb({Color.R},{Color.G},{Color.B})";
 
     private string _original_string;
 
@@ -66,7 +53,7 @@ public partial class SvgColor : ICloneable {
             : throw new SvgException("Invalid SvgColor", s);
 
         static bool TryParseHexString(string s, out Color color) {
-            if (s.StartsWith("#", StringComparison.Ordinal)) {
+            if (HEX_COLOR_REGEX.Match(s).Success) {
                 int r, g, b;
                 if (s.Length == 4) {
                     r = s.ParseHex(1, 1);
@@ -99,17 +86,20 @@ public partial class SvgColor : ICloneable {
             }
 
             static bool TryParseScaling(string s, Regex regex, int scale, out Color color) {
-                Match m = regex.Match(s);
-                if (m.Success) {
-                    int r, g, b;
-                    r = Parse(m, "r") * scale / 100;
-                    g = Parse(m, "g") * scale / 100;
-                    b = Parse(m, "b") * scale / 100;
-                    color = Color.FromArgb(r, g, b);
-                    return true;
+                try {
+                    Match m = regex.Match(s);
+                    if (m.Success) {
+                        int r, g, b;
+                        r = Parse(m, "r") * scale / 100;
+                        g = Parse(m, "g") * scale / 100;
+                        b = Parse(m, "b") * scale / 100;
+                        color = Color.FromArgb(r, g, b);
+                        return true;
 
-                    static int Parse(Match m, string component) =>
-                        int.Parse(m.Groups[component].Captures[0].Value, CultureInfo.InvariantCulture);
+                        static int Parse(Match m, string component) =>
+                            int.Parse(m.Groups[component].Captures[0].Value, CultureInfo.InvariantCulture);
+                    }
+                } catch {
                 }
                 color = Color.Transparent;
                 return false;
@@ -117,8 +107,13 @@ public partial class SvgColor : ICloneable {
         }
 
         static bool TryParseFromName(string s, out Color color) {
-            color = Color.FromName(s);
-            return color.A != 0;
+            try {
+                color = Color.FromName(s);
+                return color.A != 0;
+            } catch {
+                color = Color.Transparent;
+                return false;
+            }
         }
     }
 
@@ -126,6 +121,7 @@ public partial class SvgColor : ICloneable {
     private static readonly Regex RGB_PREFIX_REGEX = RGB_PREFIX();
     private static readonly Regex RGB_INTEGERS_REGEX = RGB_INTEGERS();
     private static readonly Regex RGB_PERCENTS_REGEX = RGB_PERCENTS();
+    private static readonly Regex HEX_COLOR_REGEX = HEX_COLOR();
 
     [GeneratedRegex("[rR][gG][bB]")]
     private static partial Regex RGB_PREFIX();
@@ -133,9 +129,13 @@ public partial class SvgColor : ICloneable {
     private static partial Regex RGB_INTEGERS();
     [GeneratedRegex("[rgbRGB ]+\\( *(?<r>\\d+)%[, ]+(?<g>\\d+)%[, ]+(?<b>\\d+)% *\\)")]
     private static partial Regex RGB_PERCENTS();
+    [GeneratedRegex("^#[0-9A-Fa-f]+$")]
+    private static partial Regex HEX_COLOR();
 #else
     private static readonly Regex RGB_PREFIX_REGEX = new("[rR][gG][bB]");
     private static readonly Regex RGB_INTEGERS_REGEX = new("[rgbRGB ]+\\( *(?<r>\\d+)[, ]+(?<g>\\d+)[, ]+(?<b>\\d+) *\\)");
     private static readonly Regex RGB_PERCENTS_REGEX = new("[rgbRGB ]+\\( *(?<r>\\d+)%[, ]+(?<g>\\d+)%[, ]+(?<b>\\d+)% *\\)");
+    private static readonly Regex HEX_COLOR_REGEX = new("^#[0-9A-Fa-f]+$");
+
 #endif
 }

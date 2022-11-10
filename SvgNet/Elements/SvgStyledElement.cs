@@ -8,8 +8,6 @@
 
 using System.Xml;
 
-using SvgNet.Types;
-
 namespace SvgNet.Elements;
 /// <summary>
 /// This is an SvgElement that can have a CSS style and an SVG transformation list.  It contains special properties to make reading and setting the style

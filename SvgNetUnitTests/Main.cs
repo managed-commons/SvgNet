@@ -11,6 +11,7 @@ using System.Drawing;
 using NUnit.Framework;
 
 using SvgNet.Interfaces;
+using SvgNet.Types;
 
 namespace SvgNet;
 

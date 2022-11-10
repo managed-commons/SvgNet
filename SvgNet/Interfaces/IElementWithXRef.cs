@@ -6,8 +6,6 @@
 	Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
 
-using SvgNet.Types;
-
 namespace SvgNet.Interfaces;
 /// <summary>
 /// Interface for SvgElements that xlink to another element, e.g. <c>use</c>
