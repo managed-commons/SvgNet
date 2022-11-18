@@ -1448,70 +1448,6 @@
             </summary>
             <param name="s"></param>
         </member>
-        <member name="M:SvgNet.Types.SvgColor.RGB_PREFIX">
-            <remarks>
-            Pattern explanation:<br/>
-            <code>
-            ○ Match a character in the set [Rr].<br/>
-            ○ Match a character in the set [Gg].<br/>
-            ○ Match a character in the set [Bb].<br/>
-            </code>
-            </remarks>
-        </member>
-        <member name="M:SvgNet.Types.SvgColor.RGB_INTEGERS">
-            <remarks>
-            Pattern explanation:<br/>
-            <code>
-            ○ Match a character in the set [ BGRbgr] atomically at least once.<br/>
-            ○ Match '('.<br/>
-            ○ Match ' ' atomically any number of times.<br/>
-            ○ "r" capture group.<br/>
-                ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match a character in the set [ ,] atomically at least once.<br/>
-            ○ "g" capture group.<br/>
-                ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match a character in the set [ ,] atomically at least once.<br/>
-            ○ "b" capture group.<br/>
-                ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match ' ' atomically any number of times.<br/>
-            ○ Match ')'.<br/>
-            </code>
-            </remarks>
-        </member>
-        <member name="M:SvgNet.Types.SvgColor.RGB_PERCENTS">
-            <remarks>
-            Pattern explanation:<br/>
-            <code>
-            ○ Match a character in the set [ BGRbgr] atomically at least once.<br/>
-            ○ Match '('.<br/>
-            ○ Match ' ' atomically any number of times.<br/>
-            ○ "r" capture group.<br/>
-                ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match '%'.<br/>
-            ○ Match a character in the set [ ,] atomically at least once.<br/>
-            ○ "g" capture group.<br/>
-                ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match '%'.<br/>
-            ○ Match a character in the set [ ,] atomically at least once.<br/>
-            ○ "b" capture group.<br/>
-                ○ Match a Unicode digit atomically at least once.<br/>
-            ○ Match '%'.<br/>
-            ○ Match ' ' atomically any number of times.<br/>
-            ○ Match ')'.<br/>
-            </code>
-            </remarks>
-        </member>
-        <member name="M:SvgNet.Types.SvgColor.HEX_COLOR">
-            <remarks>
-            Pattern explanation:<br/>
-            <code>
-            ○ Match if at the beginning of the string.<br/>
-            ○ Match '#'.<br/>
-            ○ Match a character in the set [0-9A-Fa-f] atomically at least once.<br/>
-            ○ Match if at the end of the string or if before an ending newline.<br/>
-            </code>
-            </remarks>
-        </member>
         <member name="T:SvgNet.Types.SvgLength">
             <summary>
             A length or coordinate component (in SVG 1.1 the specification says they are the same)
@@ -1633,6 +1569,68 @@
             <param name="s"></param>
         </member>
         <member name="M:SvgNet.Types.SvgStyle.Get(System.String)">
+            <summary>
+            Gets the value for a given key.
+            </summary>
+        </member>
+        <member name="M:SvgNet.Types.SvgStyle.Set(System.String,System.Object)">
+            <summary>
+            Sets a style.  The key must be a string but the value can be anything (e.g. SvgColor).  If and when the element that owns this style is written out
+            to XML, <c>ToString</c> will be called on the value.
+            </summary>
+            <param name="key"></param>
+            <param name="val"></param>
+        </member>
+        <member name="M:SvgNet.Types.SvgStyle.ToString">
+            <summary>
+            Outputs a CSS string representation as used in SVG.
+            </summary>
+        </member>
+        <member name="T:SvgNet.Types.SvgTransform">
+            <summary>
+            Represents a single element in an SVG transformation list.  The transformation is represented internally as a
+            GDI+ Matrix object.
+            </summary>
+        </member>
+        <member name="M:SvgNet.Types.SvgTransform.FromString(System.String)">
+            <summary>
+            Parse a transformation according to the SVG standard.  This is complex enough that it makes
+            me wish it was worth using a real parser, but antlr is so unwieldy.
+            </summary>
+        </member>
+        <member name="M:SvgNet.Types.SvgTransform.ToString">
+            <summary>
+            Currently, we always output as matrix() no matter how the transform was specified.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:SvgNet.Types.SvgTransformList">
+            <summary>
+            Represents an SVG transform-list, as specified in section 7.6 of the SVG 1.1 standard.
+            </summary>
+        </member>
+        <member name="M:SvgNet.Types.SvgTransformList.FromString(System.String)">
+            <summary>
+            Parse a string containing a whitespace-separated list of transformations as per the SVG
+            standard
+            </summary>
+        </member>
+        <member name="T:SvgNet.Types.SvgUriReference">
+            <summary>
+            Represents a URI reference within a style.  Local uri references are generally strings of the form
+            <c>url(#elementID)</c>.   This class should not be confused with <see cref="T:SvgNet.Types.SvgXRef"/> which represents
+            the xlink:* properties of, for example, an <c>a</c> element.
+            </summary>
+        </member>
+        <member name="T:SvgNet.Types.SvgXRef">
+            <summary>
+            Represents a URI reference.  Unlike most svg types, uri references are represented by more than one attribute
+            of an element.  This means special measures are required to get and set uri references.
+            </summary>
+        </member>
+    </members>
+</doc>
+pes.SvgStyle.Get(System.String)">
             <summary>
             Gets the value for a given key.
             </summary>
