@@ -10,4 +10,5 @@
 	<ItemGroup>
 		<ProjectReference Include="..\SvgNet\SvgNet.csproj" />
 	</ItemGroup>
+	<Target Name="NugetOrg" />
 </Project>

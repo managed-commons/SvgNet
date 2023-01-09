@@ -1,7 +1,7 @@
 ﻿/*
     Copyright © 2003 RiskCare Ltd. All rights reserved.
     Copyright © 2010 SvgNet & SvgGdi Bridge Project. All rights reserved.
-    Copyright © 2015-2022 Rafael Teixeira, Mojmír Němeček, Benjamin Peterson and Other Contributors
+    Copyright © 2015-2023 Rafael Teixeira, Mojmír Němeček, Benjamin Peterson and Other Contributors
 
     Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
@@ -22,7 +22,7 @@ public class SvgUriReference : ICloneable {
 
     public SvgUriReference(SvgElement target) {
         Href = "#" + target.Id;
-        if (target.Id?.Length == 0)             throw new SvgException("Uri Reference cannot refer to an element with no id.", target.ToString());
+        if (target.Id?.Length == 0) throw new SvgException("Uri Reference cannot refer to an element with no id.", target.ToString());
     }
 
     public string Href { get; set; }

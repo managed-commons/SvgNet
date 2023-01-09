@@ -1,7 +1,7 @@
 ﻿/*
     Copyright © 2003 RiskCare Ltd. All rights reserved.
     Copyright © 2010 SvgNet & SvgGdi Bridge Project. All rights reserved.
-    Copyright © 2015-2022 Rafael Teixeira, Mojmír Němeček, Benjamin Peterson and Other Contributors
+    Copyright © 2015-2023 Rafael Teixeira, Mojmír Němeček, Benjamin Peterson and Other Contributors
 
     Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
@@ -28,7 +28,7 @@ public class SvgPoints : ICloneable {
         if (pts.Length % 2 != 0)
             throw new SvgException("Invalid SvgPoints", pts.ToString());
 
-        foreach (float p in pts)             _ = _pts.Add(p);
+        foreach (float p in pts) _ = _pts.Add(p);
     }
 
     public static implicit operator SvgPoints(string s) => new(s);
@@ -45,7 +45,7 @@ public class SvgPoints : ICloneable {
     public void FromString(string s) {
         try {
             float[] fa = SvgNumList.String2Floats(s);
-            foreach (float f in fa)                 _ = _pts.Add(f);
+            foreach (float f in fa) _ = _pts.Add(f);
         } catch (Exception) {
             throw new SvgException("Invalid SvgPoints", s);
         }
@@ -56,7 +56,7 @@ public class SvgPoints : ICloneable {
 
     public override string ToString() {
         var builder = new StringBuilder();
-        foreach (float f in _pts)             _ = builder.Append(f.ToString("F", CultureInfo.InvariantCulture)).Append(' ');
+        foreach (float f in _pts) _ = builder.Append(f.ToString("F", CultureInfo.InvariantCulture)).Append(' ');
         return builder.ToString();
     }
 

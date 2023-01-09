@@ -1,7 +1,7 @@
 ﻿/*
     Copyright © 2003 RiskCare Ltd. All rights reserved.
     Copyright © 2010 SvgNet & SvgGdi Bridge Project. All rights reserved.
-    Copyright © 2015-2022 Rafael Teixeira, Mojmír Němeček, Benjamin Peterson and Other Contributors
+    Copyright © 2015-2023 Rafael Teixeira, Mojmír Němeček, Benjamin Peterson and Other Contributors
 
     Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
@@ -51,7 +51,7 @@ public class SvgColorTests {
     [TestCase("rgb(192,192,-192)")]
     [TestCase("RGB (175%,75%,75%)")]
     public void TestSvgColor_FromStringException(string colorAsString) {
-        var ex = Assert.Throws<SvgException>(() => new SvgColor(colorAsString));
+        SvgException ex = Assert.Throws<SvgException>(() => new SvgColor(colorAsString));
         Assert.AreEqual("Invalid SvgColor", ex.Message);
     }
 }

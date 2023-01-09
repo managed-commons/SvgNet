@@ -17,7 +17,7 @@
 		<Description>C# framework for creating SVG images</Description>
 		<Company>SvgNet and SvgGdi Bridge Project</Company>
 		<Authors>Rafael Teixeira, Mojmír Němeček, Benjamin Peterson</Authors>
-		<Copyright>2003, 2010, 2015-2022 RiskCare Ltd, SvgNet and SvgGdi Bridge Project, Rafael Teixeira, Mojmír Němeček</Copyright>
+		<Copyright>2003, 2010, 2015-2023 RiskCare Ltd, SvgNet and SvgGdi Bridge Project, Rafael Teixeira, Mojmír Němeček</Copyright>
 		<PackageProjectUrl>https://github.com/managed-commons/SvgNet</PackageProjectUrl>
 		<PackageIcon>svgnet.png</PackageIcon>
 		<RepositoryUrl>https://github.com/managed-commons/SvgNet</RepositoryUrl>
@@ -51,7 +51,7 @@
 		<WarningsAsErrors>NU1605</WarningsAsErrors>
 	</PropertyGroup>
 
-	<Target AfterTargets="Pack" Name="PushPackage" Condition="'$(OS)' == 'Windows_NT' and '$(Configuration)'=='Release'">
+	<Target Name="NugetOrg" DependsOnTargets="Pack" Condition="'$(OS)' == 'Windows_NT' and '$(Configuration)'=='Release'">
 		<PropertyGroup>
 			<LatestPackage>$(PackageId).$(Version).nupkg</LatestPackage>
 			<PushCommand>dotnet nuget push $(PackageOutputAbsolutePath)$(LatestPackage) --skip-duplicate --force-english-output --source nuget.org</PushCommand>

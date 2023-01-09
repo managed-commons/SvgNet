@@ -9,4 +9,5 @@ obj/
 test-results/
 /packages/
 /.vs
-/InternalTrace.*.log
+InternalTrace.*.log
+SvgNet/svgnetdoc.xml
