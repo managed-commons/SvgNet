@@ -11,3 +11,4 @@ test-results/
 /.vs
 InternalTrace.*.log
 SvgNet/svgnetdoc.xml
+/SvgNet/svgnetdoc.xml

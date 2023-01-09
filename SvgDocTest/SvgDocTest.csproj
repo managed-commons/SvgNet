@@ -113,4 +113,5 @@
 		<PostBuildEvent />
 	</PropertyGroup>
 	<Target Name="NugetOrg" />
+	<Target Name="TagSources" />
 </Project>

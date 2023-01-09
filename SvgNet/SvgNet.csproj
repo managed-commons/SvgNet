@@ -50,6 +50,12 @@
 		<DefineConstants>DEBUG;TRACE</DefineConstants>
 		<WarningsAsErrors>NU1605</WarningsAsErrors>
 	</PropertyGroup>
+	
+	<Target Name="TagSources">
+		<Exec Command="git tag v$(Version)" ContinueOnError="true" StandardErrorImportance="low" StandardOutputImportance="low" IgnoreExitCode="true" />
+		<Message Importance="high" Text="Recent tags:" />
+		<Exec Command="git tag --sort=-creatordate | grep v | head -n 1" ContinueOnError="true" StandardErrorImportance="high" StandardOutputImportance="high" IgnoreExitCode="true" />
+	</Target>
 
 	<Target Name="NugetOrg" DependsOnTargets="Pack" Condition="'$(OS)' == 'Windows_NT' and '$(Configuration)'=='Release'">
 		<PropertyGroup>

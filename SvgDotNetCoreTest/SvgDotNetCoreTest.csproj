@@ -11,4 +11,5 @@
 		<ProjectReference Include="..\SvgNet\SvgNet.csproj" />
 	</ItemGroup>
 	<Target Name="NugetOrg" />
+	<Target Name="TagSources" />
 </Project>
