@@ -6,7 +6,7 @@
     Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
 
-namespace System.Drawing.Drawing2D;
+namespace SvgNet;
 
 public static class MatrixExtensions {
 

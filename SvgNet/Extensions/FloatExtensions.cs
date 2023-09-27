@@ -6,7 +6,7 @@
     Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
 
-namespace System;
+namespace SvgNet;
 
 public static class FloatExtensions {
     public static string ToInvariantString(this float value) =>

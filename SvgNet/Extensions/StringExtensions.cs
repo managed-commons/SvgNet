@@ -6,7 +6,7 @@
     Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
 
-namespace System;
+namespace SvgNet;
 public static class StringExtensions {
     public static int ParseHex(this string s, int startIndex, int length = 1)
 #if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
