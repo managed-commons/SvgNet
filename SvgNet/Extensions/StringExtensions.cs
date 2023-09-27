@@ -7,6 +7,8 @@
 */
 
 namespace System;
+
+
 public static class StringExtensions {
     public static int ParseHex(this string s, int startIndex, int length = 1)
 #if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
@@ -15,10 +17,7 @@ public static class StringExtensions {
         => int.Parse(s.Substring(startIndex, length), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 #endif
 
-#if !(NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER)
-    public static bool Contains(this string s, char c)
-        => s.IndexOf(c) >= 0;
-#endif
+
     public static IPB IsPrefixedBy(this string s, string prefix)
         => !s.StartsWith(prefix, StringComparison.InvariantCulture)
            ? new IPB(false, null)
@@ -71,14 +70,9 @@ public static class StringExtensions {
     }
 }
 
-public readonly struct IPB {
-    public readonly bool IsPrefixed;
-    public readonly string Tail;
-
-    public IPB(bool isPrefixed, string tail) {
-        IsPrefixed = isPrefixed;
-        Tail = tail;
-    }
+public readonly struct IPB(bool isPrefixed, string tail) {
+    public readonly bool IsPrefixed = isPrefixed;
+    public readonly string Tail = tail;
 
     public void Deconstruct(out bool isPrefixed, out string tail) {
         isPrefixed = IsPrefixed;
