@@ -9,7 +9,7 @@
 		<LangVersion>preview</LangVersion>
 		<AssemblyName>SVG</AssemblyName>
 		<PackageId>SvgNet</PackageId>
-		<Version>3.3.4</Version>
+		<Version>3.3.5</Version>
 		<RootNamespace>SvgNet</RootNamespace>
 		<DocumentationFile>svgnetdoc.xml</DocumentationFile>
 		<NoWarn>CS1591</NoWarn>
@@ -24,8 +24,9 @@
 		<PackageTags>SVG</PackageTags>
 		<Product>SvgNet</Product>
 		<RepositoryType>git</RepositoryType>
-		<PackageReleaseNotes>Alternative fix for #72 (https://github.com/managed-commons/SvgNet/issues/72)</PackageReleaseNotes>
+		<PackageReleaseNotes>Some changes on packaging readme file</PackageReleaseNotes>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<ImplicitUsings>true</ImplicitUsings>
 	</PropertyGroup>
 
