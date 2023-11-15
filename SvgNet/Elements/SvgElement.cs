@@ -46,7 +46,7 @@ public class SvgElement {
     /// <summary>
     /// An ArrayList containing this element's children
     /// </summary>
-    public ArrayList Children { get; protected set; } = new ArrayList();
+    public ArrayList Children { get; protected set; } = [];
 
     public string Id {
         get => (string)_atts["id"];
@@ -175,7 +175,7 @@ public class SvgElement {
         _ = parent == null ? doc.AppendChild(me) : parent.AppendChild(me);
     }
 
-    protected Hashtable _atts = new();
+    protected Hashtable _atts = [];
     protected object FirstChild => Children[0];
 
     protected T GetTypedAttribute<T>(string attributeName, Func<object, T> fromString) where T : new() {

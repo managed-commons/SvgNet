@@ -618,7 +618,7 @@ public sealed partial class SvgGraphics : IGraphics {
             _cur.AddChild(lin);
 
             DrawEndAnchors(pen, new PointF(x1, y1), new PointF(x2, y2));
-        } else DrawLines(pen, new PointF[] { new PointF(x1, y1), new PointF(x2, y2) });
+        } else DrawLines(pen, new PointF[] { new(x1, y1), new(x2, y2) });
     }
 
     /// <summary>
@@ -2234,7 +2234,7 @@ public sealed partial class SvgGraphics : IGraphics {
     /// </summary>
     private sealed class MatrixStack : IDisposable {
         public MatrixStack() {
-            _mx = new();
+            _mx = [];
 
             //we need 2 identity matrices on the stack.  This is because we do a resettransform()
             //by pop dup (to set current xform to xform of enclosing group).

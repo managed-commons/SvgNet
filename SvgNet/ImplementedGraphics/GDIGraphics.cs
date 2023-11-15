@@ -10,10 +10,7 @@ namespace SvgNet;
 /// <summary>
 /// An IGraphics implementation that simply passes every call through to a GDI+ <c>Graphics</c> object.
 /// </summary>
-public sealed class GdiGraphics : IGraphics {
-
-    public GdiGraphics(Graphics g) => _g = g ?? throw new ArgumentNullException(nameof(g));
-
+public sealed class GdiGraphics(Graphics g) : IGraphics {
     public Region Clip { get => _g.Clip; set => _g.Clip = value; }
     public RectangleF ClipBounds => _g.ClipBounds;
     public CompositingMode CompositingMode { get => _g.CompositingMode; set => _g.CompositingMode = value; }
@@ -353,5 +350,5 @@ public sealed class GdiGraphics : IGraphics {
 
     public void TranslateTransform(float dx, float dy, MatrixOrder order) => _g.TranslateTransform(dx, dy, order);
 
-    private readonly Graphics _g;
+    private readonly Graphics _g = g ?? throw new ArgumentNullException(nameof(g));
 }

@@ -48,7 +48,7 @@ public class SvgTransformList : ICloneable {
         int start = -1;
 
         while (true) {
-            int end = s.IndexOf(")", start + 1, StringComparison.Ordinal);
+            int end = s.IndexOf(')', start + 1);
 
             if (end == -1) return;
 
@@ -71,5 +71,5 @@ public class SvgTransformList : ICloneable {
         return result;
     }
 
-    private readonly ArrayList _t = new();
+    private readonly ArrayList _t = [];
 }

@@ -62,19 +62,19 @@ public class SvgStyle : ICloneable {
 
         switch (pen.DashStyle) {
             case DashStyle.Dash:
-                dashes = new float[] { 3, 1 };
+                dashes = [3, 1];
                 break;
 
             case DashStyle.DashDot:
-                dashes = new float[] { 3, 1, 1, 1 };
+                dashes = [3, 1, 1, 1];
                 break;
 
             case DashStyle.DashDotDot:
-                dashes = new float[] { 3, 1, 1, 1, 1 };
+                dashes = [3, 1, 1, 1, 1];
                 break;
 
             case DashStyle.Dot:
-                dashes = new float[] { 1, 1 };
+                dashes = [1, 1];
                 break;
 
             case DashStyle.Custom:
@@ -205,7 +205,7 @@ public class SvgStyle : ICloneable {
         return result.ToString();
     }
 
-    private readonly Hashtable _styles = new();
+    private readonly Hashtable _styles = [];
 
     private static string InvariantCultureToString(object styleValue)
         => styleValue is float styleAsFloat

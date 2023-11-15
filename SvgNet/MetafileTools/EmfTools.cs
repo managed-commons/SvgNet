@@ -62,13 +62,8 @@ public abstract class EmfBinaryRecord : IBinaryRecord {
 /// <summary>
 /// Low-level EMF parser
 /// </summary>
-public class EmfReader : IDisposable {
-    public EmfReader(Stream stream) {
-        _stream = stream;
-        _reader = new BinaryReader(stream);
-    }
-
-    public bool IsEndOfFile => _stream.Length == _stream.Position;
+public class EmfReader(Stream stream) : IDisposable {
+    public bool IsEndOfFile => stream.Length == stream.Position;
 
     public void Dispose() {
         if (_reader is not null) {
@@ -84,7 +79,7 @@ public class EmfReader : IDisposable {
         var rt = (EmfPlusRecordType)_reader.ReadUInt32();
         uint recordSize = _reader.ReadUInt32();
 
-        EmfBinaryRecord record = new EmfUnknownRecord {
+        var record = new EmfUnknownRecord {
             RecordType = rt,
             RecordSize = recordSize
         };
@@ -101,8 +96,7 @@ public class EmfReader : IDisposable {
         return record;
     }
 
-    private readonly Stream _stream;
-    private BinaryReader _reader;
+    private BinaryReader _reader = new(stream);
 }
 
 public class EmfUnknownRecord : EmfBinaryRecord {
@@ -116,6 +110,6 @@ public class EmfUnknownRecord : EmfBinaryRecord {
         Data = length > 0 ? reader.ReadBytes(length) : _emptyData;
     }
 
-    private static readonly byte[] _emptyData = Array.Empty<byte>();
+    private static readonly byte[] _emptyData = [];
 }
 

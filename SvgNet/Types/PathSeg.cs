@@ -11,19 +11,10 @@ namespace SvgNet.Types;
 /// A segment in an Svg path.  This is not a real SVG type; it is not in the SVG spec.  It is provided for making paths
 /// easier to specify and parse.
 /// </summary>
-public class PathSeg : ICloneable {
-    public float[] _data;
-    public SvgPathSegType _type;
+public class PathSeg(SvgPathSegType type, bool abs, float[] data) : ICloneable {
+    public bool Abs { get; } = abs;
 
-    public PathSeg(SvgPathSegType t, bool a, float[] arr) {
-        _type = t;
-        Abs = a;
-        _data = arr;
-    }
-
-    public bool Abs { get; }
-
-    public string Char => _type switch {
+    public string Char => type switch {
         SvgPathSegType.SVG_SEGTYPE_MOVETO => Abs ? "M" : "m",
         SvgPathSegType.SVG_SEGTYPE_CLOSEPATH => "z",
         SvgPathSegType.SVG_SEGTYPE_LINETO => Abs ? "L" : "l",
@@ -35,12 +26,12 @@ public class PathSeg : ICloneable {
         SvgPathSegType.SVG_SEGTYPE_SMOOTHBEZIERTO => Abs ? "T" : "t",
         SvgPathSegType.SVG_SEGTYPE_ARCTO => Abs ? "A" : "a",
 
-        _ => throw new SvgException("Invalid PathSeg type", _type.ToString()),
+        _ => throw new SvgException("Invalid PathSeg type", type.ToString()),
     };
 
-    public float[] Data => _data;
+    public float[] Data => data;
 
-    public SvgPathSegType Type => _type;
+    public SvgPathSegType Type => type;
 
-    public object Clone() => new PathSeg(_type, Abs, (float[])_data.Clone());
+    public object Clone() => new PathSeg(type, Abs, (float[])data.Clone());
 };

@@ -66,7 +66,7 @@ public sealed class MetafileParser : IDisposable {
         _fillPolygon = fillPolygon;
         _zero = destination;
         _lineBuffer = new LineBuffer(unitSize);
-        _objects = new Dictionary<uint, ObjectHandle>();
+        _objects = [];
         _brush = null;
 
         using (var reader = new EmfTools.EmfReader(emf)) {
@@ -451,9 +451,7 @@ public sealed class MetafileParser : IDisposable {
 
             uint totalNumberOfPoints = _br.ReadUInt32();
 
-            int[] numberOfPoints = new int[1];
-            numberOfPoints[0] = (int)totalNumberOfPoints;
-
+            int[] numberOfPoints = [(int)totalNumberOfPoints];
             InternalProcessPolyline16(1, totalNumberOfPoints, numberOfPoints, _br);
 
             System.Diagnostics.Debug.Assert(_ms.Position == _ms.Length);
@@ -601,14 +599,7 @@ public sealed class MetafileParser : IDisposable {
         _transform?.Dispose();
     }
 
-    private class LineBuffer {
-        public LineBuffer(float unitSize) {
-            _points = new List<NormalizedPoint>();
-            _normalizedPoints = new List<NormalizedPoint>();
-            _visualPoints = new List<VisualPoint>();
-            _epsilonSquare = _unitSizeEpsilon * unitSize * _unitSizeEpsilon * unitSize;
-        }
-
+    private class LineBuffer(float unitSize) {
         public bool IsEmpty => _points.Count == 0;
 
         public void Add(PointF[] points, int offset, int count) {
@@ -668,14 +659,14 @@ public sealed class MetafileParser : IDisposable {
                 result.Add(visualPoint.Point);
             }
 
-            return result.ToArray();
+            return [.. result];
         }
 
         private const float _unitSizeEpsilon = 2.0f;
-        private readonly float _epsilonSquare;
-        private readonly List<NormalizedPoint> _normalizedPoints;
-        private readonly List<NormalizedPoint> _points;
-        private readonly List<VisualPoint> _visualPoints;
+        private readonly float _epsilonSquare = _unitSizeEpsilon * unitSize * _unitSizeEpsilon * unitSize;
+        private readonly List<NormalizedPoint> _normalizedPoints = [];
+        private readonly List<NormalizedPoint> _points = [];
+        private readonly List<VisualPoint> _visualPoints = [];
 
         private static bool IsVisuallyIdentical(NormalizedPoint a, NormalizedPoint b) => a.VisualIndex == b.VisualIndex;
 

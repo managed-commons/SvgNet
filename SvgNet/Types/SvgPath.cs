@@ -31,7 +31,7 @@ public class SvgPath : ICloneable {
     /// </summary>
     /// <param name="s"></param>
     public void FromString(string s) {
-        string[] sa = s.Split(new char[] { ' ', ',', '\t', '\r', '\n' });
+        string[] sa = s.Split(SvgHelpers.CommonSeparators);
 
         PathSeg ps;
         int datasize = 0;
@@ -39,7 +39,7 @@ public class SvgPath : ICloneable {
         bool abs = false;
         int i = 0;
         char segTypeChar;
-        _path = new ArrayList();
+        _path = [];
 
         while (i < sa.Length) {
             if (sa[i]?.Length == 0) {

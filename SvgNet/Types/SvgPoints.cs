@@ -60,5 +60,5 @@ public class SvgPoints : ICloneable {
         return builder.ToString();
     }
 
-    private readonly ArrayList _pts = new();
+    private readonly ArrayList _pts = [];
 }

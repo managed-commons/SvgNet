@@ -8,7 +8,6 @@
 
 namespace System;
 
-
 public static class StringExtensions {
     public static int ParseHex(this string s, int startIndex, int length = 1)
 #if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
@@ -16,7 +15,6 @@ public static class StringExtensions {
 #else
         => int.Parse(s.Substring(startIndex, length), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 #endif
-
 
     public static IPB IsPrefixedBy(this string s, string prefix)
         => !s.StartsWith(prefix, StringComparison.InvariantCulture)
@@ -36,8 +34,9 @@ public static class StringExtensions {
         => s.Substring(1);
 #endif
 
+    private static readonly char[] digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
     public static bool TrySplitNumberAndSuffix(this string s, out string number, out string suffix) {
-        int i = s.LastIndexOfAny(new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' }) + 1;
+        int i = s.LastIndexOfAny(digits) + 1;
         suffix = number = null;
         if (i == 0)
             return false;

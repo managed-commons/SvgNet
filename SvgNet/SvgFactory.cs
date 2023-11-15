@@ -25,10 +25,8 @@ public static class SvgFactory {
         Type[] ta = asm.GetExportedTypes();
         foreach (Type t in ta) {
             if (t.IsSubclassOf(typeof(SvgElement)) && !t.IsAbstract) {
-                ConstructorInfo ci = t.GetConstructor(Array.Empty<Type>());
-                if (ci == null)
-                    throw new InvalidOperationException($"Type {t.Name} doesn't have the mandatory public parameterless constructor");
-                var e = (SvgElement)ci.Invoke(Array.Empty<object>());
+                ConstructorInfo ci = t.GetConstructor([]) ?? throw new InvalidOperationException($"Type {t.Name} doesn't have the mandatory public parameterless constructor");
+                var e = (SvgElement)ci.Invoke([]);
                 if (e.Name != "?" /* default name of abstract SvgElements */) {
                     dict[e.Name] = e.GetType();
                 }
@@ -45,7 +43,7 @@ public static class SvgFactory {
     /// <param name="el"></param>
     /// <returns></returns>
     public static SvgElement CloneElement(SvgElement el) {
-        var clone = (SvgElement)el.GetType().GetConstructor(Array.Empty<Type>()).Invoke(Array.Empty<object>());
+        var clone = (SvgElement)el.GetType().GetConstructor([]).Invoke([]);
 
         foreach (string key in el.Attributes.Keys) {
             clone[key] = el[key].CloneIfPossible();
@@ -86,7 +84,7 @@ public static class SvgFactory {
 
         var t = (Type)_elementNameDictionary[el.Name];
 
-        var e = (SvgElement)t.GetConstructor(Array.Empty<Type>()).Invoke(Array.Empty<object>());
+        var e = (SvgElement)t.GetConstructor([]).Invoke([]);
 
         RecLoadFromXML(e, doc, el);
 
@@ -207,7 +205,7 @@ public static class SvgFactory {
 
                 SvgElement childSvg = t switch {
                     null => new SvgGenericElement(childXml.Name),
-                    _ => (SvgElement)t.GetConstructor(Array.Empty<Type>()).Invoke(Array.Empty<object>()),
+                    _ => (SvgElement)t.GetConstructor([]).Invoke([]),
                 };
                 e.AddChild(childSvg);
 

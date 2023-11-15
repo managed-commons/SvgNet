@@ -77,36 +77,36 @@ public static class TestShared {
     private static void RenderCurves(IGraphics ig) {
         var bezzie = new PointF[]
     {
-            new PointF(20, 150),
+            new(20, 150),
 
-            new PointF(110, 190),
-            new PointF(120, 200),
-            new PointF(50, 220),
+            new(110, 190),
+            new(120, 200),
+            new(50, 220),
 
-            new PointF(60, 200),
-            new PointF(140, 180),
-            new PointF(100, 160),
+            new(60, 200),
+            new(140, 180),
+            new(100, 160),
 
-            new PointF(180, 260),
-            new PointF(200, 210),
-            new PointF(190, 210)
+            new(180, 260),
+            new(200, 210),
+            new(190, 210)
     };
 
         var bpn = new Pen(Color.MediumSeaGreen, 2.3f) {
             DashStyle = DashStyle.Custom,
-            DashPattern = new float[] { 6, 1, 5, 2, 4, 3, 3, 4, 2, 5, 6, 1 }
+            DashPattern = [6, 1, 5, 2, 4, 3, 3, 4, 2, 5, 6, 1]
         };
         ig.DrawBeziers(bpn, bezzie);
 
         var curvy = new PointF[]
     {
-            new PointF(130, 40),
-            new PointF(70, 70),
-            new PointF(50, 20),
-            new PointF(120, 120),
-            new PointF(150, 80),
-            new PointF(80, 150),
-            new PointF(80, 110)
+            new(130, 40),
+            new(70, 70),
+            new(50, 20),
+            new(120, 120),
+            new(150, 80),
+            new(80, 150),
+            new(80, 110)
     };
 
         ig.DrawCurve(new Pen(Color.Blue, 5.7f), curvy);
@@ -115,26 +115,26 @@ public static class TestShared {
 
         var ccurvy = new Point[]
     {
-            new Point(280, 30),
-            new Point(260, 60),
-            new Point(200, 20),
-            new Point(290, 120),
-            new Point(290, 80),
-            new Point(230, 150),
-            new Point(150, 50)
+            new(280, 30),
+            new(260, 60),
+            new(200, 20),
+            new(290, 120),
+            new(290, 80),
+            new(230, 150),
+            new(150, 50)
     };
         ig.DrawClosedCurve(new Pen(Color.Green, 3.7f), ccurvy, 1f, FillMode.Alternate);
         ig.DrawClosedCurve(new Pen(Color.Purple, 1.7f), ccurvy, 0f, FillMode.Alternate);
 
         var fcc = new Point[]
     {
-            new Point(160, 350),
-            new Point(190, 370),
-            new Point(130, 390),
-            new Point(190, 400),
-            new Point(195, 410),
-            new Point(100, 430),
-            new Point(160, 450)
+            new(160, 350),
+            new(190, 370),
+            new(130, 390),
+            new(190, 400),
+            new(195, 410),
+            new(100, 430),
+            new(160, 450)
     };
         ig.FillClosedCurve(new SolidBrush(Color.Red), fcc, FillMode.Winding, 1f);
         ig.FillClosedCurve(new SolidBrush(Color.Aquamarine), fcc, FillMode.Alternate, .2f);
@@ -144,17 +144,17 @@ public static class TestShared {
         var gbr1 = new LinearGradientBrush(new Point(0, 0), new Point(30, 20), Color.Blue, Color.Plum);
 
         var blend = new ColorBlend(3) {
-            Colors = new Color[] { Color.Red, Color.Yellow, Color.MediumSlateBlue },
-            Positions = new float[] { 0, .3f, 1f }
+            Colors = [Color.Red, Color.Yellow, Color.MediumSlateBlue],
+            Positions = [0, .3f, 1f]
         };
         gbr1.InterpolationColors = blend;
 
         var sp = new Point[]
         {
-                new Point(145, 145),
-                new Point(305, 250),
-                new Point(220, 250),
-                new Point(180, 250)
+                new(145, 145),
+                new(305, 250),
+                new(220, 250),
+                new(180, 250)
         };
         ig.FillPolygon(gbr1, sp);
 
@@ -163,10 +163,10 @@ public static class TestShared {
         };
         var sp2 = new Point[]
         {
-                new Point(25, 205),
-                new Point(75, 150),
-                new Point(110, 110),
-                new Point(40, 80)
+                new(25, 205),
+                new(75, 150),
+                new(110, 110),
+                new(40, 80)
         };
         ig.FillPolygon(gbr2, sp2);
 
@@ -219,7 +219,7 @@ public static class TestShared {
         ig.DrawLine(tp, 70, 30, 190, 30);
 
         tp.DashStyle = DashStyle.Custom;
-        tp.DashPattern = new float[] { 1, 8, 2, 2 };
+        tp.DashPattern = [1, 8, 2, 2];
 
         ig.DrawLine(tp, 70, 40, 190, 40);
 
@@ -234,11 +234,11 @@ public static class TestShared {
 
         var polly = new Point[]
         {
-            new Point(200, 40),
-            new Point(220, 140),
-            new Point(240, 100),
-            new Point(290, 70),
-            new Point(230, 10)
+            new(200, 40),
+            new(220, 140),
+            new(240, 100),
+            new(290, 70),
+            new(230, 10)
         };
 
         ig.DrawPolygon(tp, polly);
@@ -253,10 +253,10 @@ public static class TestShared {
             const float arrowHeight = 14f; // TUNE:
             var arrowOutline = new GraphicsPath();
             arrowOutline.AddLines(new PointF[] {
-                        new PointF(-(arrowWidth / 2), -arrowHeight),
-                        new PointF(0, 0),
-                        new PointF(arrowWidth / 2, -arrowHeight),
-                        new PointF(-(arrowWidth / 2), -arrowHeight)
+                        new(-(arrowWidth / 2), -arrowHeight),
+                        new(0, 0),
+                        new(arrowWidth / 2, -arrowHeight),
+                        new(-(arrowWidth / 2), -arrowHeight)
                     });
             var generalizationArrow = new CustomLineCap(null, arrowOutline);
             generalizationArrow.SetStrokeCaps(System.Drawing.Drawing2D.LineCap.Round, System.Drawing.Drawing2D.LineCap.Round);
@@ -284,9 +284,9 @@ public static class TestShared {
 
         var al = new Point[]
         {
-                new Point(200, 100),
-                new Point(300, 200),
-                new Point(300, 150)
+                new(200, 100),
+                new(300, 200),
+                new(300, 150)
         };
 
         arr.Width = 9;
@@ -304,7 +304,7 @@ public static class TestShared {
         var myPath = new GraphicsPath();
 
         // Set up primitives to add to myPath.
-        Point[] myPoints = { new Point(20, 20), new Point(120, 120), new Point(20, 120), new Point(20, 20) };
+        Point[] myPoints = [new(20, 20), new(120, 120), new(20, 120), new(20, 20)];
         var myRect = new Rectangle(120, 120, 100, 100);
 
         // Add 3 lines, a rectangle, an ellipse, and 2 markers.
@@ -330,10 +330,10 @@ public static class TestShared {
         var mySolidBrush = new SolidBrush(Color.Aqua);
         var myGraphicsPath = new GraphicsPath();
 
-        Point[] myPointArray = {
-                new Point(15, 20),
-                new Point(20, 40),
-                new Point(50, 30)};
+        Point[] myPointArray = [
+                new(15, 20),
+                new(20, 40),
+                new(50, 30)];
 
         var myFontFamily = new FontFamily("Times New Roman");
         var myPointF = new PointF(50, 20);
@@ -353,14 +353,14 @@ public static class TestShared {
         ig.SmoothingMode = SmoothingMode.AntiAlias;
 
         // Add polygon closed path.
-        Point[] starPoints = { new Point(45, 133), new Point(117, 125), new Point(150, 60), new Point(183, 125), new Point(252, 133),
-                                   new Point(200, 186), new Point(211, 258), new Point(150, 223), new Point(83, 258), new Point(97, 186)};
+        Point[] starPoints = [ new(45, 133), new(117, 125), new(150, 60), new(183, 125), new(252, 133),
+                                   new(200, 186), new(211, 258), new(150, 223), new(83, 258), new(97, 186)];
         myPath.AddLines(starPoints);
         myPath.CloseFigure();
 
         // Add bezier-line combination path
-        Point[] pathPoints1 = { new Point(24, 60), new Point(60, -16), new Point(48, 96), new Point(84, 20) };
-        Point[] pathPoints2 = { new Point(84, 20), new Point(104, 60) };
+        Point[] pathPoints1 = [new(24, 60), new(60, -16), new(48, 96), new(84, 20)];
+        Point[] pathPoints2 = [new(84, 20), new(104, 60)];
         myPath.AddBeziers(pathPoints1);
         myPath.AddLines(pathPoints2);
 
@@ -442,7 +442,7 @@ public static class TestShared {
         ig.ScaleTransform(1.1f, 1.5f);
         ig.TranslateTransform(5, 5);
 
-        ig.DrawLines(new Pen(Color.Cyan, 2), new PointF[] { new PointF(0, 0), new PointF(50, 50), new PointF(0, 100) });
+        ig.DrawLines(new Pen(Color.Cyan, 2), new PointF[] { new(0, 0), new(50, 50), new(0, 100) });
 
         ig.FillEllipse(new SolidBrush(Color.YellowGreen), 130, 180, 80, 40);
         ig.DrawRectangle(new Pen(Color.YellowGreen, 2.7f), 62, 80, 40, 40);
@@ -478,13 +478,13 @@ public static class TestShared {
     private static void RenderTransparency(IGraphics ig) {
         var fillpoly = new Point[]
         {
-                new Point(20, 130),
-                new Point(60, 90),
-                new Point(30, 20),
-                new Point(80, 20),
-                new Point(15, 90),
-                new Point(100, 50),
-                new Point(0, 50)
+                new(20, 130),
+                new(60, 90),
+                new(30, 20),
+                new(80, 20),
+                new(15, 90),
+                new(100, 50),
+                new(0, 50)
         };
 
         var col = Color.FromArgb(96, 255, 0, 0);

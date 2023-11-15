@@ -31,7 +31,7 @@ public class SvgNumList : ICloneable {
 
     public static float[] String2Floats(string s) {
         try {
-            string[] sa = s.Split(new char[] { ',', ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] sa = s.Split(SvgHelpers.CommonSeparators, StringSplitOptions.RemoveEmptyEntries);
             var arr = new ArrayList();
             foreach (string str in sa) if (!string.IsNullOrWhiteSpace(str)) _ = arr.Add(float.Parse(str.Trim(), CultureInfo.InvariantCulture));
             return (float[])arr.ToArray(typeof(float));
@@ -59,5 +59,5 @@ public class SvgNumList : ICloneable {
         return builder.ToString();
     }
 
-    private readonly ArrayList _pts = new();
+    private readonly ArrayList _pts = [];
 }

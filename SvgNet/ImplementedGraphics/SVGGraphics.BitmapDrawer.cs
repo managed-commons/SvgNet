@@ -11,24 +11,10 @@ using SvgNet.Elements;
 namespace SvgNet;
 
 public sealed partial class SvgGraphics {
-    private class BitmapDrawer {
-        public BitmapDrawer(SvgGroupElement g, float x, float y, float scaleX, float scaleY) {
-            _groupElement = g;
-            _x = x;
-            _y = y;
-            _scaleX = scaleX;
-            _scaleY = scaleY;
-        }
-
-        private readonly SvgGroupElement _groupElement;
-        private readonly float _x;
-        private readonly float _y;
-        private readonly float _scaleX;
-        private readonly float _scaleY;
-
+    private class BitmapDrawer(SvgGroupElement g, float x, float y, float scaleX, float scaleY) {
         public SvgGroupElement DrawBitmapData(Bitmap b) {
             for (int line = 0; line < b.Height; ++line) {
-                float scaledLine = _y + (line * _scaleY);
+                float scaledLine = y + (line * scaleY);
                 // Only draws the last 'set' of pixels when a new color is encountered or it's the last pixel in the line.
                 Color currentColor = GetPixelColor(b, line, 0);
                 int consecutive = 1;
@@ -48,19 +34,19 @@ public sealed partial class SvgGraphics {
                     } catch { }
                 }
             }
-            return _groupElement;
+            return g;
         }
 
         // This could be optimized in an unsafe version of the lib
         private static Color GetPixelColor(Bitmap b, int y, int x) => b.GetPixel(x, y);
 
         private void DrawPixel(float scaledLine, int col, int consecutive, Color color) =>
-            DrawImagePixel(_groupElement,
+            DrawImagePixel(g,
                             color,
-                            _x + ((col - consecutive - 1) * _scaleX),
+                            x + ((col - consecutive - 1) * scaleX),
                             scaledLine,
-                            consecutive * _scaleX,
-                            _scaleY);
+                            consecutive * scaleX,
+                            scaleY);
     }
 }
 
