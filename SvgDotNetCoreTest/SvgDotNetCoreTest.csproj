@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<LangVersion>10</LangVersion>
-		<TargetFrameworks>net6.0-windows</TargetFrameworks>
+		<LangVersion>12</LangVersion>
+		<TargetFrameworks>net8.0-windows</TargetFrameworks>
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Include="..\TestShared\TestShared.cs" Link="TestShared.cs" />

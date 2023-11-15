@@ -1,15 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;netstandard2.1;net6.0;net7.0</TargetFrameworks>
-		<TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">$(TargetFrameworks);net462;net6.0-windows;net7.0-windows</TargetFrameworks>
-		<UseWindowsForms Condition="'$(TargetFramework)' == 'net6.0-windows' or '$(TargetFramework)' == 'net7.0-windows'">true</UseWindowsForms>
-		<SystemDrawingCommonVersion>6.0.0</SystemDrawingCommonVersion>
-		<SystemDrawingCommonVersion Condition="'$(TargetFramework)' == 'net7.0'">7.0.0</SystemDrawingCommonVersion>
-		<LangVersion>preview</LangVersion>
+		<TargetFrameworks>netstandard2.0;netstandard2.1;net6.0;net7.0;net8.0</TargetFrameworks>
+		<TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">$(TargetFrameworks);net462;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
+		<UseWindowsForms Condition="'$(TargetFramework)' == 'net6.0-windows' or '$(TargetFramework)' == 'net7.0-windows' or '$(TargetFramework)' == 'net8.0-windows'">true</UseWindowsForms>
+		<SystemDrawingCommonVersion>8.0.0</SystemDrawingCommonVersion>
+		<LangVersion>12</LangVersion>
 		<AssemblyName>SVG</AssemblyName>
 		<PackageId>SvgNet</PackageId>
-		<Version>3.3.5</Version>
+		<Version>3.3.6</Version>
 		<RootNamespace>SvgNet</RootNamespace>
 		<DocumentationFile>svgnetdoc.xml</DocumentationFile>
 		<NoWarn>CS1591</NoWarn>

@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<LangVersion>11</LangVersion>
-		<TargetFrameworks>net462;net6.0-windows;net7.0-windows</TargetFrameworks>
+		<LangVersion>12</LangVersion>
+		<TargetFrameworks>net462;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
 		<RootNamespace>SvgNet</RootNamespace>
 	</PropertyGroup>
 
@@ -11,8 +11,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-		<packagereference Include="NUnit3TestAdapter" Version="4.4.2"></packagereference>
-		<packagereference Include="NUnit" Version="3.13.3"></packagereference>
+		<packagereference Include="NUnit3TestAdapter" Version="4.5.0"></packagereference>
+		<packagereference Include="NUnit" Version="3.14.0"></packagereference>
 	</ItemGroup>
 
 	<ItemGroup>
