@@ -96,6 +96,7 @@ csharp_style_var_elsewhere = false:suggestion
 dotnet_diagnostic.CA1001.severity = warning
 dotnet_diagnostic.CA1309.severity = suggestion
 dotnet_diagnostic.CA1805.severity = suggestion
+dotnet_diagnostic.CA1416.severity = none
 
 #### Naming styles ####
 # Naming rules

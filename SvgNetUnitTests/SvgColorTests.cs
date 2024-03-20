@@ -1,7 +1,7 @@
 ﻿/*
     Copyright © 2003 RiskCare Ltd. All rights reserved.
     Copyright © 2010 SvgNet & SvgGdi Bridge Project. All rights reserved.
-    Copyright © 2015-2023 Rafael Teixeira, Mojmír Němeček, Benjamin Peterson and Other Contributors
+    Copyright © 2015-2024 Rafael Teixeira, Mojmír Němeček, Benjamin Peterson and Other Contributors
 
     Original source code licensed with BSD-2-Clause spirit, treat it thus, see accompanied LICENSE for more
 */
@@ -29,12 +29,12 @@ public class SvgColorTests {
     [TestCase("RGB (75%,75%,75%)", 255, 191, 191, 191)]
     public void TestSvgColor_FromString(string colorAsString, int a, int r, int g, int b) {
         var color = new SvgColor(colorAsString);
-        Assert.NotNull(color);
-        Assert.AreEqual(colorAsString, color.ToString());
-        Assert.AreEqual(color.Color.A, a, "alpha");
-        Assert.AreEqual(color.Color.R, r, "red");
-        Assert.AreEqual(color.Color.G, g, "green");
-        Assert.AreEqual(color.Color.B, b, "blue");
+        Assert.That(color, Is.Not.Null);
+        Assert.That(color.ToString(), Is.EqualTo(colorAsString));
+        Assert.That(a, Is.EqualTo(color.Color.A), "alpha");
+        Assert.That(r, Is.EqualTo(color.Color.R), "red");
+        Assert.That(g, Is.EqualTo(color.Color.G), "green");
+        Assert.That(b, Is.EqualTo(color.Color.B), "blue");
     }
 
     [TestCase("blackPearl")]
@@ -52,6 +52,6 @@ public class SvgColorTests {
     [TestCase("RGB (175%,75%,75%)")]
     public void TestSvgColor_FromStringException(string colorAsString) {
         SvgException ex = Assert.Throws<SvgException>(() => new SvgColor(colorAsString));
-        Assert.AreEqual("Invalid SvgColor", ex.Message);
+        Assert.That(ex.Message, Is.EqualTo("Invalid SvgColor"));
     }
 }

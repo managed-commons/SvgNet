@@ -4,8 +4,7 @@
 		<TargetFrameworks>netstandard2.0;netstandard2.1;net6.0;net7.0;net8.0</TargetFrameworks>
 		<TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">$(TargetFrameworks);net462;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
 		<UseWindowsForms Condition="'$(TargetFramework)' == 'net6.0-windows' or '$(TargetFramework)' == 'net7.0-windows' or '$(TargetFramework)' == 'net8.0-windows'">true</UseWindowsForms>
-		<SystemDrawingCommonVersion>8.0.0</SystemDrawingCommonVersion>
-		<LangVersion>12</LangVersion>
+		<LangVersion>preview</LangVersion>
 		<AssemblyName>SVG</AssemblyName>
 		<PackageId>SvgNet</PackageId>
 		<Version>3.3.6</Version>
@@ -16,7 +15,7 @@
 		<Description>C# framework for creating SVG images</Description>
 		<Company>SvgNet and SvgGdi Bridge Project</Company>
 		<Authors>Rafael Teixeira, Mojmír Němeček, Benjamin Peterson</Authors>
-		<Copyright>2003, 2010, 2015-2023 RiskCare Ltd, SvgNet and SvgGdi Bridge Project, Rafael Teixeira, Mojmír Němeček</Copyright>
+		<Copyright>2003, 2010, 2015-2024 RiskCare Ltd, SvgNet and SvgGdi Bridge Project, Rafael Teixeira, Mojmír Němeček</Copyright>
 		<PackageProjectUrl>https://github.com/managed-commons/SvgNet</PackageProjectUrl>
 		<PackageIcon>svgnet.png</PackageIcon>
 		<RepositoryUrl>https://github.com/managed-commons/SvgNet</RepositoryUrl>
@@ -43,7 +42,7 @@
 		<Using Include="SvgNet" />
 		<Using Include="SvgNet.Exceptions" />
 		<Using Include="SvgNet.Interfaces" />
-		<Using Include="SvgNet.Types"/>
+		<Using Include="SvgNet.Types" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -72,8 +71,8 @@
 		<Message Importance="high" Text="Didn't push $(LatestPackage) to Nuget - Already there" Condition="$(VersionAlreadyPushed)" />
 	</Target>
 
-	<ItemGroup Condition="'$(TargetFramework)' != 'net462' And '$(TargetFramework)' != 'net7.0-windows' And '$(TargetFramework)' != 'net6.0-windows'">
-		<PackageReference Include="System.Drawing.Common" Version="$(SystemDrawingCommonVersion)"/>
+	<ItemGroup Condition="'$(TargetFramework)' != 'net462' And '$(TargetFramework)' != 'net8.0-windows' And '$(TargetFramework)' != 'net7.0-windows' And '$(TargetFramework)' != 'net6.0-windows'">
+		<PackageReference Include="System.Drawing.Common" Version="8.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>
