@@ -3,11 +3,11 @@
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;netstandard2.1;net6.0;net8.0</TargetFrameworks>
 		<TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">$(TargetFrameworks);net462;net6.0-windows;net8.0-windows</TargetFrameworks>
-		<UseWindowsForms Condition="'$(TargetFramework)' == 'net6.0-windows' or '$(TargetFramework)' == 'net7.0-windows' or '$(TargetFramework)' == 'net8.0-windows'">true</UseWindowsForms>
+		<UseWindowsForms Condition="'$(TargetFramework)' == 'net6.0-windows' or '$(TargetFramework)' == 'net8.0-windows'">true</UseWindowsForms>
 		<LangVersion>preview</LangVersion>
 		<AssemblyName>SVG</AssemblyName>
 		<PackageId>SvgNet</PackageId>
-		<Version>3.3.7</Version>
+		<Version>3.3.8</Version>
 		<RootNamespace>SvgNet</RootNamespace>
 		<DocumentationFile>svgnetdoc.xml</DocumentationFile>
 		<NoWarn>CS1591</NoWarn>
@@ -24,7 +24,7 @@
 		<RepositoryType>git</RepositoryType>
 		<PackageReleaseNotes>
 			- Drop support for net7.0 who reached EOL
-			- Upgrade System.Drawing.Common to 8.0.5 on needed target frameworks
+			- Upgrade System.Drawing.Common to 8.0.7 on needed target frameworks
 		</PackageReleaseNotes>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
@@ -52,7 +52,7 @@
 		<DefineConstants>DEBUG;TRACE</DefineConstants>
 		<WarningsAsErrors>NU1605</WarningsAsErrors>
 	</PropertyGroup>
-	
+
 	<Target Name="TagSources">
 		<Exec Command="git tag v$(Version)" ContinueOnError="true" StandardErrorImportance="low" StandardOutputImportance="low" IgnoreExitCode="true" />
 		<Message Importance="high" Text="Recent tags:" />
@@ -74,9 +74,54 @@
 		<Message Importance="high" Text="Didn't push $(LatestPackage) to Nuget - Already there" Condition="$(VersionAlreadyPushed)" />
 	</Target>
 
-	<ItemGroup Condition="'$(TargetFramework)' != 'net462' And '$(TargetFramework)' != 'net8.0-windows' And '$(TargetFramework)' != 'net7.0-windows' And '$(TargetFramework)' != 'net6.0-windows'">
-		<PackageReference Include="System.Drawing.Common" Version="8.0.5" />
+	<ItemGroup Condition="'$(TargetFramework)' != 'net462' And '$(TargetFramework)' != 'net8.0-windows' And '$(TargetFramework)' != 'net6.0-windows'">
+		<PackageReference Include="System.Drawing.Common" Version="8.0.7" />
 	</ItemGroup>
+
+	<Target Name="UpdateREADME" BeforeTargets="Build">
+		<ItemGroup>
+			<ReadMe Include="..\README.md" />
+		</ItemGroup>
+		<PropertyGroup>
+			<VersionPattern>Latest version \d+\.\d+\.\d+</VersionPattern>
+			<VersionResult>Latest version $(Version)</VersionResult>
+		</PropertyGroup>
+		<RegexTemplating InputFile="@(ReadMe)" Pattern="$(VersionPattern)" NewValue="$(VersionResult)"/>
+	</Target>
+
+	<UsingTask TaskName="RegexTemplating"
+		TaskFactory="RoslynCodeTaskFactory"
+		AssemblyFile="$(MSBuildBinPath)\Microsoft.Build.Tasks.Core.dll">
+		<ParameterGroup>
+			<InputFile ParameterType="System.String" Required="true" />
+			<Pattern ParameterType="System.String" Required="true" />
+			<NewValue ParameterType="System.String" Required="true" />
+			<OutputFile ParameterType="System.String" />
+			<Verbose ParameterType="System.Boolean" />
+		</ParameterGroup>
+		<Task>
+			<Using Namespace="System" />
+			<Using Namespace="System.IO" />
+			<Using Namespace="System.Text" />
+			<Using Namespace="System.Text.RegularExpressions" />
+			<Code Type="Fragment" Language="C#">
+				<![CDATA[
+          if (File.Exists(InputFile)) {
+              if (string.IsNullOrWhiteSpace(OutputFile))
+                OutputFile = InputFile;
+              var contentBefore = File.ReadAllText(InputFile, Encoding.UTF8);
+              var contentAfter = Regex.Replace(contentBefore, Pattern, NewValue);
+              if (contentAfter != contentBefore || OutputFile != InputFile) {
+                File.WriteAllBytes(OutputFile, Encoding.UTF8.GetBytes(contentAfter));
+                if (Verbose)
+                  Log.LogMessageFromText($"Replaced the pattern '{Pattern}' by the value '{NewValue}' on '{OutputFile}'!", MessageImportance.High);
+              }
+          } else
+            Log.LogMessageFromText($"InputFile '{InputFile}' not found!", MessageImportance.High);
+        ]]>
+			</Code>
+		</Task>
+	</UsingTask>
 
 	<ItemGroup>
 		<None Remove="svgnetdoc.xml" />
@@ -93,5 +138,6 @@
 			<PackagePath></PackagePath>
 		</None>
 	</ItemGroup>
+
 
 </Project>
