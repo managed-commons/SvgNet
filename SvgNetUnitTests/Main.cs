@@ -28,7 +28,7 @@ public class Main {
     [TestCase("Path with Polygon")]
     [TestCase("Path (Slow)")]
     public void TestCases(string key) {
-        TestContext.WriteLine($"=== Renderer {key}");
+        TestContext.Out.WriteLine($"=== Renderer {key}");
         System.Action<IGraphics> value = TestShared.Renderers[key];
         using var ig = new SvgGraphics(Color.WhiteSmoke);
         value(ig);
