@@ -9,6 +9,11 @@
             Summary description for Form1.
             </summary>
         </member>
+        <member name="M:SvgGdiTest.SvgGdiTestForm.Main">
+            <summary>
+            The main entry point for the application.
+            </summary>
+        </member>
         <member name="M:SvgGdiTest.SvgGdiTestForm.Dispose(System.Boolean)">
             <summary>
             Clean up any resources being used.
@@ -24,11 +29,6 @@
             <summary>
             Required method for Designer support - do not modify
             the contents of this method with the code editor.
-            </summary>
-        </member>
-        <member name="M:SvgGdiTest.SvgGdiTestForm.Main">
-            <summary>
-            The main entry point for the application.
             </summary>
         </member>
     </members>

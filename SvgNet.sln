@@ -4,15 +4,15 @@ VisualStudioVersion = 17.0.31825.309
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SvgNet", "SvgNet\SvgNet.csproj", "{BB4C8021-B5E1-4DE2-82CB-14BDFB9837E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SvgDocTest", "SvgDocTest\SvgDocTest.csproj", "{6A203A21-673D-45E1-A7F5-D7112E114D6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SvgDocTest", "SvgDocTest\SvgDocTest.csproj", "{6A203A21-673D-45E1-A7F5-D7112E114D6E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SvgGdiTest", "SvgGdiTest\SvgGdiTest.csproj", "{0C963EB6-C1B4-453D-B694-E81EC26D3AB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SvgGdiTest", "SvgGdiTest\SvgGdiTest.csproj", "{0C963EB6-C1B4-453D-B694-E81EC26D3AB9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution Files", "{45898DE7-2090-4F7C-B198-A5D7A15447FF}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
-		.github\workflows\codeql-analysis.yml = .github\workflows\codeql-analysis.yml
+		.github\workflows\codeql.yml = .github\workflows\codeql.yml
 		.github\workflows\dotnetcore.yml = .github\workflows\dotnetcore.yml
 		global.json = global.json
 		LICENSE = LICENSE

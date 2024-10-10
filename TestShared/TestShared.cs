@@ -332,8 +332,8 @@ public static class TestShared {
 
         Point[] myPointArray = [
                 new(15, 20),
-                new(20, 40),
-                new(50, 30)];
+            new(20, 40),
+            new(50, 30)];
 
         var myFontFamily = new FontFamily("Times New Roman");
         var myPointF = new PointF(50, 20);
@@ -353,8 +353,16 @@ public static class TestShared {
         ig.SmoothingMode = SmoothingMode.AntiAlias;
 
         // Add polygon closed path.
-        Point[] starPoints = [ new(45, 133), new(117, 125), new(150, 60), new(183, 125), new(252, 133),
-                                   new(200, 186), new(211, 258), new(150, 223), new(83, 258), new(97, 186)];
+        Point[] starPoints = [new(45, 133),
+            new(117, 125),
+            new(150, 60),
+            new(183, 125),
+            new(252, 133),
+            new(200, 186),
+            new(211, 258),
+            new(150, 223),
+            new(83, 258),
+            new(97, 186)];
         myPath.AddLines(starPoints);
         myPath.CloseFigure();
 
