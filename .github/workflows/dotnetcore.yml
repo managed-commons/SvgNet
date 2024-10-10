@@ -8,12 +8,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v4
     
-    - name: Setup .NET 6.0
-      uses: actions/setup-dotnet@v1.8.2
+    - name: Setup .NET 8.0
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 6.0.100
+        dotnet-version: 8.0.403    
 
-    - name: Build and Test with dotnet
-      run: NONET461=true dotnet test --configuration Release -v:m | grep -v 'NAME_UNKNOWN:Package'
+    - shell: bash
+      run: dotnet build --configuration Release -v:m

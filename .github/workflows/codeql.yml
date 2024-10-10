@@ -70,13 +70,12 @@ jobs:
         # For more details on CodeQL's query packs, refer to: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
         # queries: security-extended,security-and-quality
 
-    - name: Setup .NET 6.0
+    - name: Setup .NET 8.0
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 6.0.427    
+        dotnet-version: 8.0.403    
 
-    - if: matrix.build-mode == 'manual'
-      shell: bash
+    - shell: bash
       run: dotnet build --configuration Release -v:m
 
     - name: Perform CodeQL Analysis
