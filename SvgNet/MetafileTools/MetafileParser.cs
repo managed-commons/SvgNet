@@ -144,7 +144,7 @@ public sealed class MetafileParser : IDisposable {
                 break;
 
             default:
-                throw new NotImplementedException();
+                break;
         }
     }
 

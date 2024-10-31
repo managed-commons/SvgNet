@@ -7,6 +7,7 @@
 */
 
 using SvgNet.Elements;
+using SvgNet.MetafileTools;
 
 namespace SvgNet;
 
@@ -608,7 +609,9 @@ public sealed partial class SvgGraphics : IGraphics {
     /// Implemented
     /// </summary>
     public void DrawLine(Pen pen, float x1, float y1, float x2, float y2) {
-        if (IsEndAnchorSimple(pen.StartCap) && IsEndAnchorSimple(pen.EndCap)) {
+        if (PenUsesCustomLineCap(pen))
+            DrawLines(pen, new PointF[] { new(x1, y1), new(x2, y2) });
+        else {
             // This code works, but not for CustomLineCup style
             var lin = new SvgLineElement(x1, y1, x2, y2) {
                 Style = new SvgStyle(pen)
@@ -618,7 +621,7 @@ public sealed partial class SvgGraphics : IGraphics {
             _cur.AddChild(lin);
 
             DrawEndAnchors(pen, new PointF(x1, y1), new PointF(x2, y2));
-        } else DrawLines(pen, new PointF[] { new(x1, y1), new(x2, y2) });
+        }
     }
 
     /// <summary>
@@ -643,20 +646,23 @@ public sealed partial class SvgGraphics : IGraphics {
         if (points.Length <= 1)
             return;
 
-        if (IsEndAnchorSimple(pen.StartCap) && IsEndAnchorSimple(pen.EndCap)) {
-            // This code works, but not for CustomLineCap style
-            var pl = new SvgPolylineElement(points) {
-                Style = new SvgStyle(pen)
-            };
-            if (!_transforms.Result.IsIdentity)
-                pl.Transform = new SvgTransformList(_transforms.Result.Clone());
-            _cur.AddChild(pl);
-
-            DrawEndAnchors(pen, points[0], points[points.Length - 1]);
-
+        if (PenUsesCustomLineCap(pen) && MetafileTrick(pen, points))
             return;
-        }
 
+        // This code works, but not for CustomLineCap style
+        var pl = new SvgPolylineElement(points) {
+            Style = new SvgStyle(pen)
+        };
+        if (!_transforms.Result.IsIdentity)
+            pl.Transform = new SvgTransformList(_transforms.Result.Clone());
+        _cur.AddChild(pl);
+
+        DrawEndAnchors(pen, points[0], points[points.Length - 1]);
+    }
+
+    private static bool PenUsesCustomLineCap(Pen pen) => pen.StartCap == LineCap.Custom || pen.EndCap == LineCap.Custom;
+
+    private bool MetafileTrick(Pen pen, PointF[] originalPoints) {
         // GraphicsPaths used in the constructor of CustomLineCap
         // are private to the native GDI+ and for example the shape of AdjustableArrowCap
         // is completely private to the native GDI+
@@ -665,6 +671,8 @@ public sealed partial class SvgGraphics : IGraphics {
         // engineer the GDI metafile drawing and convert it to corresponding SVG commands
 
         // Calculate the bounding rectangle
+        var points = new PointF[originalPoints.Length];
+        Array.Copy(originalPoints, points, originalPoints.Length);
         float minX = points[0].X;
         float maxX = points[0].X;
         float minY = points[0].Y;
@@ -688,7 +696,8 @@ public sealed partial class SvgGraphics : IGraphics {
             points[i].Y -= zero.Y;
         }
 
-        using var metafileBuffer = new MemoryStream();
+        bool metafileIsEmpty = true;
+        var metafileBuffer = new MemoryStream();
         Metafile metafile = null;
 
         try {
@@ -717,9 +726,7 @@ public sealed partial class SvgGraphics : IGraphics {
         }
 
         metafileBuffer.Position = 0;
-
-        bool metafileIsEmpty = true;
-        using var parser = new MetafileTools.MetafileParser();
+        var parser = new MetafileTools.MetafileParser();
         parser.EnumerateMetafile(metafileBuffer, pen.Width, zero, (PointF[] linePoints) => {
             metafileIsEmpty = false;
 
@@ -737,27 +744,10 @@ public sealed partial class SvgGraphics : IGraphics {
             metafileIsEmpty = false;
             FillPolygon(fillBrush, linePoints);
         });
-
-        if (metafileIsEmpty) {
-            // TODO: metafile recording on OpenSUSE Linux with Mono 3.8.0 does not seem to work at all
-            // as the supposed implementation in https://github.com/mono/libgdiplus/blob/master/src/graphics-metafile.c is
-            // full of "TODO". In this case we should take a graceful fallback approach
-
-            // Restore points array to the original values they had when entered the function
-            for (int i = 0; i < points.Length; i++) {
-                points[i].X += zero.X;
-                points[i].Y += zero.Y;
-            }
-
-            var pl = new SvgPolylineElement(points) {
-                Style = new SvgStyle(pen)
-            };
-            if (!_transforms.Result.IsIdentity)
-                pl.Transform = new SvgTransformList(_transforms.Result.Clone());
-            _cur.AddChild(pl);
-
-            DrawEndAnchors(pen, points[0], points[points.Length - 1], ignoreUnsupportedLineCaps: true);
-        }
+        // TODO: metafile recording on OpenSUSE Linux with Mono 3.8.0 does not seem to work at all
+        // as the supposed implementation in https://github.com/mono/libgdiplus/blob/master/src/graphics-metafile.c is
+        // full of "TODO". In this case we should take a graceful signal to use the fallback approach
+        return !metafileIsEmpty;
     }
 
     /// <summary>
@@ -1806,14 +1796,6 @@ public sealed partial class SvgGraphics : IGraphics {
 
     private static float GetFontDescentPercentage(Font font) => (float)font.FontFamily.GetCellDescent(font.Style) / font.FontFamily.GetEmHeight(font.Style);
 
-    /// <summary>
-    /// Decides whether the pen's anchor type is simple enough to be drawn by a fast approximation using the DrawEndAnchor
-    /// </summary>
-    private static bool IsEndAnchorSimple(LineCap lc) => lc switch {
-        LineCap.NoAnchor or LineCap.Flat or LineCap.ArrowAnchor or LineCap.DiamondAnchor or LineCap.RoundAnchor or LineCap.SquareAnchor => true,
-        _ => false,
-    };
-
     private static PointF[] Point2PointF(Point[] p) {
         var pf = new PointF[p.Length];
         for (int i = 0; i < p.Length; ++i) pf[i] = new PointF(p[i].X, p[i].Y);
@@ -1891,17 +1873,10 @@ public sealed partial class SvgGraphics : IGraphics {
             DrawBitmapData(bmp, x, y, image.Width, image.Height, false);
     }
 
-    private void DrawEndAnchor(LineCap lc, CustomLineCap clc, Color col, float w, PointF pt, float angle, bool ignoreUnsupportedLineCaps) {
-        SvgStyledTransformedElement anchor = null;
+    private void DrawEndAnchor(LineCap lc, Color col, float w, PointF pt, float angle) {
+        SvgStyledTransformedElement anchor;
 
         switch (lc) {
-            case LineCap.NoAnchor:
-                break;
-
-            case LineCap.Flat:
-                // TODO: what is the correct look?
-                break;
-
             case LineCap.ArrowAnchor:
                 anchor = new SvgPolygonElement(new PointF(0, -w / 2f), new PointF(-w, w), new PointF(w, w));
                 break;
@@ -1919,15 +1894,11 @@ public sealed partial class SvgGraphics : IGraphics {
                 anchor = new SvgRectElement(0 - ww, 0 - ww, ww * 2, ww * 2);
                 break;
 
+            case LineCap.NoAnchor:
+            case LineCap.Flat:
             case LineCap.Custom:
-                if (clc != null) if (!ignoreUnsupportedLineCaps)
-                        throw new SvgGdiNotImplementedException("DrawEndAnchor custom");
-                break;
-
             default:
-                if (!ignoreUnsupportedLineCaps)
-                    throw new SvgGdiNotImplementedException("DrawEndAnchor " + lc.ToString());
-                break;
+                return;
         }
 
         if (anchor == null)
@@ -1948,25 +1919,12 @@ public sealed partial class SvgGraphics : IGraphics {
         _cur.AddChild(anchor);
     }
 
-    private void DrawEndAnchors(Pen pen, PointF start, PointF end, bool ignoreUnsupportedLineCaps = false) {
+    private void DrawEndAnchors(Pen pen, PointF start, PointF end) {
         float startAngle = (float)Math.Atan((start.X - end.X) / (start.Y - end.Y)) * -1;
         float endAngle = (float)Math.Atan((end.X - start.X) / (end.Y - start.Y)) * -1;
 
-        CustomLineCap clcstart = null;
-        CustomLineCap clcend = null;
-
-        //GDI+ native dll throws an exception if someone forgot to specify custom cap
-        try {
-            clcstart = pen.CustomStartCap;
-        } catch (Exception) {
-        }
-        try {
-            clcend = pen.CustomEndCap;
-        } catch (Exception) {
-        }
-
-        DrawEndAnchor(pen.StartCap, clcstart, pen.Color, pen.Width, start, startAngle, ignoreUnsupportedLineCaps);
-        DrawEndAnchor(pen.EndCap, clcend, pen.Color, pen.Width, end, endAngle, ignoreUnsupportedLineCaps);
+        DrawEndAnchor(pen.StartCap, pen.Color, pen.Width, start, startAngle);
+        DrawEndAnchor(pen.EndCap, pen.Color, pen.Width, end, endAngle);
     }
 
     private void DrawText(string s, Font font, Brush brush, RectangleF rect, StringFormat fmt, bool ignoreRect) {

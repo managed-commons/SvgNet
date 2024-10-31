@@ -40,4 +40,9 @@
     <StartWorkingDirectory />
     <StartWithIE>true</StartWithIE>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Update="DocForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
 </Project>

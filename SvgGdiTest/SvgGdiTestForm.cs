@@ -82,6 +82,6 @@ public partial class SvgGdiTestForm : Form {
         TestShared.Renderers.Add("Images", RenderImages);
         TestShared.Renderers.Add("Text Rect Aligned", ig => RectAlignedTextTest.RenderRectAlignedText(ig, panel1.ClientSize.Width, panel1.ClientSize.Height, Font));
         cbWhat.Items.Clear();
-        cbWhat.Items.AddRange(TestShared.Renderers.Keys.OrderBy(s => s).ToArray());
+        cbWhat.Items.AddRange([.. TestShared.Renderers.Keys.OrderBy(s => s)]);
     }
 }
