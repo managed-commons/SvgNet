@@ -156,7 +156,7 @@ dotnet_style_prefer_inferred_tuple_names = true:suggestion
 dotnet_style_prefer_inferred_anonymous_type_member_names = true:suggestion
 dotnet_style_prefer_compound_assignment = true:suggestion
 dotnet_style_prefer_simplified_interpolation = true:suggestion
-dotnet_style_namespace_match_folder = true:suggestion
+dotnet_style_namespace_match_folder = true:none
 dotnet_style_readonly_field = true:suggestion
 dotnet_style_require_accessibility_modifiers = for_non_interface_members:suggestion
 dotnet_style_allow_statement_immediately_after_block_experimental = true:suggestion
@@ -172,3 +172,6 @@ dotnet_style_qualification_for_event = false:silent
 dotnet_diagnostic.CA1712.severity = warning
 dotnet_diagnostic.CA1725.severity = suggestion
 dotnet_diagnostic.CA2011.severity = warning
+
+# IDE0130: Namespace does not match folder structure
+dotnet_diagnostic.IDE0130.severity = none

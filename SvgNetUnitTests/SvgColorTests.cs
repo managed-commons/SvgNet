@@ -30,11 +30,13 @@ public class SvgColorTests {
     public void TestSvgColor_FromString(string colorAsString, int a, int r, int g, int b) {
         var color = new SvgColor(colorAsString);
         Assert.That(color, Is.Not.Null);
-        Assert.That(color.ToString(), Is.EqualTo(colorAsString));
-        Assert.That(a, Is.EqualTo(color.Color.A), "alpha");
-        Assert.That(r, Is.EqualTo(color.Color.R), "red");
-        Assert.That(g, Is.EqualTo(color.Color.G), "green");
-        Assert.That(b, Is.EqualTo(color.Color.B), "blue");
+        Assert.Multiple(() => {
+            Assert.That(color.ToString(), Is.EqualTo(colorAsString));
+            Assert.That(a, Is.EqualTo(color.Color.A), "alpha");
+            Assert.That(r, Is.EqualTo(color.Color.R), "red");
+            Assert.That(g, Is.EqualTo(color.Color.G), "green");
+            Assert.That(b, Is.EqualTo(color.Color.B), "blue");
+        });
     }
 
     [TestCase("blackPearl")]
