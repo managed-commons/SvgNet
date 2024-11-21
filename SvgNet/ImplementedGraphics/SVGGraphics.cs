@@ -140,7 +140,7 @@ public sealed partial class SvgGraphics : IGraphics {
     public Point RenderingOrigin { get => throw new SvgGdiNotImplementedException("get_RenderingOrigin"); set { } }
 
     public SmoothingMode SmoothingMode {
-        get => _smoothingMode;
+        get;
         set {
             switch (value) {
                 case SmoothingMode.Invalid:
@@ -160,9 +160,9 @@ public sealed partial class SvgGraphics : IGraphics {
                 default:
                     _cur.Style.Set("shape-rendering", "auto"); break;
             }
-            _smoothingMode = value;
+            field = value;
         }
-    }
+    } = SmoothingMode.Invalid;
 
     /// <summary>
     /// Get is not implemented (throws an exception).
@@ -1383,8 +1383,6 @@ public sealed partial class SvgGraphics : IGraphics {
     private readonly SvgGroupElement _topgroup;
     private readonly MatrixStack _transforms;
     private SvgStyledTransformedElement _cur;
-
-    private SmoothingMode _smoothingMode = SmoothingMode.Invalid;
 
     private static void AddHatchBrushDetails(SvgPatternElement patty, SvgColor col, HatchStyle hs) {
         SvgStyledTransformedElement l1 = null;
