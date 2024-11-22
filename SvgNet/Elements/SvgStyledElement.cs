@@ -44,9 +44,21 @@ public class SvgStyledTransformedElement : SvgElement {
     /// <param name="doc"></param>
     /// <param name="el"></param>
     public override void ReadXmlElement(XmlDocument doc, XmlElement el) {
-        foreach (XmlAttribute att in el.Attributes) if (att.Name == "style") Style = new SvgStyle(att.Value);
-            else if (att.Name == "transform") Transform = new SvgTransformList(att.Value);
-            else this[att.Name] = att.Value;
+        foreach (XmlAttribute att in el.Attributes) {
+            string name = att.Name;
+            string value = att.Value;
+            switch (name) {
+                case "style":
+                    Style = new SvgStyle(value);
+                    break;
+                case "transform":
+                    Transform = new SvgTransformList(value);
+                    break;
+                default:
+                    this[name] = value;
+                    break;
+            }
+        }
     }
 
     /// <summary>
@@ -58,20 +70,25 @@ public class SvgStyledTransformedElement : SvgElement {
     /// <param name="parent"></param>
     public override void WriteXmlElements(XmlDocument doc, XmlElement parent) {
         XmlElement me = doc.CreateElement("", Name, doc.NamespaceURI);
-        foreach (string s in _atts.Keys) {
-            object attribute = _atts[s];
-            if (attribute != null) if (s == "style") WriteStyle(doc, me, attribute);
-                else if (s == "transform") WriteTransform(doc, me, attribute);
-                else {
-                    // xlink qualified attributes are an special case because they need an special namespace
-                    (bool isPrefixed, string localName) = s.IsPrefixedBy("xlink:");
-                    _ = isPrefixed
-                        ? me.SetAttribute(localName, xlinkNamespaceURI, _atts[s].ToString())
-                        : me.SetAttribute(s, doc.NamespaceURI, _atts[s].ToString());
-                }
+        foreach (string name in _atts.Keys) {
+            object attribute = _atts[name];
+            if (attribute is null)
+                continue;
+            switch (name) {
+                case "style":
+                    WriteStyle(doc, me, attribute);
+                    break;
+                case "transform":
+                    WriteTransform(doc, me, attribute);
+                    break;
+                default:
+                    SetAttribute(doc, me, name, attribute.ToString());
+                    break;
+            }
         }
 
-        foreach (SvgElement el in Children) el.WriteXmlElements(doc, me);
+        foreach (SvgElement el in Children)
+            el.WriteXmlElements(doc, me);
 
         _ = parent == null ? doc.AppendChild(me) : parent.AppendChild(me);
     }

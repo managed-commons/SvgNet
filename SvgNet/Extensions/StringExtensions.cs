@@ -16,17 +16,6 @@ public static class StringExtensions {
         => int.Parse(s.Substring(startIndex, length), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 #endif
 
-    public static IPB IsPrefixedBy(this string s, string prefix)
-        => !s.StartsWith(prefix, StringComparison.InvariantCulture)
-           ? new IPB(false, null)
-           : new IPB(true,
-#if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-              s[prefix.Length..]
-#else
-              s.Substring(prefix.Length)
-#endif
-             );
-
     public static string SkipFirst(this string s)
 #if NET5_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         => s[1..];
@@ -34,9 +23,17 @@ public static class StringExtensions {
         => s.Substring(1);
 #endif
 
+#if NET8_0_OR_GREATER
+    private static readonly Buffers.SearchValues<char> digits = Buffers.SearchValues.Create(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']);
+#else
     private static readonly char[] digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+#endif
     public static bool TrySplitNumberAndSuffix(this string s, out string number, out string suffix) {
+#if NET8_0_OR_GREATER
+        int i = s.AsSpan().LastIndexOfAny(digits) + 1;
+#else
         int i = s.LastIndexOfAny(digits) + 1;
+#endif
         suffix = number = null;
         if (i == 0)
             return false;
@@ -68,14 +65,3 @@ public static class StringExtensions {
         return true;
     }
 }
-
-public readonly struct IPB(bool isPrefixed, string tail) {
-    public readonly bool IsPrefixed = isPrefixed;
-    public readonly string Tail = tail;
-
-    public void Deconstruct(out bool isPrefixed, out string tail) {
-        isPrefixed = IsPrefixed;
-        tail = Tail;
-    }
-}
-

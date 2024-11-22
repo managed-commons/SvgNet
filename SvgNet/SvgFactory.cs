@@ -16,6 +16,9 @@ namespace SvgNet;
 /// Static methods to produce/write/copy Svg documents reside in this class.
 /// </summary>
 public static class SvgFactory {
+    public const string svgNamespaceURI = "http://www.w3.org/2000/svg";
+    public const string xlinkNamespaceURI = "http://www.w3.org/1999/xlink";
+
     /// <summary>
     /// Used by LoadFromXML
     /// </summary>
@@ -56,6 +59,8 @@ public static class SvgFactory {
         return clone;
     }
 
+    internal static Dictionary<string, string> _namespaces = new() { ["xmlns"] = svgNamespaceURI, ["xmlns:xlink"] = xlinkNamespaceURI };
+
     /// <summary>
     /// Given an xml document and (optionally) a particular element to start from, read the xml nodes and construct
     /// a tree of <see cref="SvgElement"/> objects.  Xml tags that do not correspond to a particular class will be
@@ -68,6 +73,7 @@ public static class SvgFactory {
     /// <param name="el"></param>
     /// <returns></returns>
     public static SvgElement LoadFromXML(XmlDocument doc, XmlElement el) {
+        ResetNamespaces();
         if (el == null) {
             foreach (XmlNode noddo in doc.ChildNodes) {
                 if (noddo.GetType() == typeof(XmlElement)) {
@@ -219,6 +225,9 @@ public static class SvgFactory {
             }
         }
     }
+
+    public static void ResetNamespaces() => _namespaces = new() { ["xmlns"] = svgNamespaceURI, ["xmlns:xlink"] = xlinkNamespaceURI };
+
 
     private struct EntitySingleton {
         public string AttributeName;

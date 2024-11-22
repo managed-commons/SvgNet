@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<LangVersion>12</LangVersion>
-		<TargetFrameworks>net8.0-windows</TargetFrameworks>
+		<TargetFrameworks>net8.0-windows;net9.0-windows</TargetFrameworks>
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Include="..\TestShared\TestShared.cs" Link="TestShared.cs" />

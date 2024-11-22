@@ -18,11 +18,6 @@ namespace SvgDocTest {
         [STAThread]
         private static void Main() => Application.Run(new DocForm());
 
-        private static void RefreshBrowserFrom(WebBrowser browser, string filename) {
-            browser.Navigate(new Uri(filename));
-            browser.Refresh(WebBrowserRefreshOption.Completely);
-        }
-
         private void Button1_Click(object sender, EventArgs e) {
             using (var dlg = new OpenFileDialog {
                 AutoUpgradeEnabled = true,
@@ -96,18 +91,18 @@ namespace SvgDocTest {
             root.AddChild(grp2);
 
             //output
-
+            SvgFactory.ResetNamespaces();
             string s = root.WriteSVGString(true);
-
+            tbIn.Text = s;
             tbOut.Text = s;
 
             string tempFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "foo.svg");
 
             using (var tw = new StreamWriter(tempFile, false))
                 tw.Write(s);
-
-            svgOut.Navigate(new Uri(tempFile));
-            svgOut.Refresh(WebBrowserRefreshOption.Completely);
+            panelTop.Text = $"Input: {tempFile}";
+            svgOut.RefreshFrom(tempFile);
+            svgIn.RefreshFrom(tempFile);
         }
 
         private void Button3_Click(object sender, EventArgs e) {
@@ -131,11 +126,12 @@ namespace SvgDocTest {
             _ = MessageBox.Show("Tests completed Ok");
         }
         private void ProcessSvgFile(string svgFileName) {
+            panelTop.Text = $"Input: {svgFileName}";
             tbIn.Text = svgFileName.LoadText();
-            RefreshBrowserFrom(svgIn, svgFileName);
             tbOut.Text = SvgFactory.LoadFromXML(svgFileName.LoadXml(), null).WriteSVGString(true);
             File.WriteAllText(_tempFileName, tbOut.Text);
-            RefreshBrowserFrom(svgOut, _tempFileName);
+            svgIn.RefreshFrom(svgFileName);
+            svgOut.RefreshFrom(_tempFileName);
         }
     }
 }

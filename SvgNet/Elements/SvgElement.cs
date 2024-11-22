@@ -8,6 +8,8 @@
 
 using System.Xml;
 
+using SvgNet.Elements;
+
 namespace SvgNet.Elements;
 /// <summary>
 /// The base class for SVG elements.  It represents some part of an SVG document, either an element (rect, circle etc) or a text item.  Duties include:
@@ -30,9 +32,6 @@ namespace SvgNet.Elements;
 /// </list>
 /// </summary>
 public class SvgElement {
-    public const string svgNamespaceURI = "http://www.w3.org/2000/svg";
-    public const string xlinkNamespaceURI = "http://www.w3.org/1999/xlink";
-
     public SvgElement() => Id = GenerateNewId();
 
     public SvgElement(string id) => Id = id;
@@ -98,15 +97,18 @@ public class SvgElement {
     /// <param name="doc"></param>
     /// <param name="el"></param>
     public virtual void ReadXmlElement(XmlDocument doc, XmlElement el) {
-        foreach (XmlAttribute att in el.Attributes) {
-            // TODO: after namespaced attributes are supported in the writer code (WriteXmlElements) re-enable
-            // their reading.
-            // For now we'll skip namespaced attributes
-            if (att.Name == "xmlns" || att.Name.Contains(':'))
-                continue;
-
-            this[att.Name] = att.Value;
-        }
+        foreach (XmlAttribute att in el.Attributes)
+            if (att.Name.StartsWith("xmlns", StringComparison.Ordinal))
+#if NET5_0_OR_GREATER
+                SvgFactory._namespaces.TryAdd(att.Name, att.Value);
+#else
+            {
+                if (!SvgFactory._namespaces.ContainsKey(att.Name))
+                    SvgFactory._namespaces.Add(att.Name, att.Value);
+            }
+#endif
+            else
+                this[att.Name] = att.Value;
     }
 
     /// <summary>
@@ -140,8 +142,8 @@ public class SvgElement {
         //write out our SVG tree to the new XmlDocument
         WriteXmlElements(doc, null);
 
-        doc.DocumentElement.SetAttribute("xmlns", svgNamespaceURI);
-        doc.DocumentElement.SetAttribute("xmlns:xlink", xlinkNamespaceURI);
+        foreach (KeyValuePair<string, string> pair in SvgFactory._namespaces)
+            doc.DocumentElement.SetAttribute(pair.Key, pair.Value);
         string ents = string.Empty;
         if (compressAttributes)
             ents = SvgFactory.CompressXML(doc, doc.DocumentElement);
@@ -167,7 +169,7 @@ public class SvgElement {
         foreach (string s in _atts.Keys) _ = _atts[s] switch {
             float singleValue => me.SetAttribute(s, doc.NamespaceURI, singleValue.ToString(CultureInfo.InvariantCulture)),
             double doubleValue => me.SetAttribute(s, doc.NamespaceURI, doubleValue.ToString(CultureInfo.InvariantCulture)),
-            _ => me.SetAttribute(s, doc.NamespaceURI, _atts[s].ToString()),
+            _ => SetAttribute(doc, me, s, _atts[s].ToString()),
         };
 
         foreach (SvgElement el in Children) el.WriteXmlElements(doc, me);
@@ -194,6 +196,16 @@ public class SvgElement {
 
     private static string GenerateNewId() => _idcounter++.ToString();
 
+    protected static string SetAttribute(XmlDocument doc, XmlElement me, string name, string value) {
+        string[] parts = name.Split(':');
+        return parts.Length switch {
+            1 => me.SetAttribute(name, doc.NamespaceURI, value),
+            2 => me.SetAttribute(parts[1], NamespaceForPrefix("xmlns:" + parts[0]), value),
+            _ => throw new InvalidOperationException($"Attribute name has more tha one ':' => '{name}'")
+        };
+    }
+
+    private static string NamespaceForPrefix(string xmlns) => SvgFactory._namespaces.TryGetValue(xmlns, out string namespaceURI) ? namespaceURI : string.Empty;
     private class DummyXmlResolver : XmlResolver {
         public override System.Net.ICredentials Credentials { set { } }
 
