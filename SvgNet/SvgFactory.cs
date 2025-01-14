@@ -228,7 +228,6 @@ public static class SvgFactory {
 
     public static void ResetNamespaces() => _namespaces = new() { ["xmlns"] = svgNamespaceURI, ["xmlns:xlink"] = xlinkNamespaceURI };
 
-
     private struct EntitySingleton {
         public string AttributeName;
         public XmlElement Element;
