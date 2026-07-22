@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
     <PropertyGroup>
-		<Version>3.5.6</Version>
+		<Version>3.5.7</Version>
 		<Notes>
-			- Update NUnit to 4.6.1 and System.Drawing.Common to 10.0.8
+			- Update Microsoft.NET.Test.Sdk to 18.8.1 (pulls some transitive dependencies)
+			- Update System.Drawing.Common to 10.0.10 (pulls some transitive dependencies)
 		</Notes>
 		<LangVersion>preview</LangVersion>
 	</PropertyGroup>
