@@ -1,2 +1,2 @@
 #!/bin/bash
-dotnet test
+dotnet test -c:release && dotnet build -t:NugetOrg -c:release
