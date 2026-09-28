@@ -19,6 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution 
 		global.json = global.json
 		LICENSE = LICENSE
 		README.md = README.md
+		routine.bash = routine.bash
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SvgDotNetCoreTest", "SvgDotNetCoreTest\SvgDotNetCoreTest.csproj", "{0AE45FD9-68B8-4232-A8C0-7D9E446F73C9}"
