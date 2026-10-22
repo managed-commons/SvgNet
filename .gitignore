@@ -12,3 +12,6 @@ test-results/
 InternalTrace.*.log
 SvgNet/svgnetdoc.xml
 /SvgNet/svgnetdoc.xml
+# bash generated helper files
+outdated.txt
+updated_nugets.txt
