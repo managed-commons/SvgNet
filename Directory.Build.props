@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
     <PropertyGroup>
-        <Version>3.5.11</Version>
+        <Version>3.5.12</Version>
         <Notes>
-            - Change global.json to use .NET 11.0 SDK (also update the github workflow to use .NET 11.0 SDK)
-            - Update Target Frameworks for core library SvgNet and unit tests project SvgNetUnitTests to include .NET 11.0 and .NET 11.0-windows
-            - Update Dependency
-            + Microsoft.NET.Test.Sdk "18.11.0" -> "18.11.1"
+            - Update Dependency condition
             + System.Drawing.Common "10.0.14" -> "11.0.0" (only when building for .NET 10.0 or .NET 11.0)
-            - Separate class SvgImageElement to its own file SvgImageElement.cs
-            - Small optimizations in SvgColor.cs: use Regex.IsMatch(s) instead of Regex.Match(s).Success in two places
-            - Change routine.bash to expand the aliases it was conditionally using to avoid dependency on the aliases being defined in the shell environment
+            - Ignore WFO2000 warning in .editorconfig
         </Notes>
         <LangVersion>preview</LangVersion>
     </PropertyGroup>

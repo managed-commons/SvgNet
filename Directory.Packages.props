@@ -9,7 +9,7 @@
     <PackageVersion Include="NUnit" Version="5.0.0" />
     <PackageVersion Include="NUnit.Analyzers" Version="4.15.0" />
     <PackageVersion Include="NUnit3TestAdapter" Version="6.3.1" />
-    <PackageVersion Include="System.Drawing.Common" Version="10.0.14" Condition="'$(TargetFramework)' != 'net10.0'" />
+    <PackageVersion Include="System.Drawing.Common" Version="10.0.14" Condition="'$(TargetFramework)' != 'net10.0' and '$(TargetFramework)' != 'net11.0'" />
     <PackageVersion Include="System.Drawing.Common" Version="11.0.0" Condition="'$(TargetFramework)' == 'net10.0' or '$(TargetFramework)' == 'net11.0'" />
   </ItemGroup>
 </Project>
