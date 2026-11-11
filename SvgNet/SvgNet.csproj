@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;netstandard2.1;net8.0;net9.0;net10.0</TargetFrameworks>
-		<TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">$(TargetFrameworks);net462;net8.0-windows;net9.0-windows;net10.0-windows</TargetFrameworks>
-		<UseWindowsForms Condition="'$(TargetFramework)' == 'net8.0-windows' or '$(TargetFramework)' == 'net9.0-windows' or '$(TargetFramework)' == 'net10.0-windows'">true</UseWindowsForms>
+		<TargetFrameworks>netstandard2.0;netstandard2.1;net8.0;net9.0;net10.0;net11.0</TargetFrameworks>
+		<TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">$(TargetFrameworks);net462;net8.0-windows;net9.0-windows;net10.0-windows;net11.0-windows</TargetFrameworks>
+		<UseWindowsForms Condition="'$(TargetFramework)' == 'net8.0-windows' or '$(TargetFramework)' == 'net9.0-windows' or '$(TargetFramework)' == 'net10.0-windows' or '$(TargetFramework)' == 'net11.0-windows'">true</UseWindowsForms>
 		<AssemblyName>SVG</AssemblyName>
 		<PackageId>SvgNet</PackageId>
 		<RootNamespace>SvgNet</RootNamespace>

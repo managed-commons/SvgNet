@@ -53,7 +53,7 @@ public partial class SvgColor : ICloneable {
             : throw new SvgException("Invalid SvgColor", s);
 
         static bool TryParseHexString(string s, out Color color) {
-            if (HEX_COLOR_REGEX.Match(s).Success) {
+            if (HEX_COLOR_REGEX.IsMatch(s)) {
                 int r, g, b;
                 if (s.Length == 4) {
                     r = s.ParseHex(1, 1);
@@ -78,7 +78,7 @@ public partial class SvgColor : ICloneable {
         }
 
         static bool TryParseRGB(string s, out Color color) {
-            if (RGB_PREFIX_REGEX.Match(s).Success)
+            if (RGB_PREFIX_REGEX.IsMatch(s))
                 return TryParseScaling(s, RGB_INTEGERS_REGEX, 100, out color) || TryParseScaling(s, RGB_PERCENTS_REGEX, 255, out color);
             else {
                 color = Color.Transparent;
